@@ -1,16 +1,23 @@
 define([
 	'/knockout/build/output/knockout-latest.debug.js',
-	'moment' ], function(ko, moment) {
+    '/viewmodels/segment.js' ], function(ko, newSegment) {
     return function DayViewModel(opts) {
 
-    	if (!opts.date)
-    		throw new Error('Property date was not provided.')
+    	if (!opts.heading)
+    		throw new Error('Property heading was not provided.')
+        if (!opts.subheading)
+            throw new Error('Property subheading was not provided.')
+        if (!opts.segments)
+            throw new Error('Property segments was not provided.')
     	
     	var self = this
 
-    	self.heading = ko.computed(function() {
-    		return moment(opts.date).format("MMM Do");
-    	})
+    	self.heading    = ko.observable(opts.heading)
+        self.subheading = ko.observable(opts.subheading)
+
+        self.segments = ko.computed(function() {
+            return opts.segments.map(newSegment)
+        })
 
     };
 });

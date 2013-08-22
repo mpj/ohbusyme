@@ -1,4 +1,4 @@
-  require.config({
+    require.config({
     paths: {
         'moment': '/moment/moment',
     }
@@ -11,24 +11,32 @@ require([
     domReady(function() {
 
       ko.bindingHandlers.tooltip = {
-        update: function(element, valueAccessor) {  
+        init: function(element, valueAccessor) {  
           
-          var text =ko.unwrap(valueAccessor())
-          $(element).tooltip("destroy").tooltip({
-            html: true,
-            title: text,
-            trigger: "manual"
-          })  
+          var viewModel = ko.unwrap(valueAccessor());
+          
+          ko.computed({
+            read: function() {
+              $(element).tooltip("destroy").tooltip({
+                html: true, title: viewModel.body(), trigger: "manual"
+              })
+            },
+            disposeWhenNodeIsRemoved: element
+          })
 
-          // TODO: This won't work, jQuery is all centered around
-          // event delegation. Need to figure something else out.
-          $(element).mouseenter(function() {
-            
-            $(element).tooltip('show');
-          }).mouseleave(function() {
-            $(element).tooltip('hide');
-          });
+          ko.computed({
+            read: function() {
+              viewModel.isVisible() ? 
+                $(element).tooltip('show') : 
+                $(element).tooltip('hide')
+            },
+            disposeWhenNodeIsRemoved: element
+          })
           
+          ko.utils.domNodeDisposal.addDisposeCallback(element, function() {
+            $(element).tooltip("destroy");
+          });
+
         }
       }
 
