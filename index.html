@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Bootstrap 101 Template</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link href="/vendor/bootstrap-3.0.0/dist/css/bootstrap.min.css" 
+          rel="stylesheet" media="screen">
+
+    <style>
+      .day-container h2 { font-size: 20px; line-height: 20px; margin: 0; margin-bottom: 10px }
+      .day-container h3 { font-size: 14px; line-height: 20px; margin: 0; color: gray; }
+      ul, li  {
+        padding: 0;
+        margin: 0;
+        list-style: none;
+        float: left;
+        display: inline-block;
+        clear: none;
+      }
+      ul.people li {
+        width: 80px;
+        height: 80px;
+        float:left;
+      }
+      ul.people li.free       { background-color: green }
+      ul.people li.oftenfree  { background-color: blue }
+      ul.people li.oftenbusy  { background-color: yellow }
+      ul.people li.busy       { background-color: red }
+      ul.people li:first-of-type {
+        width: 160px; height: 160px;
+        float: left;
+      }
+      ul.people li img {
+        width: 92%; height: 92%;
+        margin: 4%;
+      }
+
+    </style>
+
+  </head>
+  <body>
+
+
+    <div class="container">
+
+      <div class="row row-offcanvas row-offcanvas-right">
+        <div class="col-xs-12 col-sm-9">
+          <h1>Hello, world!</h1>
+          <p>This is an example to show the potential of an offcanvas layout pattern in Bootstrap. Try some responsive-range viewport sizes to see it in action.</p>
+          <div class="row days">
+
+            <!-- ko foreach: days -->
+            <div class="day-container col-12 col-sm-12 col-md-12 col-lg-12">
+              <h3 data-bind="text: subheading"></h3>
+              <h2 data-bind="text: heading"></h2>
+              <ul class="segments" data-bind="foreach: segments">
+                <h3 data-bind="text: symbol"></h3>
+                <li>
+                  <ul class="people" data-bind="foreach: people">
+                    <li data-bind="css: style, tooltip: style">
+                      <img data-bind="attr: { src: imageSrc }" />
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+              
+            </div><!--/span-->
+            <!-- /ko  -->
+            
+          </div><!--/row-->
+        </div><!--/span-->
+
+
+
+
+    </div><!--/.container-->
+
+    <script src="/vendor/jquery-1.10.2.js"></script>
+    <script src="/vendor/bootstrap-3.0.0/dist/js/bootstrap.min.js"></script>
+    <script data-main="main" src="/requirejs/require.js"></script>
+  </body>
+</html>
+
+
+
+<html>
+<body>
+  
+</body>
+</html>
