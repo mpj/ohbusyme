@@ -1,9 +1,17 @@
-define([ '/knockout/build/output/knockout-latest.debug.js'], function(ko) {
+define([ 
+    '/knockout/build/output/knockout-latest.debug.js',
+    '/viewmodels/person.js'
+    ], function(ko, newPerson) {
     return function newSegment(opts) {
 
     	var api = {}
 
         api.type = ko.observable(opts.type);
+
+        api.persons = ko.computed(function() {
+            if (!opts.persons) return [];
+            return opts.persons.map(newPerson);
+        })
 
         return api;
     };

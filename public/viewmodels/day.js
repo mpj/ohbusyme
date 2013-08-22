@@ -16,6 +16,7 @@ define([
         self.subheading = ko.observable(opts.subheading)
 
         self.segments = ko.computed(function() {
+            console.log("opts.segments", opts.segments)
             return opts.segments.map(newSegment)
         })
 

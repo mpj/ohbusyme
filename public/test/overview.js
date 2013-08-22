@@ -102,6 +102,10 @@ define(['/viewmodels/overview.js'], function(OverviewModel) {
           })
 
           afterParsing('segments', function() {
+
+            it('should have empty persons', function() {
+              viewmodel.days()[1].segments()[0].persons().length.should.equal(0)
+            })
             
             it('should have have created daytime viewmodel', function() {
               viewmodel.days()[1].segments()[0].type().should.equal('daytime');
@@ -113,17 +117,44 @@ define(['/viewmodels/overview.js'], function(OverviewModel) {
             
           })
           
+        
+          describe('and has persons defined on the evening segment', function() {
+            beforeEach(function() {
+              options.days[1].segments[1].persons = [
+                {
+                  type: 'free',
+                  imageSrc: '/images/test/fredrik.jpg',
+                  description: '*Fredrik* is **free** during *daytime* this *Monday*',
+                }
+              ]
+            })
+
+            afterParsing('person', function() {
+              it('assigns type', function() {
+                viewmodel.days()[1].segments()[1].persons()[0].type().should.equal('free');
+              })  
+
+              it('assigns imageSrc', function() {
+                viewmodel.days()[1].segments()[1].persons()[0].
+                  imageSrc().should.equal('/images/test/fredrik.jpg');
+              })
+
+              it('assigns description', function() {
+                viewmodel.days()[1].segments()[1].persons()[0].
+                  description().should.
+                    equal('<p><em>Fredrik</em> is <strong>free</strong> during <em>daytime</em> this <em>Monday</em></p>\n');
+              })
+            })
+
+          })
         })
+
+        
+        
       })
 
     })
-      
-   
-      
-
 
   })
-
-  
 
 })

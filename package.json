@@ -21,7 +21,8 @@
     "requirejs": "2.1.x",
     "knockout": "2.3.x",
     "domready": "0.2.x",
-    "moment": "2.1.x"
+    "moment": "2.1.x",
+    "marked": "0.2.x"
   },
   "analyze": false,
   "devDependencies": {
