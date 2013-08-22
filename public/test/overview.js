@@ -130,19 +130,50 @@ define(['/viewmodels/overview.js'], function(OverviewModel) {
             })
 
             afterParsing('person', function() {
+              var person;
+              beforeEach(function() {
+                person = viewmodel.days()[1].segments()[1].persons()[0]
+              })
+
               it('assigns type', function() {
-                viewmodel.days()[1].segments()[1].persons()[0].type().should.equal('free');
+                person.type().should.equal('free');
               })  
 
               it('assigns imageSrc', function() {
-                viewmodel.days()[1].segments()[1].persons()[0].
-                  imageSrc().should.equal('/images/test/fredrik.jpg');
+                person.imageSrc().should.equal('/images/test/fredrik.jpg');
               })
 
-              it('assigns description', function() {
-                viewmodel.days()[1].segments()[1].persons()[0].
-                  description().should.
-                    equal('<p><em>Fredrik</em> is <strong>free</strong> during <em>daytime</em> this <em>Monday</em></p>\n');
+              describe('tooltip', function() {
+
+                it('body', function() {
+                  person.tooltip.body().should.equal(
+                    '<p><em>Fredrik</em> is <strong>free</strong> during ' +
+                    '<em>daytime</em> this <em>Monday</em></p>\n')
+                })
+
+                it('hidden per default', function() {
+                  person.tooltip.isVisible().should.equal(false)
+                })
+
+                describe('mouseover', function() {
+                  beforeEach(function() {
+                    person.mouseover()
+                  })
+
+                  it('shows tooltip', function() {
+                    person.tooltip.isVisible().should.equal(true)
+                  })
+
+                  describe('mouseout', function() {
+                    beforeEach(function() {
+                      person.mouseout()
+                    })
+
+                    it('hides tooltip', function() {
+                      person.tooltip.isVisible().should.equal(false)
+                    })                    
+                  })
+                })
               })
             })
 
