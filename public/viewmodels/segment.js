@@ -4,6 +4,9 @@ define([
     ], function(ko, newPerson) {
     return function newSegment(opts) {
 
+        if (!opts.persons)
+            throw new Error('Property persons was not provided.')
+
     	var api = {}
 
         api.type = ko.observable(opts.type);

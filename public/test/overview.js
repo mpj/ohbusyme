@@ -101,25 +101,37 @@ define(['/viewmodels/overview.js'], function(OverviewModel) {
             ]
           })
 
-          afterParsing('segments', function() {
-
-            it('should have empty persons', function() {
-              viewmodel.days()[1].segments()[0].persons().length.should.equal(0)
-            })
-            
-            it('should have have created daytime viewmodel', function() {
-              viewmodel.days()[1].segments()[0].type().should.equal('daytime');
-            })
-
-            it('should have have created evening viewmodel', function() {
-              viewmodel.days()[1].segments()[1].type().should.equal('evening');
-            })
-            
+          it('should complain about lack of persons', function() {
+            (function() {
+              new OverviewModel(options)
+            }).should.throw('Property persons was not provided.')  
           })
+
+          describe('empty persons assigned', function() {
+            beforeEach(function() {
+              options.days[1].segments[0].persons = [];
+              options.days[1].segments[1].persons = [];
+            })
+
+            afterParsing('segments', function() {
+            
+              it('should have have created daytime viewmodel', function() {
+                viewmodel.days()[1].segments()[0].type().should.equal('daytime');
+              })
+
+              it('should have have created evening viewmodel', function() {
+                viewmodel.days()[1].segments()[1].type().should.equal('evening');
+              })
+              
+            })
+          })
+
+          
           
         
           describe('and has persons defined on the evening segment', function() {
             beforeEach(function() {
+              options.days[1].segments[0].persons = []
               options.days[1].segments[1].persons = [
                 {
                   type: 'free',
