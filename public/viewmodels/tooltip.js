@@ -9,6 +9,8 @@ define([
 
         api.isVisible = ko.observable(false)
 
+        api.placement = ko.observable('top');
+
         return api;
     };
 });

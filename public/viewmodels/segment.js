@@ -16,6 +16,14 @@ define([
             return opts.persons.map(newPerson);
         })
 
+        ko.computed(function() {
+            if (api.type() === 'evening') {
+                api.persons().forEach(function(p) {
+                    p.tooltip.placement('bottom');
+                })  
+            }
+        })
+
         return api;
     };
 });

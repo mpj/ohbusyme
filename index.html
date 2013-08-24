@@ -8,73 +8,193 @@
           rel="stylesheet" media="screen">
 
     <style>
+      body {
+        padding-top: 40px;
+      }
+      html, body, div, h1, h2, h3, h4, h5, h6, span, strong, em, p {
+        font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+      }
       .day-container h2 { font-size: 20px; line-height: 20px; margin: 0; margin-bottom: 10px }
       .day-container h3 { font-size: 14px; line-height: 20px; margin: 0; color: gray; }
       ul, li  {
         padding: 0;
         margin: 0;
         list-style: none;
-        float: left;
-        display: inline-block;
-        clear: none;
       }
       ul.people li {
-        width: 80px;
-        height: 80px;
-        float:left;
-      }
-      ul.people li.free       { background-color: green }
-      ul.people li.oftenfree  { background-color: blue }
-      ul.people li.oftenbusy  { background-color: yellow }
-      ul.people li.busy       { background-color: red }
-      ul.people li:first-of-type {
-        width: 160px; height: 160px;
         float: left;
+        display: inline-block;
       }
+      
       ul.people li img {
-        width: 92%; height: 92%;
-        margin: 4%;
+
       }
+
+      .day-container {
+        clear: both;
+      }
+
+      .segment {
+        clear: both;
+        position: relative;
+        display: inline-block;
+        margin-bottom: 15px;
+      }
+      .segment h3 {
+        position: absolute;
+        text-align: right;
+        left: -215px;
+        width: 200px;
+        line-height: 60px;
+      }
+
+
+      .person { /* selector for person class*/
+          width: 65px; height: 65px;
+          padding: 5px; /* internal padding ( top, right, bottom, left) */
+          border-radius: 50%; /* border-radius is equal to 50 percent of a general width, actually 25 pixels, here and a circle was got(there is also with prefix - moz and - o) */
+          margin-right: 7px;
+      }
+      .person img{ /* selector for a picture which is "inside" the person class */
+          display: block; /* a picture is being displayed as a block, by a width it will be equal to the parent(in the div) */
+          border-radius: 50%; /* read above */
+          width: 100%;
+          height: 100%; 
+      }
+
+      .tooltip {
+      }
+      .tooltip-inner {
+        background-color:white;
+        color: black;
+        max-width:400px;
+        box-shadow: 0px 0px 20px white;
+      }
+      .tooltip-arrow {
+        border-color: white !important;
+      }
+      .tooltip-inner em, .tooltip-inner strong {
+        font-family: "HelveticaNeue-Bold", "Helvetica Neue Bold", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+        font-style: normal;
+      }
+      
+
+
+      .person.free       { 
+        background: rgb(3,118,0); /* Old browsers */
+        background: -moz-linear-gradient(top,  rgba(3,118,0,1) 0%, rgba(5,212,0,1) 100%); /* FF3.6+ */
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(3,118,0,1)), color-stop(100%,rgba(5,212,0,1))); /* Chrome,Safari4+ */
+        background: -webkit-linear-gradient(top,  rgba(3,118,0,1) 0%,rgba(5,212,0,1) 100%); /* Chrome10+,Safari5.1+ */
+        background: -o-linear-gradient(top,  rgba(3,118,0,1) 0%,rgba(5,212,0,1) 100%); /* Opera 11.10+ */
+        background: -ms-linear-gradient(top,  rgba(3,118,0,1) 0%,rgba(5,212,0,1) 100%); /* IE10+ */
+        background: linear-gradient(to bottom,  rgba(3,118,0,1) 0%,rgba(5,212,0,1) 100%); /* W3C */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#037600', endColorstr='#05d400',GradientType=0 ); /* IE6-9 */
+        box-shadow: 0px 0px 5px #05d400; 
+      }
+      .person.free img {
+        border: 1px solid #037600;
+      }
+
+      .person.free .tooltip-inner strong {
+        color: #037600;
+      }
+
+      .person.busy {
+        background: rgb(164,26,26); /* Old browsers */
+        background: -moz-linear-gradient(top,  rgba(164,26,26,1) 0%, rgba(225,0,25,1) 100%); /* FF3.6+ */
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(164,26,26,1)), color-stop(100%,rgba(225,0,25,1))); /* Chrome,Safari4+ */
+        background: -webkit-linear-gradient(top,  rgba(164,26,26,1) 0%,rgba(225,0,25,1) 100%); /* Chrome10+,Safari5.1+ */
+        background: -o-linear-gradient(top,  rgba(164,26,26,1) 0%,rgba(225,0,25,1) 100%); /* Opera 11.10+ */
+        background: -ms-linear-gradient(top,  rgba(164,26,26,1) 0%,rgba(225,0,25,1) 100%); /* IE10+ */
+        background: linear-gradient(to bottom,  rgba(164,26,26,1) 0%,rgba(225,0,25,1) 100%); /* W3C */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a41a1a', endColorstr='#e10019',GradientType=0 ); /* IE6-9 */
+
+         box-shadow: 0px 0px 5px #e10019; 
+      }
+
+      .person.busy img {
+        border: 1px solid #a41a1a;
+      }
+
+      .person.busy .tooltip-inner strong {
+        color: #a41a1a;
+      }
+
+
+      .person.oftenbusy {
+        background: rgb(255,138,0); /* Old browsers */
+        background: -moz-linear-gradient(top,  rgba(255,138,0,1) 0%, rgba(255,216,0,1) 100%); /* FF3.6+ */
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,138,0,1)), color-stop(100%,rgba(255,216,0,1))); /* Chrome,Safari4+ */
+        background: -webkit-linear-gradient(top,  rgba(255,138,0,1) 0%,rgba(255,216,0,1) 100%); /* Chrome10+,Safari5.1+ */
+        background: -o-linear-gradient(top,  rgba(255,138,0,1) 0%,rgba(255,216,0,1) 100%); /* Opera 11.10+ */
+        background: -ms-linear-gradient(top,  rgba(255,138,0,1) 0%,rgba(255,216,0,1) 100%); /* IE10+ */
+        background: linear-gradient(to bottom,  rgba(255,138,0,1) 0%,rgba(255,216,0,1) 100%); /* W3C */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff8a00', endColorstr='#ffd800',GradientType=0 ); /* IE6-9 */
+
+        box-shadow: 0px 0px 5px #ffd800; 
+      }
+
+      .person.oftenbusy img {
+        border: 1px solid #ff8a00;
+      }
+
+      .person.oftenbusy .tooltip-inner strong {
+        color: #ff8a00;
+      }
+
+      .person.oftenfree {
+        background: rgb(0,166,144); /* Old browsers */
+        background: -moz-linear-gradient(top,  rgba(0,166,144,1) 0%, rgba(0,233,197,1) 100%); /* FF3.6+ */
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,166,144,1)), color-stop(100%,rgba(0,233,197,1))); /* Chrome,Safari4+ */
+        background: -webkit-linear-gradient(top,  rgba(0,166,144,1) 0%,rgba(0,233,197,1) 100%); /* Chrome10+,Safari5.1+ */
+        background: -o-linear-gradient(top,  rgba(0,166,144,1) 0%,rgba(0,233,197,1) 100%); /* Opera 11.10+ */
+        background: -ms-linear-gradient(top,  rgba(0,166,144,1) 0%,rgba(0,233,197,1) 100%); /* IE10+ */
+        background: linear-gradient(to bottom,  rgba(0,166,144,1) 0%,rgba(0,233,197,1) 100%); /* W3C */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00a690', endColorstr='#00e9c5',GradientType=0 ); /* IE6-9 */
+
+        box-shadow: 0px 0px 5px #00e9c5; 
+      }
+
+      .person.oftenfree img {
+        border: 1px solid #00a690;
+      }
+
+      .person.oftenfree .tooltip .tooltip-inner strong {
+        color: #00a690;
+      }
+
+
+
+
+
+      
 
     </style>
 
   </head>
   <body>
 
+  <div class="container">
+    <div class="days" data-bind="foreach: days">
+      <div class="day-container col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <h3 data-bind="text: subheading"></h3>
+        <h2 data-bind="text: heading"></h2>
+        <div data-bind="foreach: segments">
+          <div class="segment">
+            <h3 data-bind="text: type"></h3>
+            <ul class="people" 
+                data-bind="foreach: persons">
+              <li class="person" data-bind="css: type, tooltip: tooltip">
+                <img data-bind="attr: { src: imageSrc }, 
+                  event: { mouseover:mouseover, mouseout:mouseout }" />
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-    <div class="container">
-
-      <div class="row row-offcanvas row-offcanvas-right">
-        <div class="col-xs-12 col-sm-9">
-          <h1>Hello, world!</h1>
-          <p>This is an example to show the potential of an offcanvas layout pattern in Bootstrap. Try some responsive-range viewport sizes to see it in action.</p>
-          <div class="row days">
-
-            <!-- ko foreach: days -->
-            <div class="day-container col-12 col-sm-12 col-md-12 col-lg-12">
-              <h3 data-bind="text: subheading"></h3>
-              <h2 data-bind="text: heading"></h2>
-              <ul class="segments" data-bind="foreach: segments">
-                <h3 data-bind="text: symbol"></h3>
-                <li>
-                  <ul class="people" data-bind="foreach: people">
-                    <li data-bind="css: style, tooltip: style">
-                      <img data-bind="attr: { src: imageSrc }" />
-                    </li>
-                  </ul>
-                </li>
-              </ul>
-              
-            </div><!--/span-->
-            <!-- /ko  -->
-            
-          </div><!--/row-->
-        </div><!--/span-->
-
-
-
-
-    </div><!--/.container-->
 
     <script src="/vendor/jquery-1.10.2.js"></script>
     <script src="/vendor/bootstrap-3.0.0/dist/js/bootstrap.min.js"></script>

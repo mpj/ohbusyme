@@ -126,6 +126,47 @@ define(['/viewmodels/overview.js'], function(OverviewModel) {
             })
           })
 
+          describe('empty object defined as a person', function () {
+            var p;
+            beforeEach(function() {
+              p = {};
+              options.days[1].segments[0].persons = [p]
+              options.days[1].segments[1].persons = []
+
+            })
+
+            it('should complain about lack of type', function() {
+              (function() {
+                new OverviewModel(options)
+              }).should.throw('Property type was not provided.')  
+            })
+
+            describe('we define the type', function() {
+              beforeEach(function() {
+                p.type = 'free'
+              })
+
+              it('should complain about lack of imageSrc', function () {
+                (function() {
+                  new OverviewModel(options)
+                }).should.throw('Property imageSrc was not provided.')  
+              })
+
+              describe('we define the imageSrc property', function() {
+                beforeEach(function() {
+                  p.imageSrc = "http://test.com/image.png";
+                })
+
+                it('should complain about description', function() {
+                  (function() {
+                    new OverviewModel(options)
+                  }).should.throw('Property description was not provided.') 
+                })
+              })
+            })
+
+          })
+
           
           
         

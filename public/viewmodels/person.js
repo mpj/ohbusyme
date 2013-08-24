@@ -5,6 +5,13 @@ define([
 ], function(ko, marked, newTooltip) {
     return function newPerson(opts) {
 
+        if (!opts.type)
+            throw new Error('Property type was not provided.')
+        if (!opts.imageSrc)
+            throw new Error('Property imageSrc was not provided.')
+        if (!opts.description)
+            throw new Error('Property description was not provided.')
+
     	var api = {}
 
         api.type = ko.observable(opts.type);
