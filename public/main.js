@@ -58,6 +58,177 @@ require([
                 type: 'daytime',
                 persons: [
                   { 
+                    imageSrc: '/images/test/fredrik.jpg',
+                    description: '*Fredrik* is **free** during *daytime* this *Monday*',
+                    type: 'free'
+                  },
+                  { 
+                    imageSrc: '/images/test/magnus.jpg',
+                    description: '*Magnus* is **free** during *daytime* this *Monday*',
+                    type: 'free'
+                  },
+                  { 
+                    type: 'oftenfree',
+                    description: '*You* are shown as **often free** during *daytime* on *Mondays*',
+                    imageSrc: '/images/test/louise.jpg'
+                  },
+                  { 
+                    imageSrc: '/images/test/jenny.jpg',
+                    description: '*Jenny* is **often free** during *daytime* on *Mondays*',
+                    type: 'oftenfree'
+                  },
+                  { 
+                    imageSrc: '/images/test/kim.jpg',
+                    description: '*Kim* is **often busy** during *daytime* on *Mondays*',
+                    type: 'oftenbusy'
+                  },
+                  { 
+                    imageSrc: '/images/test/mattias.jpg',
+                    description: '*Mattias* is **busy** during *daytime* this *Monday*',
+                    type: 'busy'
+                  }
+                ]
+              },
+              {
+                type: 'evening',
+                persons: [
+                  { 
+                    type: 'free',
+                    description: '*You* are **free** during *daytime* this *Mondays*',
+                    imageSrc: '/images/test/louise.jpg'
+                  },{ 
+                    imageSrc: '/images/test/magnus.jpg',
+                    description: '*Magnus* is **free** this *Monday evening*.',
+                    type: 'free'
+                  },
+                  { 
+                    imageSrc: '/images/test/kim.jpg',
+                    description: '*Kim* is **free** this *Monday evening*.',
+                    type: 'free'
+                  },
+                  { 
+                    imageSrc: '/images/test/fredrik.jpg',
+                    description: '*Fredrik* is **often free** during *evenings* on *Monday*',
+                    type: 'oftenfree'
+                  },
+                  { 
+                    imageSrc: '/images/test/jenny.jpg',
+                    description: '*Jenny* is **often free** during *daytime* on *Mondays*',
+                    type: 'oftenfree'
+                  },
+                  { 
+                    imageSrc: '/images/test/mattias.jpg',
+                    description: '*Mattias* is **busy** during *daytime* this *Monday*',
+                    type: 'busy'
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            subheading: '27 Aug',
+            heading: 'Tomorrow, Tuesday',
+            segments: [
+              {
+                type: 'daytime',
+                persons: [
+                  { 
+                    type: 'free',
+                    description: '*You* are **free** during *daytime* this *Mondays*',
+                    imageSrc: '/images/test/louise.jpg'
+                  },
+                  { 
+                    imageSrc: '/images/test/fredrik.jpg',
+                    description: '*Fredrik* is **free** during *daytime* this *Monday*',
+                    type: 'free'
+                  },
+                  { 
+                    imageSrc: '/images/test/magnus.jpg',
+                    description: '*Magnus* is **free** during *daytime* this *Monday*',
+                    type: 'free'
+                  },
+                  { 
+                    imageSrc: '/images/test/jenny.jpg',
+                    description: '*Jenny* is **often free** during *daytime* on *Mondays*',
+                    type: 'oftenfree'
+                  },
+                  { 
+                    imageSrc: '/images/test/kim.jpg',
+                    description: '*Kim* is **often busy** during *daytime* on *Mondays*',
+                    type: 'oftenbusy'
+                  },
+                  { 
+                    imageSrc: '/images/test/mattias.jpg',
+                    description: '*Mattias* is **busy** during *daytime* this *Monday*',
+                    type: 'busy'
+                  }
+                ]
+              },
+              {
+                type: 'evening',
+                persons: [
+                  { 
+                    type: 'oftenfree',
+                    description: '*You* are shown as **often free** during *daytime* on *Mondays*',
+                    imageSrc: '/images/test/louise.jpg'
+                  },
+                  { 
+                    imageSrc: '/images/test/fredrik.jpg',
+                    description: '*Fredrik* is **free** during *daytime* this *Monday*',
+                    type: 'free'
+                  },
+                  { 
+                    imageSrc: '/images/test/magnus.jpg',
+                    description: '*Magnus* is **free** during *daytime* this *Monday*',
+                    type: 'free'
+                  },
+                  { 
+                    imageSrc: '/images/test/jenny.jpg',
+                    description: '*Jenny* is **often free** during *daytime* on *Mondays*',
+                    type: 'oftenfree'
+                  },
+                  { 
+                    imageSrc: '/images/test/kim.jpg',
+                    description: '*Kim* is **often busy** during *daytime* on *Mondays*',
+                    type: 'oftenbusy'
+                  },
+                  { 
+                    imageSrc: '/images/test/mattias.jpg',
+                    description: '*Mattias* is **busy** during *daytime* this *Monday*',
+                    type: 'busy'
+                  },
+                  { 
+                    imageSrc: '/images/test/mattias.jpg',
+                    description: '*Mattias* is **busy** during *daytime* this *Monday*',
+                    type: 'busy'
+                  },
+                  { 
+                    imageSrc: '/images/test/mattias.jpg',
+                    description: '*Mattias* is **busy** during *daytime* this *Monday*',
+                    type: 'busy'
+                  },
+                  { 
+                    imageSrc: '/images/test/mattias.jpg',
+                    description: '*Mattias* is **busy** during *daytime* this *Monday*',
+                    type: 'busy'
+                  },
+                  { 
+                    imageSrc: '/images/test/mattias.jpg',
+                    description: '*Mattias* is **busy** during *daytime* this *Monday*',
+                    type: 'busy'
+                  },
+                ]
+              }
+            ]
+          },
+          {
+            subheading: '28 Aug',
+            heading: 'Wednesday',
+            segments: [
+              {
+                type: 'daytime',
+                persons: [
+                  { 
                     type: 'oftenfree',
                     description: '*You* are shown as **often free** during *daytime* on *Mondays*',
                     imageSrc: '/images/test/louise.jpg'
@@ -167,243 +338,11 @@ require([
             ]
           },
           {
-            subheading: '27 Aug',
-            heading: 'Tomorrow, Tuesday',
-            segments: [
-              {
-                symbol: 'daytime',
-                persons: [
-                  { 
-                    type: 'oftenfree',
-                    description: '*You* are shown as **often free** during *daytime* on *Mondays*',
-                    imageSrc: '/images/test/louise.jpg'
-                  },
-                  { 
-                    imageSrc: '/images/test/fredrik.jpg',
-                    description: '*Fredrik* is **free** during *daytime* this *Monday*',
-                    type: 'free'
-                  },
-                  { 
-                    imageSrc: '/images/test/magnus.jpg',
-                    description: '*Magnus* is **free** during *daytime* this *Monday*',
-                    type: 'free'
-                  },
-                  { 
-                    imageSrc: '/images/test/jenny.jpg',
-                    description: '*Jenny* is **often free** during *daytime* on *Mondays*',
-                    type: 'oftenfree'
-                  },
-                  { 
-                    imageSrc: '/images/test/kim.jpg',
-                    description: '*Kim* is **often busy** during *daytime* on *Mondays*',
-                    type: 'oftenbusy'
-                  },
-                  { 
-                    imageSrc: '/images/test/mattias.jpg',
-                    description: '*Mattias* is **busy** during *daytime* this *Monday*',
-                    type: 'busy'
-                  },
-                  { 
-                    imageSrc: '/images/test/mattias.jpg',
-                    description: '*Mattias* is **busy** during *daytime* this *Monday*',
-                    type: 'busy'
-                  },
-                  { 
-                    imageSrc: '/images/test/mattias.jpg',
-                    description: '*Mattias* is **busy** during *daytime* this *Monday*',
-                    type: 'busy'
-                  },
-                  { 
-                    imageSrc: '/images/test/mattias.jpg',
-                    description: '*Mattias* is **busy** during *daytime* this *Monday*',
-                    type: 'busy'
-                  },
-                  { 
-                    imageSrc: '/images/test/mattias.jpg',
-                    description: '*Mattias* is **busy** during *daytime* this *Monday*',
-                    type: 'busy'
-                  },
-                ]
-              },
-              {
-                symbol: 'evening',
-                persons: [
-                  { 
-                    type: 'oftenfree',
-                    description: '*You* are shown as **often free** during *daytime* on *Mondays*',
-                    imageSrc: '/images/test/louise.jpg'
-                  },
-                  { 
-                    imageSrc: '/images/test/fredrik.jpg',
-                    description: '*Fredrik* is **free** during *daytime* this *Monday*',
-                    type: 'free'
-                  },
-                  { 
-                    imageSrc: '/images/test/magnus.jpg',
-                    description: '*Magnus* is **free** during *daytime* this *Monday*',
-                    type: 'free'
-                  },
-                  { 
-                    imageSrc: '/images/test/jenny.jpg',
-                    description: '*Jenny* is **often free** during *daytime* on *Mondays*',
-                    type: 'oftenfree'
-                  },
-                  { 
-                    imageSrc: '/images/test/kim.jpg',
-                    description: '*Kim* is **often busy** during *daytime* on *Mondays*',
-                    type: 'oftenbusy'
-                  },
-                  { 
-                    imageSrc: '/images/test/mattias.jpg',
-                    description: '*Mattias* is **busy** during *daytime* this *Monday*',
-                    type: 'busy'
-                  },
-                  { 
-                    imageSrc: '/images/test/mattias.jpg',
-                    description: '*Mattias* is **busy** during *daytime* this *Monday*',
-                    type: 'busy'
-                  },
-                  { 
-                    imageSrc: '/images/test/mattias.jpg',
-                    description: '*Mattias* is **busy** during *daytime* this *Monday*',
-                    type: 'busy'
-                  },
-                  { 
-                    imageSrc: '/images/test/mattias.jpg',
-                    description: '*Mattias* is **busy** during *daytime* this *Monday*',
-                    type: 'busy'
-                  },
-                  { 
-                    imageSrc: '/images/test/mattias.jpg',
-                    description: '*Mattias* is **busy** during *daytime* this *Monday*',
-                    type: 'busy'
-                  },
-                ]
-              }
-            ]
-          },
-          {
-            subheading: '28 Aug',
-            heading: 'Wednesday',
-            segments: [
-              {
-                symbol: 'daytime',
-                persons: [
-                  { 
-                    type: 'oftenfree',
-                    description: '*You* are shown as **often free** during *daytime* on *Mondays*',
-                    imageSrc: '/images/test/louise.jpg'
-                  },
-                  { 
-                    imageSrc: '/images/test/fredrik.jpg',
-                    description: '*Fredrik* is **free** during *daytime* this *Monday*',
-                    type: 'free'
-                  },
-                  { 
-                    imageSrc: '/images/test/magnus.jpg',
-                    description: '*Magnus* is **free** during *daytime* this *Monday*',
-                    type: 'free'
-                  },
-                  { 
-                    imageSrc: '/images/test/jenny.jpg',
-                    description: '*Jenny* is **often free** during *daytime* on *Mondays*',
-                    type: 'oftenfree'
-                  },
-                  { 
-                    imageSrc: '/images/test/kim.jpg',
-                    description: '*Kim* is **often busy** during *daytime* on *Mondays*',
-                    type: 'oftenbusy'
-                  },
-                  { 
-                    imageSrc: '/images/test/mattias.jpg',
-                    description: '*Mattias* is **busy** during *daytime* this *Monday*',
-                    type: 'busy'
-                  },
-                  { 
-                    imageSrc: '/images/test/mattias.jpg',
-                    description: '*Mattias* is **busy** during *daytime* this *Monday*',
-                    type: 'busy'
-                  },
-                  { 
-                    imageSrc: '/images/test/mattias.jpg',
-                    description: '*Mattias* is **busy** during *daytime* this *Monday*',
-                    type: 'busy'
-                  },
-                  { 
-                    imageSrc: '/images/test/mattias.jpg',
-                    description: '*Mattias* is **busy** during *daytime* this *Monday*',
-                    type: 'busy'
-                  },
-                  { 
-                    imageSrc: '/images/test/mattias.jpg',
-                    description: '*Mattias* is **busy** during *daytime* this *Monday*',
-                    type: 'busy'
-                  },
-                ]
-              },
-              {
-                symbol: 'evening',
-                persons: [
-                  { 
-                    type: 'oftenfree',
-                    description: '*You* are shown as **often free** during *daytime* on *Mondays*',
-                    imageSrc: '/images/test/louise.jpg'
-                  },
-                  { 
-                    imageSrc: '/images/test/fredrik.jpg',
-                    description: '*Fredrik* is **free** during *daytime* this *Monday*',
-                    type: 'free'
-                  },
-                  { 
-                    imageSrc: '/images/test/magnus.jpg',
-                    description: '*Magnus* is **free** during *daytime* this *Monday*',
-                    type: 'free'
-                  },
-                  { 
-                    imageSrc: '/images/test/jenny.jpg',
-                    description: '*Jenny* is **often free** during *daytime* on *Mondays*',
-                    type: 'oftenfree'
-                  },
-                  { 
-                    imageSrc: '/images/test/kim.jpg',
-                    description: '*Kim* is **often busy** during *daytime* on *Mondays*',
-                    type: 'oftenbusy'
-                  },
-                  { 
-                    imageSrc: '/images/test/mattias.jpg',
-                    description: '*Mattias* is **busy** during *daytime* this *Monday*',
-                    type: 'busy'
-                  },
-                  { 
-                    imageSrc: '/images/test/mattias.jpg',
-                    description: '*Mattias* is **busy** during *daytime* this *Monday*',
-                    type: 'busy'
-                  },
-                  { 
-                    imageSrc: '/images/test/mattias.jpg',
-                    description: '*Mattias* is **busy** during *daytime* this *Monday*',
-                    type: 'busy'
-                  },
-                  { 
-                    imageSrc: '/images/test/mattias.jpg',
-                    description: '*Mattias* is **busy** during *daytime* this *Monday*',
-                    type: 'busy'
-                  },
-                  { 
-                    imageSrc: '/images/test/mattias.jpg',
-                    description: '*Mattias* is **busy** during *daytime* this *Monday*',
-                    type: 'busy'
-                  },
-                ]
-              }
-            ]
-          },
-          {
             subheading: '29 Aug',
             heading: 'Thursday',
             segments: [
               {
-                symbol: 'daytime',
+                type: 'daytime',
                 persons: [
                   { 
                     type: 'oftenfree',
@@ -458,7 +397,7 @@ require([
                 ]
               },
               {
-                symbol: 'evening',
+                type: 'evening',
                 persons: [
                   { 
                     type: 'oftenfree',
@@ -519,7 +458,7 @@ require([
             heading: 'Friday',
             segments: [
               {
-                symbol: 'daytime',
+                type: 'daytime',
                 persons: [
                   { 
                     type: 'oftenfree',
@@ -574,7 +513,7 @@ require([
                 ]
               },
               {
-                symbol: 'evening',
+                type: 'evening',
                 persons: [
                   { 
                     type: 'oftenfree',
@@ -635,7 +574,7 @@ require([
             heading: 'Saturday',
             segments: [
               {
-                symbol: 'daytime',
+                type: 'daytime',
                 persons: [
                   { 
                     type: 'oftenfree',
@@ -690,7 +629,7 @@ require([
                 ]
               },
               {
-                symbol: 'evening',
+                type: 'evening',
                 persons: [
                   { 
                     type: 'oftenfree',
@@ -751,7 +690,7 @@ require([
             heading: 'Sunday',
             segments: [
               {
-                symbol: 'daytime',
+                type: 'daytime',
                 persons: [
                   { 
                     type: 'oftenfree',
@@ -806,7 +745,7 @@ require([
                 ]
               },
               {
-                symbol: 'evening',
+                type: 'evening',
                 persons: [
                   { 
                     type: 'oftenfree',
