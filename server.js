@@ -10,15 +10,50 @@ if (process.env.NODE_ENV === 'production') {
   cacheAge = 60 * 60 * 1000;
 }
 
+
+var redirect = require('connect-redirection');
+var auth = require('connect-auth');
+var urlrouter = require('urlrouter');
+
 var app = connect()
   .use(connect.favicon())
+  .use(redirect())
+  .use(connect.query())
+  .use(connect.bodyParser())
+  .use(connect.methodOverride())
+  .use(connect.cookieParser())
+  .use(connect.session({ secret: 'keyboard cat' }))
+  .use(auth([
+      auth.Facebook({
+          appId : "147631548776900", 
+          appSecret: "bab09c8d595c7d9ab2e40622704d1130", 
+          callback: "http://localhost:3000/facebook-auth"
+      })
+  ]))
   .use(connect.compress()) // must be before static
   .use(connect.static('public', { maxAge: cacheAge }))
   .use(connect.static('node_modules', { maxAge: cacheAge }))
-  .use(function(req, res) {
-    res.writeHead(200, { 'Content-Type': 'text/html' });
-    res.end(fs.readFileSync('index.html'));  
-  });
+  
+
+  .use(urlrouter(function(r) {
+    
+    r.get('/', function(req, res, next) {
+      res.writeHead(200, { 'Content-Type': 'text/html' });
+      res.end(fs.readFileSync('landing.html'));    
+    }) 
+
+    r.get(/\/facebook-auth.*/, function(req, res, next) {
+      req.authenticate("facebook", function(error, authenticated) {
+        if (authenticated) res.redirect("/app");
+      });
+    })
+
+    r.get('/app', function(req, res, next) {
+      res.writeHead(200, { 'Content-Type': 'text/html' });
+      res.end('Yay!');    
+    })
+
+  }));
 
 
 var port = process.env.PORT || 3000;

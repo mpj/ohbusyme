@@ -107,22 +107,36 @@ define(['/viewmodels/overview.js'], function(OverviewModel) {
             }).should.throw('Property persons was not provided.')  
           })
 
+
           describe('empty persons assigned', function() {
             beforeEach(function() {
               options.days[1].segments[0].persons = [];
               options.days[1].segments[1].persons = [];
             })
 
-            afterParsing('segments', function() {
-            
-              it('should have have created daytime viewmodel', function() {
-                viewmodel.days()[1].segments()[0].type().should.equal('daytime');
+            it('should complain about lack of heading', function() {
+              (function() {
+                new OverviewModel(options)
+              }).should.throw('Property heading was not provided.')  
+            })
+
+            describe('when heading defined', function() {
+              beforeEach(function() {
+                options.days[1].segments[0].heading = 'a heading'
+                options.days[1].segments[1].heading = 'another heading'
               })
 
-              it('should have have created evening viewmodel', function() {
-                viewmodel.days()[1].segments()[1].type().should.equal('evening');
+              afterParsing('segments', function() {
+                
+                it('should have have created daytime viewmodel', function() {
+                  viewmodel.days()[1].segments()[0].type().should.equal('daytime');
+                })
+
+                it('should have have created evening viewmodel', function() {
+                  viewmodel.days()[1].segments()[1].type().should.equal('evening');
+                })
+
               })
-              
             })
           })
 
@@ -130,6 +144,8 @@ define(['/viewmodels/overview.js'], function(OverviewModel) {
             var p;
             beforeEach(function() {
               p = {};
+              options.days[1].segments[0].heading = "some heading"
+              options.days[1].segments[1].heading = "some other heading"
               options.days[1].segments[0].persons = [p]
               options.days[1].segments[1].persons = []
 
@@ -172,6 +188,8 @@ define(['/viewmodels/overview.js'], function(OverviewModel) {
         
           describe('and has persons defined on the evening segment', function() {
             beforeEach(function() {
+              options.days[1].segments[0].heading = "some heading"
+              options.days[1].segments[1].heading = "some other heading"
               options.days[1].segments[0].persons = []
               options.days[1].segments[1].persons = [
                 {
@@ -186,6 +204,11 @@ define(['/viewmodels/overview.js'], function(OverviewModel) {
               var person;
               beforeEach(function() {
                 person = viewmodel.days()[1].segments()[1].persons()[0]
+              })
+
+              it('should have the headings', function() {
+                viewmodel.days()[1].segments()[1].heading().
+                  should.equal("some other heading")
               })
 
               it('assigns type', function() {

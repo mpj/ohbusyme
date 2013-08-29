@@ -37,21 +37,20 @@
         clear: both;
         position: relative;
         display: block;
-        height: 100px;
+        height: 150px;
 
       }
-      .segment h3 {
-        position: absolute;
-        text-align: right;
-        left: -215px;
-        width: 200px;
-        line-height: 60px;
+      .segment h2 {
+        position: relative;
+        left: -50px;
+        top: -5px;
+
       }
 
 
       .person { /* selector for person class*/
           width: 75px; height: 75px;
-          padding: 7px; /* internal padding ( top, right, bottom, left) */
+          padding: 9px; /* internal padding ( top, right, bottom, left) */
           border-radius: 50%; /* border-radius is equal to 50 percent of a general width, actually 25 pixels, here and a circle was got(there is also with prefix - moz and - o) */
           margin-right: 16px;
       }
@@ -61,8 +60,8 @@
           width: 100%;
           height: 100%; 
       }
-            .person img {
-        border: 4px solid rgba(255,255,255,1);
+      .person img {
+
       }
 
 
@@ -172,13 +171,11 @@
   <div class="container">
     <div class="days" data-bind="foreach: days">
       <div class="day-container col-lg-12 col-md-12 col-sm-12 col-xs-12">
-        <h2>
-          <span data-bind="text: heading"></span>
-          <span class="subheading" data-bind="text: subheading"></span>
-        </h2>
         <div data-bind="foreach: segments">
           <div class="segment">
-            <h3 data-bind="text: type"></h3>
+            <h2>
+              <span data-bind="text: ''"></span>
+            </h2>
             <ul class="people" 
                 data-bind="foreach: persons">
               <li class="person" data-bind="css: type, tooltip: tooltip">

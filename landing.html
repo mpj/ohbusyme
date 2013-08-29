@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Oh, busy me! When are my friends and me free at the same time?</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link href="/vendor/bootstrap-3.0.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+  <style>
+    
+    html, body, div, h1, h2, h3, h4, h5, h6, span, strong, em, p {
+      font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+    }
+
+    .main-row     { text-align: center; margin-top: 150px; }
+    .main-row h1  { font-size: 60px }
+    .main-row h1 .oh { color: #00ccbb;}
+    .main-row h1 .me { color: #ff8400; }
+    .main-row h1 .busy { color: #db0000; }
+    .main-row h1 .exclamation { color: ; }
+    
+    .main-row h2  { margin-bottom: 20px }
+    .main-row .spam {
+      font-size: 12px;
+      color: gray;
+      padding-top: 4px
+    }
+    
+  </style>
+
+</head>
+<body>
+
+  <div class="container">
+    <div class="row main-row col-lg-12 col-md-12 col-sm-12 col-xs-12">
+      <h1>
+        <span class="oh">Oh!</span>&nbsp;<span class="busy">Busy</span>&nbsp;<span class="me">me!</span><span class="exclamation"></span></h1>
+      <h2>When are my friends and me free at the same time?</h2>
+      <button type="button" class="btn btn-lg btn-primary" onclick="window.location='/facebook-auth'">Log in with Facebook</button>
+      <p class="spam">We will <em>never</em> post anything without your permission.</p>
+    </div>
+  </div>
+
+  <script src="/vendor/jquery-1.10.2.js"></script>
+  <script src="/vendor/bootstrap-3.0.0/dist/js/bootstrap.min.js"></script>
+  
+</body>
+</html>
