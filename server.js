@@ -50,7 +50,7 @@ var app = connect()
 
     r.get('/app', function(req, res, next) {
       res.writeHead(200, { 'Content-Type': 'text/html' });
-      res.end('Yay!');    
+      res.end(fs.readFileSync('app.html')); 
     })
 
   }));
