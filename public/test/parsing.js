@@ -1,6 +1,6 @@
 define(['/viewmodels/overview.js'], function(OverviewModel) {
 
-  describe('OverViewModel', function() {
+  describe('Parsing entire OverviewModel', function() {
     var options;
     var viewmodel;
     beforeEach(function() {

@@ -19,7 +19,7 @@ require(['require', '/chai/chai.js', '/mocha/mocha.js'], function(require,chai){
 
   // Require base tests before starting
   require([
-  	'/test/overview.js',
+  	'/test/parsing.js',
   	], function(){
     // Start runner
     mocha.run();
