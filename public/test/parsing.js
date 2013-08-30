@@ -1,26 +1,36 @@
 define(['/viewmodels/overview.js'], function(OverviewModel) {
 
   describe('Parsing entire OverviewModel', function() {
+    
     var options;
     var viewmodel;
+    var error;
     beforeEach(function() {
       options = {};
     })
 
     var afterParsing = function(targetName, fn) {
       describe('after parsing ' + targetName, function() {
-        beforeEach(function() { viewmodel = new OverviewModel(options); }) 
+        beforeEach(function() { 
+          try      { viewmodel = new OverviewModel(options) } 
+          catch(e) { error = e } 
+        }) 
         fn()
       })
     }
 
-    describe('Input errors', function() {
+    describe('Overview (parsing errors)', function() {
 
-      it('heading not provided', function() {
-        (function() {
-          new OverviewModel(options)
-        }).should.throw('Property days was not provided.')
+      describe('nothing provided', function() {
+        afterParsing('', function() {
+          it('complains about days', function() {
+            error.message.should.equal('Property days was not provided.')
+          })
+        })
+        
       })
+
+      
 
       describe('heading not defined', function() {
         
