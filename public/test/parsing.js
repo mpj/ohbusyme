@@ -59,11 +59,11 @@ describe('Parsing entire OverviewModel', function() {
           label: 'Tomorrow',
           segments: {
             daytime: {
-              heading: 'Daytime',
+              label: 'Daytime',
               persons: []
             },
             evening: {
-              heading: 'Evening',
+              label: 'Evening',
               persons: [{
                 imageSrc: 'image.png',
                 type: 'free',
@@ -138,12 +138,12 @@ describe('Parsing entire OverviewModel', function() {
 
     describe('segment parsing', function() {
       parseResult(function() {
-        it('should have have created daytime overview', function() {
-          overview.days()[0].segments.daytime.heading().should.equal('Daytime');
+        it('parsing label (daytime)', function() {
+          overview.days()[0].segments.daytime.label().should.equal('Daytime');
         })
 
-        it('should have have created evening overview', function() {
-          overview.days()[0].segments.evening.heading().should.equal('Evening');
+        it('parsing label (evening)', function() {
+          overview.days()[0].segments.evening.label().should.equal('Evening');
         })
       })
 
@@ -159,14 +159,14 @@ describe('Parsing entire OverviewModel', function() {
         })
       })
 
-      describe('heading removed', function() {
+      describe('label removed', function() {
         beforeEach(function() {
-          delete options.days[0].segments.evening.heading
+          delete options.days[0].segments.evening.label
         })
 
         parseError(function() {
-          it('should complain about lack of heading', function() {
-            error.message.should.equal('Property heading was not provided.')
+          it('should complain about lack of label', function() {
+            error.message.should.equal('Property label was not provided.')
           })
         })
       })

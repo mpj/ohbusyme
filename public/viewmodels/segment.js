@@ -6,8 +6,8 @@ define([
 
         if (!opts.persons)
             throw new Error('Property persons was not provided.')
-        if (!opts.heading)
-            throw new Error('Property heading was not provided.')
+        if (!opts.label)
+            throw new Error('Property label was not provided.')
 
     	var api = {}
 
@@ -18,7 +18,7 @@ define([
             return opts.persons.map(newPerson);
         })
  
-        api.heading = ko.observable(opts.heading)
+        api.label = ko.observable(opts.label)
 
         ko.computed(function() {
             if (api.type() === 'evening') {
