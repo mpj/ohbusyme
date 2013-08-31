@@ -66,7 +66,7 @@ describe('Parsing entire OverviewModel', function() {
               label: 'Evening',
               persons: [{
                 imageSrc: 'image.png',
-                type: 'free',
+                look: 'free',
                 label: '*Fredrik* is **free** during *daytime* this *Monday*'
               }]
             }
@@ -178,14 +178,14 @@ describe('Parsing entire OverviewModel', function() {
         person = options.days[0].segments.evening.persons[0]
       })
 
-      describe('lacks type', function() {
+      describe('lacks look', function() {
         beforeEach(function() {
-          person.type = undefined
+          person.look = undefined
         })
 
         parseError(function() {
           it('should complain', function() {
-            error.message.should.equal('Property type was not provided.')
+            error.message.should.equal('Property look was not provided.')
           })
         })
       })
@@ -220,8 +220,8 @@ describe('Parsing entire OverviewModel', function() {
           p = overview.days()[0].segments.evening.persons()[0];
         })
 
-        it('assigns type', function() {
-          p.type().should.equal('free');
+        it('assigns look', function() {
+          p.look().should.equal('free');
         })  
 
         it('assigns imageSrc', function() {

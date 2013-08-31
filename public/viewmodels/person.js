@@ -5,8 +5,8 @@ define([
 ], function(ko, marked, newTooltip) {
     return function newPerson(opts) {
 
-        if (!opts.type)
-            throw new Error('Property type was not provided.')
+        if (!opts.look)
+            throw new Error('Property look was not provided.')
         if (!opts.imageSrc)
             throw new Error('Property imageSrc was not provided.')
         if (!opts.label)
@@ -14,7 +14,7 @@ define([
 
     	var api = {}
 
-        api.type = ko.observable(opts.type);
+        api.look = ko.observable(opts.look);
 
         api.imageSrc = ko.observable(opts.imageSrc)
 
