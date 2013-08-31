@@ -3,8 +3,8 @@ define([
     '/viewmodels/segment.js' ], function(ko, newSegment) {
     return function DayViewModel(opts) {
 
-    	if (!opts.heading)
-    		throw new Error('Property heading was not provided.')
+    	if (!opts.label)
+    		throw new Error('Property label was not provided.')
         if (!opts.segments)
             throw new Error('Property segments was not provided.')
         if (!opts.segments.evening)
@@ -15,7 +15,7 @@ define([
     	
     	var self = this
 
-    	self.heading    = ko.observable(opts.heading)
+    	self.label    = ko.observable(opts.label)
 
         self.segments = {
             daytime: newSegment(opts.segments.daytime),

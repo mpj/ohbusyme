@@ -56,8 +56,7 @@ describe('Parsing entire OverviewModel', function() {
     beforeEach(function() {
       options = {
         days: [{
-          heading: 'Tomorrow',
-          subheading: 'August 21',
+          label: 'Tomorrow',
           segments: {
             daytime: {
               heading: 'Daytime',
@@ -79,20 +78,20 @@ describe('Parsing entire OverviewModel', function() {
     describe('day parsing', function() {
 
       parseResult(function() {
-        it('parses first day (heading)', function() {
-          overview.days()[0].heading()   .should.equal("Tomorrow")
+        it('parses label', function() {
+          overview.days()[0].label()   .should.equal("Tomorrow")
         })
       })
 
-      describe('heading missing', function() {
+      describe('label missing', function() {
         beforeEach(function() {
-          delete options.days[0].heading
+          delete options.days[0].label
         })
 
         parseError(function() {
-          it('complains about heading', function() {
+          it('complains about label', function() {
             error.message.should.equal(
-              'Property heading was not provided.')
+              'Property label was not provided.')
           })  
         })
       })
