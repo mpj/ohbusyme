@@ -7,7 +7,7 @@ define([
         if (!opts.persons)
             throw new Error('Property persons was not provided.')
         if (!opts.heading)
-            throw new Error('Property heading was not provided.' + JSON.stringify(opts))
+            throw new Error('Property heading was not provided.')
 
     	var api = {}
 
@@ -17,7 +17,7 @@ define([
             if (!opts.persons) return [];
             return opts.persons.map(newPerson);
         })
-
+ 
         api.heading = ko.observable(opts.heading)
 
         ko.computed(function() {

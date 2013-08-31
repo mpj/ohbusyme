@@ -4,6 +4,8 @@ define([
 	], function(ko, DayViewModel) {
     function OverviewViewModel(opts) {
 
+        if (!opts)
+            throw new Error('Argument options was not provided.')
         if (!opts.days)
             throw new Error('Property days was not provided.')
     	

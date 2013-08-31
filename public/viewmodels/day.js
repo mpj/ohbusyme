@@ -9,15 +9,21 @@ define([
             throw new Error('Property subheading was not provided.')
         if (!opts.segments)
             throw new Error('Property segments was not provided.')
+        if (!opts.segments.evening)
+            throw new Error('Property evening was not provided.')
+        if (!opts.segments.daytime)
+            throw new Error('Property daytime was not provided.')
+
     	
     	var self = this
 
     	self.heading    = ko.observable(opts.heading)
         self.subheading = ko.observable(opts.subheading)
 
-        self.segments = ko.computed(function() {
-            return opts.segments.map(newSegment)
-        })
-
+        self.segments = {
+            daytime: newSegment(opts.segments.daytime),
+            evening: newSegment(opts.segments.evening)
+            
+        }
     };
 });
