@@ -67,7 +67,7 @@ describe('Parsing entire OverviewModel', function() {
               persons: [{
                 imageSrc: 'image.png',
                 type: 'free',
-                description: '*Fredrik* is **free** during *daytime* this *Monday*'
+                label: '*Fredrik* is **free** during *daytime* this *Monday*'
               }]
             }
           }
@@ -202,14 +202,14 @@ describe('Parsing entire OverviewModel', function() {
         })
       })
 
-      describe('lacks description', function() {
+      describe('lacks label', function() {
         beforeEach(function() {
-          delete person.description
+          delete person.label
         })
 
         parseError(function() {
           it('should complain', function() {
-            error.message.should.equal('Property description was not provided.')
+            error.message.should.equal('Property label was not provided.')
           })
         })
       })

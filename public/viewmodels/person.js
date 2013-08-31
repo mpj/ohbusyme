@@ -9,8 +9,8 @@ define([
             throw new Error('Property type was not provided.')
         if (!opts.imageSrc)
             throw new Error('Property imageSrc was not provided.')
-        if (!opts.description)
-            throw new Error('Property description was not provided.')
+        if (!opts.label)
+            throw new Error('Property label was not provided.')
 
     	var api = {}
 
@@ -18,7 +18,7 @@ define([
 
         api.imageSrc = ko.observable(opts.imageSrc)
 
-        api.tooltip = newTooltip(marked(opts.description));
+        api.tooltip = newTooltip(marked(opts.label));
 
         api.mouseover = function() { api.tooltip.isVisible(true) }
         api.mouseout  = function() { api.tooltip.isVisible(false) }
