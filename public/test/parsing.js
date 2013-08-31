@@ -29,10 +29,6 @@ describe('Parsing entire OverviewModel', function() {
     })
   }
 
-  var pit = function(description, fn) {
-    parseResult(function() { it(description, fn) })
-  }
-
   var parseError = function(fn) {
     describe('after parsing for error', function() {
       beforeEach(function() {
@@ -43,18 +39,13 @@ describe('Parsing entire OverviewModel', function() {
     })
   }
 
-  describe('Overview (parsing errors)', function() {
+  describe('Basic parsing errors', function() {
     describe('undefined provided', function() {
-      beforeEach(function() {
-        overview = undefined;
-      })
-
       parseError(function() {
         it('should complain', function() {
           error.message.should.equal('Argument options was not provided.')
         })
       })
-      
     })
     describe('No properties provided', function() {
       beforeEach(function() {
@@ -68,106 +59,6 @@ describe('Parsing entire OverviewModel', function() {
     })
   })
 
-  describe('Day (parsing errors)', function() {
-    var day;
-    describe('No properties provided', function() {
-      beforeEach(function() {
-        day = {}
-        options = { days: [ day ] }
-      })
-
-      afterParsing('', function() {
-        it('complains about heading', function() {
-          error.message.should.equal('Property heading was not provided.')  
-        })  
-      })
-
-      describe('heading defined', function() {
-        beforeEach(function() {
-          day.heading = "Today, Monday"
-        })
-
-        afterParsing('', function() {
-          it('complains about subheading', function() {
-            error.message.should.equal(
-              'Property subheading was not provided.')
-          })
-        })
-
-        describe('defines subheading', function() {
-          beforeEach(function() {
-            day.subheading = "23 August"
-          })
-
-          afterParsing('', function() {
-            it('should complain about lack of segments', function() {
-              error.message.should.equal(
-                'Property segments was not provided.')  
-            })  
-          })
-
-          describe('empty segments', function() {
-            var segments;
-            beforeEach(function() {
-              segments = day.segments = {}
-            })
-
-            afterParsing('', function() {
-              it('should complain about lack of evening', function() {
-                error.message.should.equal('Property evening was not provided.')
-              })
-            })
-
-            describe('complete evening segment provided', function() {
-              beforeEach(function() {
-                segments.evening = { persons: [] }
-              })
-
-              afterParsing('', function() {
-                it('should complain about daytime property', function() {
-                  error.message.should.equal('Property daytime was not provided.')
-                })  
-              })
-            })
-          })  
-        })          
-      })
-    })
-  })
-
-  describe('Segment (parsing errors)', function() {
-    var segment;
-    beforeEach(function() {
-      segment = {}
-      options = {
-        days: [{
-          heading: 'x', subheading: 'y',
-          segments: {
-            evening: segment, // assigning to both for test simplicty
-            daytime: segment
-          }
-        }]
-      }
-    })
-
-    parseError(function() {
-      it('should complain about lack of persons', function() {
-        error.message.should.equal('Property persons was not provided.')
-      })
-    })
-
-    describe('persons defined', function() {
-      beforeEach(function() {
-        segment.persons = []
-      })
-
-      parseError(function() {
-        it('should complain about lack of heading', function() {
-          error.message.should.equal('Property heading was not provided.')
-        })
-      })
-    })
-  })
 
   describe('Given that a minimal structure is defined', function() {
     
@@ -195,21 +86,117 @@ describe('Parsing entire OverviewModel', function() {
       }
     })
 
-    parseResult(function() {
-      it('parses first day (heading)', function() {
-        overview.days()[0].heading()   .should.equal("Tomorrow")
+    describe('day parsing', function() {
+
+      parseResult(function() {
+        it('parses first day (heading)', function() {
+          overview.days()[0].heading()   .should.equal("Tomorrow")
+        })
+
+        it('parses first day(subheading)', function() {
+          overview.days()[0].subheading().should.equal("August 21")
+        })
       })
 
-      it('parses first day(subheading)', function() {
-        overview.days()[0].subheading().should.equal("August 21")
+      describe('subheading missing', function() {
+        beforeEach(function() {
+          delete options.days[0].subheading
+        })
+
+        parseError(function() {
+          it('complains about subheading', function() {
+            error.message.should.equal(
+              'Property subheading was not provided.')
+          })  
+        })
       })
 
-      it('should have have created daytime overview', function() {
-        overview.days()[0].segments.daytime.heading().should.equal('Daytime');
+      describe('heading missing', function() {
+        beforeEach(function() {
+          delete options.days[0].heading
+        })
+
+        parseError(function() {
+          it('complains about heading', function() {
+            error.message.should.equal(
+              'Property heading was not provided.')
+          })  
+        })
       })
 
-      it('should have have created evening overview', function() {
-        overview.days()[0].segments.evening.heading().should.equal('Evening');
+      describe('segments missing', function() {
+        beforeEach(function() {
+          delete options.days[0].segments
+        })
+
+        parseError(function() {
+          it('complains about segments', function() {
+            error.message.should.equal(
+              'Property segments was not provided.')
+          })  
+        })
+      })
+
+      describe('daytime segment missing', function() {
+        beforeEach(function() {
+          delete options.days[0].segments.daytime
+        })
+
+        parseError(function() {
+          it('complains about daytime', function() {
+            error.message.should.equal(
+              'Property daytime was not provided.')
+          })  
+        })
+      })
+
+      describe('evening segment missing', function() {
+        beforeEach(function() {
+          delete options.days[0].segments.evening
+        })
+
+        parseError(function() {
+          it('complains about evening', function() {
+            error.message.should.equal(
+              'Property evening was not provided.')
+          })  
+        })
+      })      
+    })
+
+    describe('segment parsing', function() {
+      parseResult(function() {
+        it('should have have created daytime overview', function() {
+          overview.days()[0].segments.daytime.heading().should.equal('Daytime');
+        })
+
+        it('should have have created evening overview', function() {
+          overview.days()[0].segments.evening.heading().should.equal('Evening');
+        })
+      })
+
+      describe('persons removed', function() {
+        beforeEach(function() {
+          delete options.days[0].segments.evening.persons
+        })
+
+        parseError(function() {
+          it('should complain about lack of persons', function() {
+            error.message.should.equal('Property persons was not provided.')
+          })
+        })
+      })
+
+      describe('heading removed', function() {
+        beforeEach(function() {
+          delete options.days[0].segments.evening.heading
+        })
+
+        parseError(function() {
+          it('should complain about lack of heading', function() {
+            error.message.should.equal('Property heading was not provided.')
+          })
+        })
       })
     })
 
