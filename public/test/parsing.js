@@ -10,16 +10,6 @@ describe('Parsing entire OverviewModel', function() {
     error = undefined;
   })
 
-  var afterParsing = function(targetName, fn) {
-    describe('after parsing ' + targetName, function() {
-      beforeEach(function() { 
-        try      { overview = new OverviewModel(options) } 
-        catch(e) { error = e } 
-      }) 
-      fn()
-    })
-  }
-
   var parseResult = function(fn) {
     describe('after parsing for result', function() {
       beforeEach(function() {
@@ -51,7 +41,7 @@ describe('Parsing entire OverviewModel', function() {
       beforeEach(function() {
         options = {}
       })
-      afterParsing('', function() {
+      parseError(function() {
         it('complains about days', function() {
           error.message.should.equal('Property days was not provided.')
         })
