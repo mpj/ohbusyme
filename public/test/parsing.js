@@ -82,23 +82,6 @@ describe('Parsing entire OverviewModel', function() {
         it('parses first day (heading)', function() {
           overview.days()[0].heading()   .should.equal("Tomorrow")
         })
-
-        it('parses first day(subheading)', function() {
-          overview.days()[0].subheading().should.equal("August 21")
-        })
-      })
-
-      describe('subheading missing', function() {
-        beforeEach(function() {
-          delete options.days[0].subheading
-        })
-
-        parseError(function() {
-          it('complains about subheading', function() {
-            error.message.should.equal(
-              'Property subheading was not provided.')
-          })  
-        })
       })
 
       describe('heading missing', function() {
