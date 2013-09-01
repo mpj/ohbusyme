@@ -1,7 +1,7 @@
 define([
 	'/knockout/build/output/knockout-latest.debug.js',
     '/viewmodels/segment.js' ], function(ko, newSegment) {
-    return function DayViewModel(opts) {
+    return function DayViewModel(opts, eventBus) {
 
     	if (!opts.label)
     		throw new Error('Property label was not provided.')
@@ -18,8 +18,8 @@ define([
     	self.label    = ko.observable(opts.label)
 
         self.segments = {
-            daytime: newSegment(opts.segments.daytime),
-            evening: newSegment(opts.segments.evening)
+            daytime: newSegment(opts.segments.daytime, eventBus),
+            evening: newSegment(opts.segments.evening, eventBus)
             
         }
     };

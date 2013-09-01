@@ -3,8 +3,10 @@ define([
     '/marked/lib/marked.js',
 	'/viewmodels/tooltip.js'
 ], function(ko, marked, newTooltip) {
-    return function newPerson(opts) {
+    return function newPerson(opts, eventBus) {
 
+        if (!opts.id)
+            throw new Error('Property id was not provided.')
         if (!opts.look)
             throw new Error('Property look was not provided.')
         if (!opts.imageSrc)
@@ -22,6 +24,7 @@ define([
 
         api.mouseover = function() { api.tooltip.isVisible(true) }
         api.mouseout  = function() { api.tooltip.isVisible(false) }
+        api.clicked = eventBus.dispatch.bind(null, 'person_clicked', opts.id)
 
         return api;
     };

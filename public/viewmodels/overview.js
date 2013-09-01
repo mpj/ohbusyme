@@ -2,7 +2,7 @@ define([
 	'/knockout/build/output/knockout-latest.debug.js',
 	'/viewmodels/day.js'
 	], function(ko, DayViewModel) {
-    function OverviewViewModel(opts) {
+    function OverviewViewModel(opts, eventBus) {
 
         if (!opts)
             throw new Error('Argument options was not provided.')
@@ -13,7 +13,7 @@ define([
 
     	self.days = ko.computed(function() {
             return opts.days.map(function(d) {
-                return new DayViewModel(d);
+                return new DayViewModel(d, eventBus);
             })
         })
 

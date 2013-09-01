@@ -4,16 +4,24 @@ describe('Parsing entire OverviewModel', function() {
   var options;
   var overview;
   var error;
+  var events;
   beforeEach(function() {
     options = undefined;
     overview = undefined;
     error = undefined;
+    events = []
   })
+
+  var fakeEventBus = {
+    dispatch: function(type, id) {
+      events.push({ type: type, id: id})
+    } 
+  }
 
   var parseResult = function(fn) {
     describe('after parsing for result', function() {
       beforeEach(function() {
-        overview = new OverviewModel(options)
+        overview = new OverviewModel(options, fakeEventBus)
       })
       fn()
     })
@@ -22,7 +30,7 @@ describe('Parsing entire OverviewModel', function() {
   var parseError = function(fn) {
     describe('after parsing for error', function() {
       beforeEach(function() {
-        try       { new OverviewModel(options) } 
+        try       { new OverviewModel(options, fakeEventBus) } 
         catch(e)  { error = e }
       })
       fn()
@@ -65,6 +73,7 @@ describe('Parsing entire OverviewModel', function() {
             evening: {
               label: 'Evening',
               persons: [{
+                id: 'person987',
                 imageSrc: 'image.png',
                 look: 'free',
                 label: '*Fredrik* is **free** during *daytime* this *Monday*'
@@ -178,6 +187,18 @@ describe('Parsing entire OverviewModel', function() {
         person = options.days[0].segments.evening.persons[0]
       })
 
+      describe('lacks id', function() {
+        beforeEach(function() {
+          delete person.id
+        })
+
+        parseError(function() {
+          it('should complain', function() {
+            error.message.should.equal('Property id was not provided.')
+          })
+        })
+      })
+
       describe('lacks look', function() {
         beforeEach(function() {
           person.look = undefined
@@ -256,7 +277,22 @@ describe('Parsing entire OverviewModel', function() {
               p.tooltip.isVisible().should.equal(false)
             })                    
           })
-        })  
+        }) 
+
+        describe('clicked', function() {
+          beforeEach(function() {
+            p.clicked();
+          })
+
+          it('dispatched event with proper type', function() {
+            events[0].type.should.equal('person_clicked')
+          })
+
+          it('dispatched event with proper id', function() {
+            events[0].id.should.equal('person987')
+          })
+          
+        }) 
       })
     })
   })
