@@ -4,6 +4,9 @@ define([
     ], function(ko, newPerson) {
     return function newSegment(opts, eventBus) {
 
+        
+        if (!opts.id)
+            throw new Error('Property id was not provided.')
         if (!opts.persons)
             throw new Error('Property persons was not provided.')
         if (!opts.label)
@@ -29,6 +32,8 @@ define([
                 })  
             }
         })
+
+        api.clicked =  eventBus.dispatch.bind(null, 'segment_clicked', opts.id)
 
         return api;
     };

@@ -68,12 +68,13 @@ describe('Parsing entire OverviewModel', function() {
           segments: {
             daytime: {
               label: 'Daytime',
+              id: '20130101-daytime',
               persons: []
             },
             evening: {
               label: 'Evening',
+              id: '20130101-evening',
               persons: [{
-                id: 'person987',
                 imageSrc: 'image.png',
                 look: 'free',
                 label: '*Fredrik* is **free** during *daytime* this *Monday*'
@@ -146,13 +147,16 @@ describe('Parsing entire OverviewModel', function() {
     })
 
     describe('segment parsing', function() {
-      parseResult(function() {
-        it('parsing label (daytime)', function() {
-          overview.days()[0].segments.daytime.label().should.equal('Daytime');
+
+      describe('lacks id', function() {
+        beforeEach(function() {
+          delete options.days[0].segments.evening.id
         })
 
-        it('parsing label (evening)', function() {
-          overview.days()[0].segments.evening.label().should.equal('Evening');
+        parseError(function() {
+          it('should complain', function() {
+            error.message.should.equal('Property id was not provided.')
+          })
         })
       })
 
@@ -179,24 +183,37 @@ describe('Parsing entire OverviewModel', function() {
           })
         })
       })
+
+      parseResult(function() {
+        it('parsing label (daytime)', function() {
+          overview.days()[0].segments.daytime.label().should.equal('Daytime');
+        })
+
+        it('parsing label (evening)', function() {
+          overview.days()[0].segments.evening.label().should.equal('Evening');
+        })
+
+        describe('clicked', function() {
+          beforeEach(function() {
+            overview.days()[0].segments.evening.clicked();
+          })
+
+          it('dispatched event with proper type', function() {
+            events[0].type.should.equal('segment_clicked')
+          })
+
+          it('dispatched event with proper id', function() {
+            events[0].id.should.equal('20130101-evening')
+          })
+          
+        }) 
+      })
     })
 
     describe('person parsing', function() {
       var person;
       beforeEach(function() {
         person = options.days[0].segments.evening.persons[0]
-      })
-
-      describe('lacks id', function() {
-        beforeEach(function() {
-          delete person.id
-        })
-
-        parseError(function() {
-          it('should complain', function() {
-            error.message.should.equal('Property id was not provided.')
-          })
-        })
       })
 
       describe('lacks look', function() {
@@ -277,21 +294,6 @@ describe('Parsing entire OverviewModel', function() {
               p.tooltip.isVisible().should.equal(false)
             })                    
           })
-        }) 
-
-        describe('clicked', function() {
-          beforeEach(function() {
-            p.clicked();
-          })
-
-          it('dispatched event with proper type', function() {
-            events[0].type.should.equal('person_clicked')
-          })
-
-          it('dispatched event with proper id', function() {
-            events[0].id.should.equal('person987')
-          })
-          
         }) 
       })
     })
