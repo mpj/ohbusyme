@@ -47,12 +47,33 @@ require([
 
         }
       }
+      var newEventBus = function() {
+        var subscribers = {}
+        return {
+          dispatch: function(type, id) {
+            if (!subscribers[type]) return
+            subscribers[type].forEach(function(fn) { fn(id) })
+          },
 
-      var facade = newFacade();
-      facade.loadOverview(function(err, state) {
-        ko.applyBindings(new OverviewViewModel(state));
+          subscribe: function(type, handler) {
+            subscribers[type] = subscribers[type] || []
+            subscribers[type].push(handler)
+          }
+        }
+      }
+
+      var appViewModel = {
+        overview: ko.observable() 
+      }
+      var bindingsApplied = false;
+      var eventBus = newEventBus();
+      var facade = newFacade({}, eventBus);
+      facade.streamOverview(function(state) {
+        appViewModel.overview(new OverviewViewModel(state, eventBus))
+        if (!bindingsApplied) {
+          bindingsApplied = true;
+          ko.applyBindings(appViewModel);
+        }
       })
-      
     })
-    
 });

@@ -1,5 +1,5 @@
 define([], function() {
-  function newFacade(opts) {
+  function newFacade(opts, eventBus) {
 
     opts = opts || {}
     opts.numDays = opts.numDays || 21
@@ -7,7 +7,6 @@ define([], function() {
     var overviewState = {
       days: []
     }
-
 
     for (var i = 0; i < opts.numDays; i++) {
       var d = new Date();
@@ -29,11 +28,13 @@ define([], function() {
       else if(d.getDay() === 6)
         weekday = 'SAT';
 
+      var dateStr = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate()
       overviewState.days.push({
         label: weekday + ' ' + d.getDate(),
         segments: {
           daytime: {
             label: 'Daytime',
+            id: dateStr + '-daytime',
             persons: [{
               imageSrc: '/images/test/louise.jpg',
               look: 'unknown',
@@ -42,6 +43,7 @@ define([], function() {
           },
           evening: {
             label: 'Evening',
+            id: dateStr + '-evening',
             persons: [{
               imageSrc: '/images/test/louise.jpg',
               look: 'unknown',
@@ -52,13 +54,29 @@ define([], function() {
       })
     }
 
+    var overviewStateHandler = null;
+
     var api = {}
 
-    api.loadOverview = function(next) {
-      setTimeout(function() {
-        next(null, overviewState)
-      }, 100)
+    var refreshState = function() {
+      overviewStateHandler(overviewState);
     }
+    api.streamOverview = function(handler) {
+      overviewStateHandler = handler;
+      setTimeout(refreshState, 25);
+    }
+
+    eventBus.subscribe('segment_clicked', function(id) {
+      overviewState.days.forEach(function(d) {
+        [d.segments.evening, d.segments.daytime].forEach(function(s) {
+          if(s.id === id)
+            s.persons.forEach(function(p) {
+              p.look = p.look === 'free' ? 'unknown' : 'free'
+            })
+        })
+      })
+      refreshState()
+    })
 
     return api; 
   }

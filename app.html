@@ -88,23 +88,37 @@
 </head>
 <body>
 
-  <div class="container main" data-bind="foreach: days">
-    <div class="row day">
-      <div class="col-lg-3 labels row">
-        <div class="col-lg-12 daytime"
-             data-bind="text: segments.daytime.label"></div>
-        <div class="col-lg-12 date" data-bind="text: label"></div>
-        <div class="col-lg-12 evening"
-             data-bind="text: segments.evening.label"></div>
+  
+  <div class="container main" data-bind="with: overview">
+    <h1>Louise, you are so busy!</h1>
+    <h2>Please press your picture to show us when you are free.</h2>
+    <br />
+    <div class="days" data-bind="foreach: days">
+      <div class="row day">
+        <div class="col-lg-3 labels row">
+          <div class="col-lg-12 daytime"
+               data-bind="text: segments.daytime.label"></div>
+          <div class="col-lg-12 date" data-bind="text: label"></div>
+          <div class="col-lg-12 evening"
+               data-bind="text: segments.evening.label"></div>
+        </div>
+        <div class="avatars daytime row col-lg-9"
+             data-bind="foreach: segments.daytime.persons">
+          <div data-bind="click: $parent.segments.daytime.clicked, 
+               attr: { class: 'avatar ' + look() }">
+            <img data-bind="attr: { src: imageSrc }" />
+          </div>
+        </div>
+        <div class="avatars evening row col-lg-9"
+             data-bind="foreach: segments.evening.persons">
+          <div class="avatar" 
+               data-bind="click: $parent.segments.evening.clicked,
+               attr: { class: 'avatar ' + look() }">
+            <img data-bind="attr: { src: imageSrc }" />
+          </div>
+        </div>
       </div>
-      <div class="avatars daytime row col-lg-9"
-           data-bind="foreach: segments.daytime.persons">
-        <div class="avatar unknown"><img data-bind="attr: { src: imageSrc }" /></div>
-      </div>
-      <div class="avatars evening row col-lg-9"
-           data-bind="foreach: segments.evening.persons">
-        <div class="avatar unknown"><img data-bind="attr: { src: imageSrc }" /></div>
-      </div>
+    </div>
   </div>
 
   <script src="/vendor/jquery-1.10.2.js"></script>
