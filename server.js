@@ -56,17 +56,25 @@ var app = connect()
     r.get('/overview.json', function(req, res, next) {
       var obj = {
         days: [{
-          label: 'Poop',
+          label: 'MÅN 02',
           segments: {
             daytime: {
               id: 'segment123',
               label: "Dagtid",
-              persons: []
+              persons: [{
+                imageSrc: '/images/test/louise.jpg',
+                look: 'unknown',
+                label: '*You* are **free** during *daytime* this *Poop*'
+              }]
             },
             evening: {
               id: 'segment456',
               label: "Kvällstid",
-              persons: []
+              persons: [{
+                imageSrc: '/images/test/louise.jpg',
+                look: 'unknown',
+                label: '*You* are **unknown** during *evening* this *Poop*'
+              }]
             }
           }
         }]
