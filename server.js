@@ -53,6 +53,29 @@ var app = connect()
       res.end(fs.readFileSync('app.html')); 
     })
 
+    r.get('/overview.json', function(req, res, next) {
+      var obj = {
+        days: [{
+          label: 'Poop',
+          segments: {
+            daytime: {
+              id: 'segment123',
+              label: "Dagtid",
+              persons: []
+            },
+            evening: {
+              id: 'segment456',
+              label: "Kvällstid",
+              persons: []
+            }
+          }
+        }]
+      }
+      var json = JSON.stringify(obj);
+      res.writeHead(200, { 'Content-Type': 'text/json' });
+      res.end(json); 
+    })
+
   }));
 
 

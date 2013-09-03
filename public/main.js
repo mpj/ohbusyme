@@ -7,7 +7,7 @@
 require([
   '/knockout/build/output/knockout-latest.debug.js',
   '/viewmodels/overview.js',
-  'fake-facade.js',
+  'server-facade.js',
    '/domready/ready.js'], function(ko, OverviewViewModel, newFacade, domReady) {
     domReady(function() {
 
