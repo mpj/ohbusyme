@@ -139,12 +139,12 @@ describe('setup', function() {
         })
 
         session.get = function fakeSessionGet(key) {
-          if (key === 'facebook_token') return '!secret'
+          if (key === 'facebook_token') return '!ninjasareawesome'
           throw new Error('Tried to get ' + key)
         }
 
         facebook.getUserAndFriends = function fakeGetUser(token, next) {
-          if (token != '!secret') throw new Error('token was incorrect')
+          if (token != '!ninjasareawesome') throw new Error('token was incorrect')
           next(null, {
             id: '63278723892032198',
             first_name: 'Rolf',
