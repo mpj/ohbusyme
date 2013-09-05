@@ -177,8 +177,59 @@ describe('setup', function() {
       })
 
     })
-  })
 
+    describe('we have a single daytime report (monday)', function() { 
+      beforeEach(function(done) {
+        database.collection('reports').insert({
+          user_id: '63278723892032198',
+          availability: 'free',
+          date: '2013-09-09',
+          segment: 'daytime'
+        }, function(err, result) {
+          done()
+        })
+
+        session.get = function fakeSessionGet(key) {
+          if (key === 'facebook_token') return '!ninjasareawesome'
+          throw new Error('Tried to get ' + key)
+        }
+
+        facebook.getUserAndFriends = function fakeGetUser(token, next) {
+          if (token != '!ninjasareawesome') throw new Error('token was incorrect')
+          next(null, {
+            id: '63278723892032198',
+            first_name: 'Rolf',
+            picture: 'http://facebook.com/lesser_people/rolf.jpg'
+          })
+        }
+
+      })
+
+      describe('we load overview', function() {
+        var overview;
+        var person;
+        beforeEach(function(done) {
+          app.overview(function(err, result) {
+            overview = result;
+            person = overview.days[6].segments.daytime.persons[0];
+            done()
+          })
+        })
+
+        it('displays the user picture', function() {
+          person.imageSrc.should.equal('http://facebook.com/lesser_people/rolf.jpg')
+        })
+
+        it('displays the user header', function() {
+          person.label.should.equal(
+            '*Rolf* is **free** during *daytime* this *Monday*') 
+        })
+
+      })
+
+    })
+
+  })
 
 })
 
