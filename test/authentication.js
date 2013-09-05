@@ -22,7 +22,7 @@ describe('setup', function() {
       }}
       session = { get: function() { return 'dummy-token' }}
       app = newApp(database, time, facebook, session)
-      database.collection('availabilities').drop()
+      database.collection('reports').drop()
       done()
     })
   })
@@ -76,10 +76,10 @@ describe('setup', function() {
 
     })
 
-    describe('we have a single evening availability', function() {
+    describe('we have a single evening report', function() {
       beforeEach(function(done) {
-        database.collection('availabilities').insert({
-          fb_user_id: '712821789127',
+        database.collection('reports').insert({
+          user_id: '712821789127',
           availability: 'free',
           date: '2013-09-08',
           segment: 'evening'
@@ -127,10 +127,10 @@ describe('setup', function() {
 
     })
 
-    describe('we have a single daytime availability', function() { 
+    describe('we have a single daytime report', function() { 
       beforeEach(function(done) {
-        database.collection('availabilities').insert({
-          fb_user_id: '63278723892032198',
+        database.collection('reports').insert({
+          user_id: '63278723892032198',
           availability: 'free',
           date: '2013-09-08',
           segment: 'daytime'
@@ -178,6 +178,8 @@ describe('setup', function() {
 
     })
   })
+
+
 })
 
 

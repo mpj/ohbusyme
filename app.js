@@ -49,15 +49,15 @@ function newApp(mongo, time, facebook, session) {
       var days = []
       
       facebook.getUserAndFriends(session.get('facebook_token'), function(err, userAndFriends) {
-        var persons = {}
-        persons[userAndFriends.id] = {
+        var userMap = {}
+        userMap[userAndFriends.id] = {
           first_name: userAndFriends.first_name,
           picture:    userAndFriends.picture
         }
          
-        mongo.collection('availabilities')
-        .find({ fb_user_id: { $in: Object.keys(persons)} })
-        .toArray(function(err, avails) {
+        mongo.collection('reports')
+        .find({ user_id: { $in: Object.keys(userMap)} })
+        .toArray(function(err, reports) {
 
           // Days with headings
           var timeCursor = time.get()
@@ -66,25 +66,24 @@ function newApp(mongo, time, facebook, session) {
               heading: weekDayText(timeCursor) + ' ' + dateText(timeCursor),
             }
 
-            var matchesDay = avails.filter(function(a) {
-              return a.date === storeDate(timeCursor) })
-
-            function newSegmentViewModelData(name) { 
+            function newSegmentViewModelData(segmentName) { 
               return {
-                heading: name === 'evening' ? 'Evening' : 'Daytime',
-                persons: avails
-                          .filter(function(a) { 
-                            return a.date     === storeDate(timeCursor) && 
-                                   a.segment  === name 
-                          })
-                          .map(function(a) {
-                            return {
-                              imageSrc: persons[a.fb_user_id].picture,
-                              label: '*' + persons[a.fb_user_id].first_name + '* is **' + 
-                                     a.availability + '** ' + 'during *' + name + 
-                                     '* this *' + weekDayLongText(timeCursor) + '*'
-                            }
-                          })
+                heading: segmentName === 'evening' ? 'Evening' : 'Daytime',
+                persons: 
+                  reports
+                    .filter(function(report) { 
+                      return report.date     === storeDate(timeCursor) && 
+                             report.segment  === segmentName 
+                    })
+                    .map(function(report) {
+                      return {
+                        imageSrc: userMap[report.user_id].picture,
+                        label: '*' + userMap[report.user_id].first_name + 
+                               '* is **' + report.availability + '** ' + 
+                               'during *' + segmentName + '* this *' + 
+                               weekDayLongText(timeCursor) + '*'
+                      }
+                    })
               }
              
             }
