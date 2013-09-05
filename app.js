@@ -83,7 +83,9 @@ function newApp(mongo, time, facebook, session) {
 
             day.segments.daytime.persons = matches.daytime.map(function(a) {
               return {
-                imageSrc: persons[a.fb_user_id].picture
+                imageSrc: persons[a.fb_user_id].picture,
+                label: '*' + persons[a.fb_user_id].first_name + '* is **' + a.availability + '** ' +
+                       'during *daytime* this *' + weekDayLongText(timeCursor) + '*'
               }
             })
             day.segments.evening.persons = matches.evening.map(function(a) {

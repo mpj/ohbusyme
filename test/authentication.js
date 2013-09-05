@@ -76,7 +76,7 @@ describe('setup', function() {
 
     })
 
-    describe('we have a single availability', function() {
+    describe('we have a single evening availability', function() {
       beforeEach(function(done) {
         database.collection('availabilities').insert({
           fb_user_id: '712821789127',
@@ -121,6 +121,57 @@ describe('setup', function() {
         it('displays the user header', function() {
           person.label.should.equal(
             '*Mattias* is **free** during *evening* this *Sunday*') 
+        })
+
+      })
+
+    })
+
+    describe('we have a single daytime availability', function() { 
+      beforeEach(function(done) {
+        database.collection('availabilities').insert({
+          fb_user_id: '63278723892032198',
+          availability: 'free',
+          date: '2013-09-08',
+          segment: 'daytime'
+        }, function(err, result) {
+          done()
+        })
+
+        session.get = function fakeSessionGet(key) {
+          if (key === 'facebook_token') return '!secret'
+          throw new Error('Tried to get ' + key)
+        }
+
+        facebook.getUserAndFriends = function fakeGetUser(token, next) {
+          if (token != '!secret') throw new Error('token was incorrect')
+          next(null, {
+            id: '63278723892032198',
+            first_name: 'Rolf',
+            picture: 'http://facebook.com/lesser_people/rolf.jpg'
+          })
+        }
+
+      })
+
+      describe('we load overview', function() {
+        var overview;
+        var person;
+        beforeEach(function(done) {
+          app.overview(function(err, result) {
+            overview = result;
+            person = overview.days[5].segments.daytime.persons[0];
+            done()
+          })
+        })
+
+        it('displays the user picture', function() {
+          person.imageSrc.should.equal('http://facebook.com/lesser_people/rolf.jpg')
+        })
+
+        it('displays the user header', function() {
+          person.label.should.equal(
+            '*Rolf* is **free** during *daytime* this *Sunday*') 
         })
 
       })
