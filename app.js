@@ -64,37 +64,35 @@ function newApp(mongo, time, facebook, session) {
           for(var i = 0; i < displayDays; i++) {
             var day = {
               heading: weekDayText(timeCursor) + ' ' + dateText(timeCursor),
-              segments: {
-                daytime: {
-                  heading: "Daytime"
-                },
-                evening: {
-                  heading: "Evening"
-                }
-              }
             }
 
             var matchesDay = avails.filter(function(a) {
               return a.date === storeDate(timeCursor) })
-            var matches = {
-              daytime: matchesDay.filter(function(a) { return a.segment === 'daytime' }),
-              evening: matchesDay.filter(function(a) { return a.segment === 'evening' })
+
+            function newSegmentViewModelData(name) { 
+              return {
+                heading: name === 'evening' ? 'Evening' : 'Daytime',
+                persons: avails
+                          .filter(function(a) { 
+                            return a.date     === storeDate(timeCursor) && 
+                                   a.segment  === name 
+                          })
+                          .map(function(a) {
+                            return {
+                              imageSrc: persons[a.fb_user_id].picture,
+                              label: '*' + persons[a.fb_user_id].first_name + '* is **' + 
+                                     a.availability + '** ' + 'during *' + name + 
+                                     '* this *' + weekDayLongText(timeCursor) + '*'
+                            }
+                          })
+              }
+             
             }
 
-            day.segments.daytime.persons = matches.daytime.map(function(a) {
-              return {
-                imageSrc: persons[a.fb_user_id].picture,
-                label: '*' + persons[a.fb_user_id].first_name + '* is **' + a.availability + '** ' +
-                       'during *daytime* this *' + weekDayLongText(timeCursor) + '*'
-              }
-            })
-            day.segments.evening.persons = matches.evening.map(function(a) {
-              return {
-                imageSrc: persons[a.fb_user_id].picture,
-                label: '*' + persons[a.fb_user_id].first_name + '* is **' + a.availability + '** ' +
-                       'during *evening* this *' + weekDayLongText(timeCursor) + '*'
-              }
-            })
+            day.segments = {
+              daytime: newSegmentViewModelData('daytime'),
+              evening: newSegmentViewModelData('evening'),
+            }
 
             days.push(day) 
 
