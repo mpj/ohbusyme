@@ -22,7 +22,7 @@ function newApp(mongo, time, facebook, session) {
       //case 3: return 'Wednesday'
       //case 4: return 'Thursday'
       //case 5: return 'Friday'
-      //case 6: return 'Saturday'
+      case 6: return 'Saturday'
     }
   }
 
