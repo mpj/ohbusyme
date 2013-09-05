@@ -13,6 +13,19 @@ function newApp(mongo, time, facebook, session) {
       case 6: return 'SAT'
     }
   }
+
+  function weekDayLongText(date) {
+    switch(date.getDay()) {
+      case 0: return 'Sunday'
+      //case 1: return 'Monday'
+      //case 2: return 'Tuesday'
+      //case 3: return 'Wednesday'
+      //case 4: return 'Thursday'
+      //case 5: return 'Friday'
+      //case 6: return 'Saturday'
+    }
+  }
+
   function dateText(date) {
     var str = '' + date.getDate()
     return str.length === 1 ? '0' + str : str
@@ -75,7 +88,9 @@ function newApp(mongo, time, facebook, session) {
             })
             day.segments.evening.persons = matches.evening.map(function(a) {
               return {
-                imageSrc: persons[a.fb_user_id].picture
+                imageSrc: persons[a.fb_user_id].picture,
+                label: '*' + persons[a.fb_user_id].first_name + '* is **' + a.availability + '** ' +
+                       'during *evening* this *' + weekDayLongText(timeCursor) + '*'
               }
             })
 
