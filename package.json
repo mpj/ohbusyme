@@ -24,7 +24,8 @@
     "marked": "0.2.x", 
     "connect-auth": "0.6.x",
     "connect-redirection": "0.0.1",
-    "urlrouter": "0.5.1"
+    "urlrouter": "0.5.1",
+    "q": "0.9.7"
   },
   "analyze": false,
   "devDependencies": {

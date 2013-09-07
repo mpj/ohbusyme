@@ -4,6 +4,7 @@ var mongodb = require('mongodb')
 var newApp = require('../app.js')
 var newTime = require('../time.js')
 var _ = require('underscore')
+var Q = require('q')
 
 describe('setup', function() {
   var database;
@@ -280,7 +281,8 @@ describe('test runner 2', function() {
     })
 
     it('displays the user picture', function() {
-      var person = context.overview.days[0].segments.daytime.persons[0]
+      var day =  context.overview.days[0]
+      var person = day.segments.daytime.persons[0]
       person.imageSrc.should.equal('http://facebook.com/lesser_people/rolf.jpg')
     })
 
@@ -291,13 +293,84 @@ describe('test runner 2', function() {
     })
   })
 
+  function overviewContextBase() {
+    var me = {}
+
+    me.config = {}
+
+    me.yield = {
+      overview: null
+    }
+
+    me.run = function(next) {
+
+      if (!context.reports)         throw new Error('reports missing')
+      if (!context.userAndFriends)  throw new Error('userAndFriends missing')
+      if (!context.timeOverride)    throw new Error('timeOverride missing')
+
+      mongoClient()
+      .then(function() {
+
+        var time = newTime()
+        time.override(context.timeOverride)
+
+        var facebook = {
+          getUserAndFriends: function fakeGetUser(token, next) {
+            if (token != context.sessionData['facebook_token']) 
+              throw new Error('token was incorrect')
+            next(null, context.userAndFriends)
+          }
+        }
+        
+        var session = {
+          get: function fakeSessionGet(key) {
+            if (key === 'facebook_token') 
+              return context.sessionData['facebook_token']
+            throw new Error('Tried to get ' + key)
+          }
+        }
+
+        var app = newApp(database, time, facebook, session)
+
+        database.collection('reports').drop(function() {
+          database.collection('reports')
+          .insert(context.reports, { safe:true }, function(error) {
+            if(error) return next(error)
+            app.overview(function(error, overview) {
+              context.overview = overview
+              next(error)
+            })
+          })  
+        })
+      })
+      .done()
+
+    }
+
+    return me
+  }
+
   function run(context, next) {
 
     if (!context.reports)         throw new Error('reports missing')
     if (!context.userAndFriends)  throw new Error('userAndFriends missing')
     if (!context.timeOverride)    throw new Error('timeOverride missing')
       
-    withDatabase(function(database) {
+    var connected = connect(
+      require('mongodb').MongoClient, 
+      "mongodb://localhost:27017")
+
+    var cleaned = connected
+      .then(collectionGetter('reports'))
+      .then(wipeCollection)
+      .then(function() { return connected })
+
+    var populated = cleaned
+        .then(collectionGetter('reports'))
+        .then(collectionInserter(context.reports))
+        .then(function() { return connected })
+
+    populated.then(function(connection) {
 
       var time = newTime()
       time.override(context.timeOverride)
@@ -316,22 +389,37 @@ describe('test runner 2', function() {
           throw new Error('Tried to get ' + key)
         }
       }
-
-      var app = newApp(database, time, facebook, session)
-
-      var coll = database.collection('reports')
-      coll.drop(function() {
-        coll
-        .insert(context.reports, { safe:true }, function(error, result) {
-          app.overview(function(err, overview) {
-            context.overview = overview
-            next(err)
-          })
-        })  
-      })
+          
+      return Q.ninvoke(newApp(connection, time, facebook, session), 'overview')
     })
+    .then(function(overviewData) {
+      context.overview = overviewData
+      next()
+    })
+    .fail(next)
+    .done()  
   }
 })
+
+var connect = function(client, uri) {
+  return Q.ninvoke(client, 'connect', uri)
+}
+
+var collectionGetter = function(name) {
+  return function(conn) {
+    return conn.collection(name)
+  }
+}
+
+var collectionInserter = function(documents) {
+  return function(coll) {
+    Q.ninvoke(coll, 'insert', documents, { safe:true })
+  }
+}
+
+var wipeCollection = function(coll) {
+  return Q.ninvoke(coll, 'drop')  
+}
 
 
 function withDatabase(callback) {
