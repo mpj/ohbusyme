@@ -14,6 +14,14 @@ describe('setup', function() {
   var session;
 
   before(function(done) {
+    
+    function withDatabase(callback) {
+      var MongoClient = require('mongodb').MongoClient;
+      MongoClient.connect("mongodb://localhost:27017", function(err, db) {
+        if (err) return console.warn('Failed to connect to database.', err);
+        callback(db);
+      });
+    }
     withDatabase(function(db) {
       database = db
       done()
@@ -257,148 +265,117 @@ describe('setup', function() {
 
 describe('test runner 2', function() {
 
-  describe('single report 2 (daytime, monday)', function() {
-    var context;
-    beforeEach(function(done) {
-      context = {
-        timeOverride: new Date(Date.parse('2013-09-09')),
-        sessionData: {
-          facebook_token: '' + Math.floor(Math.random()*1000000)
-        },
-        reports: [{
-          user_id: '63278723892032198',
-          availability: 'free',
-          date: '2013-09-09',
-          segment: 'daytime'
-        }],
-        userAndFriends: {
-          id: '63278723892032198',
-          first_name: 'Rolf',
-          picture: 'http://facebook.com/lesser_people/rolf.jpg'
-        }
-      }
-      run(context, done)
-    })
+  describe('single report 3 (daytime, monday)', function() {
+    
+    var context = singlePersonSingleReportContext('2013-09-09')
+    beforeEach(context.run)
 
     it('displays the user picture', function() {
-      var day =  context.overview.days[0]
-      var person = day.segments.daytime.persons[0]
-      person.imageSrc.should.equal('http://facebook.com/lesser_people/rolf.jpg')
+      context.renderedPerson.imageSrc
+        .should.equal('http://facebook.com/lesser_people/rolf.jpg')
     })
 
     it('displays the user header', function() {
-      var person = context.overview.days[0].segments.daytime.persons[0]
-      person.label.should.equal(
-        '*Rolf* is **free** during *daytime* this *Monday*') 
+      context.renderedPerson.label
+        .should.equal('*Rolf* is **free** during *daytime* this *Monday*') 
     })
   })
+
+  // Single person with single report on dateString date
+  function singlePersonSingleReportContext(dateString) {
+    var me = facebookTokenContext()
+    me.config.timeOverride = new Date(Date.parse(dateString))
+    me.config.reports = [{
+      user_id: '63278723892032198',
+      availability: 'free',
+      date: dateString,
+      segment: 'daytime'
+    }]
+    me.config.userAndFriends = {
+      id: '63278723892032198',
+      first_name: 'Rolf',
+      picture: 'http://facebook.com/lesser_people/rolf.jpg'
+    }
+    me.afterRun = function() {
+      me.renderedPerson = 
+        me.yield.days[0].segments.daytime.persons[0]
+    }
+    return me
+  }
+
+  function facebookTokenContext() {
+    var me = overviewContextBase()
+    me.config.sessionData = {
+      facebook_token: '' + Math.floor(Math.random()*1000000)
+    }
+
+    return me
+  }
 
   function overviewContextBase() {
     var me = {}
 
-    me.config = {}
+    var mongo = require('mongodb').MongoClient
 
-    me.yield = {
-      overview: null
-    }
+    me.config = {}
+    me.yield = null
+
+    me.afterRun = function() {}
 
     me.run = function(next) {
 
-      if (!context.reports)         throw new Error('reports missing')
-      if (!context.userAndFriends)  throw new Error('userAndFriends missing')
-      if (!context.timeOverride)    throw new Error('timeOverride missing')
+      if (!next)  throw new Error('callback was not defined')
+      if (!me.config.reports)         throw new Error('reports missing')
+      if (!me.config.userAndFriends)  throw new Error('userAndFriends missing')
+      if (!me.config.timeOverride)    throw new Error('timeOverride missing')
+        
+      var connected = connect(mongo, "mongodb://localhost:27017")
 
-      mongoClient()
-      .then(function() {
+      var cleaned = connected
+        .then(collectionGetter('reports'))
+        .then(wipeCollection)
+        .thenResolve(connected)
+
+      var populated = cleaned
+          .then(collectionGetter('reports'))
+          .then(collectionInserter(me.config.reports))
+          .thenResolve(connected)
+
+      populated.then(function(connection) {
 
         var time = newTime()
-        time.override(context.timeOverride)
+        time.override(me.config.timeOverride)
 
         var facebook = {
           getUserAndFriends: function fakeGetUser(token, next) {
-            if (token != context.sessionData['facebook_token']) 
+            if (token != me.config.sessionData['facebook_token']) 
               throw new Error('token was incorrect')
-            next(null, context.userAndFriends)
+            next(null, me.config.userAndFriends)
           }
         }
         
         var session = {
           get: function fakeSessionGet(key) {
             if (key === 'facebook_token') 
-              return context.sessionData['facebook_token']
+              return me.config.sessionData['facebook_token']
             throw new Error('Tried to get ' + key)
           }
         }
-
-        var app = newApp(database, time, facebook, session)
-
-        database.collection('reports').drop(function() {
-          database.collection('reports')
-          .insert(context.reports, { safe:true }, function(error) {
-            if(error) return next(error)
-            app.overview(function(error, overview) {
-              context.overview = overview
-              next(error)
-            })
-          })  
-        })
+            
+        return Q.ninvoke(newApp(connection, time, facebook, session), 'overview')
       })
-      .done()
-
+      .then(function(overviewData) {
+        me.yield = overviewData
+        me.afterRun()
+        next()
+      })
+      .fail(next)
+      .done()  
     }
 
     return me
   }
 
-  function run(context, next) {
-
-    if (!context.reports)         throw new Error('reports missing')
-    if (!context.userAndFriends)  throw new Error('userAndFriends missing')
-    if (!context.timeOverride)    throw new Error('timeOverride missing')
-      
-    var connected = connect(
-      require('mongodb').MongoClient, 
-      "mongodb://localhost:27017")
-
-    var cleaned = connected
-      .then(collectionGetter('reports'))
-      .then(wipeCollection)
-      .then(function() { return connected })
-
-    var populated = cleaned
-        .then(collectionGetter('reports'))
-        .then(collectionInserter(context.reports))
-        .then(function() { return connected })
-
-    populated.then(function(connection) {
-
-      var time = newTime()
-      time.override(context.timeOverride)
-
-      var facebook = {
-        getUserAndFriends: function fakeGetUser(token, next) {
-          if (token != context.sessionData['facebook_token']) 
-            throw new Error('token was incorrect')
-          next(null, context.userAndFriends)
-        }
-      }
-      
-      var session = {
-        get: function fakeSessionGet(key) {
-          if (key === 'facebook_token') return context.sessionData['facebook_token']
-          throw new Error('Tried to get ' + key)
-        }
-      }
-          
-      return Q.ninvoke(newApp(connection, time, facebook, session), 'overview')
-    })
-    .then(function(overviewData) {
-      context.overview = overviewData
-      next()
-    })
-    .fail(next)
-    .done()  
-  }
 })
 
 var connect = function(client, uri) {
@@ -421,11 +398,3 @@ var wipeCollection = function(coll) {
   return Q.ninvoke(coll, 'drop')  
 }
 
-
-function withDatabase(callback) {
-  var MongoClient = require('mongodb').MongoClient;
-  MongoClient.connect("mongodb://localhost:27017", function(err, db) {
-    if (err) return console.warn('Failed to connect to database.', err);
-    callback(db);
-  });
-}
