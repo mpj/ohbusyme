@@ -49,25 +49,6 @@ describe('Lists day spans', function() {
 
 })
 
-describe('Sunday', function() {
-  
-  var context = singleReportContext({
-    date: '2013-09-08',   segment: 'daytime',
-    name: 'Hank',         availability: 'free'
-  })
-  beforeEach(context.run)
-
-  it('displays the user picture', function() {
-    context.renderedPerson.imageSrc
-      .should.equal(context.config.userAndFriends.picture)
-  })
-
-  it('displays the user label', function() {
-    context.renderedPerson.label
-      .should.equal('*Hank* is **free** during *daytime* this *Sunday*') 
-  })
-
-})
 
 describe('Sunday', function() {
   
