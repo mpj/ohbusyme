@@ -49,7 +49,7 @@ describe('Lists day spans', function() {
 
 })
 
-describe('Logged displayed on all days as unknown ', function() {
+describe('Virtual segments (no reports) ', function() {
   
   var context = noReportsContext({
     name: 'Maja', date: '2012-01-01'
@@ -73,11 +73,39 @@ describe('Logged displayed on all days as unknown ', function() {
       .should.include('Maja')
   })
 
+  it('yields full label')
+
   it('person has the right appearance', function() {
     context.yield.days[0].segments.daytime.persons[0].appearance
       .should.equal('unknown')
   })
       
+
+})
+
+describe('Virtual segments (single report)', function() {
+  
+  var context = singleReportContext({
+    date: '2013-09-08',   segment: 'daytime',
+    name: 'Hank',         availability: 'free'
+  })
+  beforeEach(context.run)
+
+  it('should not add virtual element on reported segments', function() {
+    context.yield.days[0].segments.daytime.persons.length
+      .should.equal(1)
+
+  })
+
+  it('displays other segments as unknown', function() {
+    context.yield.days[0].segments.evening.persons[0].appearance
+      .should.equal('unknown')
+  })
+
+  it('displays other days as unknown', function() {
+    context.yield.days[1].segments.evening.persons[0].appearance
+      .should.equal('unknown')
+  })
 
 })
 
@@ -100,7 +128,7 @@ describe('Sunday', function() {
       .should.equal('*Hank* is **free** during *daytime* this *Sunday*') 
   })
 
-  it('displays user availability as appearance', function() {
+  it('displays user availabilxity as appearance', function() {
     context.renderedPerson.appearance
       .should.equal('free')
   })
@@ -200,6 +228,40 @@ describe('Saturday', function() {
   })
 })
 
+describe('Friend availability', function() {
+  var context = friendReportContext({
+    date: '2012-02-29', 
+    segment: 'evening', name: 'John',   
+    friendName: 'Samantha', availability: 'free'
+  })
+  beforeEach(context.run)
+
+  it('should have both the virtual element and the friend', function() {
+    context.yield.days[0].segments.evening.persons.length
+      .should.equal(2)
+  })
+
+  it('shows current user first, as unknown', function() {
+    context.yield.days[0].segments.evening.persons[0].appearance
+      .should.equal('unknown')
+  })
+
+  it('shows current user first, with label', function() {
+    context.yield.days[0].segments.evening.persons[0].label
+      .should.include('John')
+  })
+
+  it('shows friends next, as free', function() {
+    context.yield.days[0].segments.evening.persons[1].appearance
+      .should.equal('free')
+  })
+
+  it('shows friends next, with label', function() {
+    context.yield.days[0].segments.evening.persons[1].label
+      .should.include('Samantha')
+  })
+})
+
 function noReportsContext(opts) {
   if (!opts.name) throw new Error('opts.name not found')  
   if (!opts.date) throw new Error('opts.date not found')
@@ -231,16 +293,52 @@ function singleReportContext(opts) {
   return me
 }
 
+function friendReportContext(opts) {
+  if (!opts.name)       throw new Error('opts.name not found')  
+  if (!opts.friendName)       throw new Error('opts.friendName not found')  
+  if (!opts.date)       throw new Error('opts.date not found')
+  if (!opts.segment)    throw new Error('opts.segment not found')
+  if (!opts.availability) throw new Error('opts.availability not found')
+
+  var me = facebookSessionContext(opts)
+  
+  me.config.timeOverride = new Date(Date.parse(opts.date))
+
+  me.config.userAndFriends = {
+    id: '333333333333',
+    first_name: opts.name,
+    picture: 'http://irrelevant.com/john.jpg',
+    friends: [{
+      id: '6666666666',
+      first_name: opts.friendName
+    }]
+  }
+  me.config.reports = [{
+    user_id: '6666666666',
+    availability: opts.availability,
+    date: opts.date,
+    segment: opts.segment
+  }]
+  return me
+}
+
+
+
 function facebookUserContext(opts) {
   if (!opts.name) throw new Error('opts.name not found')
-  var me = overviewContextBase()
-  me.config.sessionData = {
-    facebook_token: '' + Math.floor(Math.random()*1000000)
-  }
+  var me = facebookSessionContext()
   me.config.userAndFriends = {
     id: '63278723892032198',
     first_name: opts.name,
     picture: 'http://facebook.com/lesser_people/rolf.jpg'
+  }
+  return me
+}
+
+function facebookSessionContext() {
+  var me = overviewContextBase()
+  me.config.sessionData = {
+    facebook_token: '' + Math.floor(Math.random()*1000000)
   }
   return me
 }

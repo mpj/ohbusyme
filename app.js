@@ -54,7 +54,14 @@ function newApp(mongo, time, facebook, session) {
           first_name: userAndFriends.first_name,
           picture:    userAndFriends.picture
         }
-        var currentUser = userAndFriends
+        var currentUserId = userAndFriends.id
+        if(userAndFriends.friends)
+          userAndFriends.friends.forEach(function(f) {
+            userMap[f.id] = {
+              first_name: f.first_name,
+              picture: f.picture
+            }
+          })
         
         mongo.createCollection('reports', function(err, collection) {
           if (err) return next(err)
@@ -80,7 +87,7 @@ function newApp(mongo, time, facebook, session) {
                            report.segment  === segmentName 
                   })
                   .map(function(report) {
-                    if (report.user_id === currentUser.id)
+                    if (report.user_id === currentUserId)
                       currentUserHasReported = true
                     return {
                       imageSrc: userMap[report.user_id].picture,
@@ -93,8 +100,8 @@ function newApp(mongo, time, facebook, session) {
                   })
 
                 if(!currentUserHasReported)
-                  svmd.persons.push({
-                    label: currentUser.first_name,
+                  svmd.persons.unshift({
+                    label: userMap[userAndFriends.id].first_name,
                     appearance: 'unknown'
                   })
 
