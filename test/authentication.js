@@ -13,7 +13,7 @@ describe('Lists day spans', function() {
     date: '2013-09-03',   segment: 'daytime',
     name: 'Irrelevant',   availability: 'free'
   })
-  beforeEach(context.run)
+  beforeEach(context.runOverview)
 
   it('should yield 21 days', function() {
     context.yield.days.length.should.equal(21)
@@ -54,7 +54,7 @@ describe('Virtual segments (no reports) ', function() {
   var context = noReportsContext({
     name: 'Maja', date: '2012-01-01'
   })
-  beforeEach(context.run)
+  beforeEach(context.runOverview)
 
   it('should yield 21 days even though empty', function() {
     context.yield.days.length.should.equal(21)
@@ -89,7 +89,7 @@ describe('Virtual segments (single report)', function() {
     date: '2013-09-08',   segment: 'daytime',
     name: 'Hank',         availability: 'free'
   })
-  beforeEach(context.run)
+  beforeEach(context.runOverview)
 
   it('should not add virtual element on reported segments', function() {
     context.yield.days[0].segments.daytime.persons.length
@@ -116,7 +116,7 @@ describe('Sunday', function() {
     date: '2013-09-08',   segment: 'daytime',
     name: 'Hank',         availability: 'free'
   })
-  beforeEach(context.run)
+  beforeEach(context.runOverview)
 
   it('displays the user picture', function() {
     context.renderedPerson.imageSrc
@@ -150,7 +150,7 @@ describe('Monday', function() {
     date: '2013-09-09',   segment: 'daytime',
     name: 'Wayne',         availability: 'unknown'
   })
-  beforeEach(context.run)
+  beforeEach(context.runOverview)
 
   it('displays correct person label', function() {
     context.renderedPerson.label
@@ -168,7 +168,7 @@ describe('Tuesday', function() {
     date: '2013-09-10',   segment: 'daytime',
     name: 'Lina',         availability: 'unknown'
   })
-  beforeEach(context.run)
+  beforeEach(context.runOverview)
 
   it('displays correct person label', function() {
     context.renderedPerson.label
@@ -181,7 +181,7 @@ describe('Wednesday', function() {
     date: '2013-09-11',   segment: 'evening',
     name: 'Martha',       availability: 'free'
   })
-  beforeEach(context.run)
+  beforeEach(context.runOverview)
 
   it('displays correct person label', function() {
     context.renderedPerson.label
@@ -194,7 +194,7 @@ describe('Thursday', function() {
     date: '2013-09-12', segment: 'evening',
     name: 'Johanna',       availability: 'unknown'
   })
-  beforeEach(context.run)
+  beforeEach(context.runOverview)
 
   it('displays correct person label', function() {
     context.renderedPerson.label
@@ -207,7 +207,7 @@ describe('Friday', function() {
     date: '2013-09-13', segment: 'evening',
     name: 'Johanna',       availability: 'unknown'
   })
-  beforeEach(context.run)
+  beforeEach(context.runOverview)
 
   it('displays correct person label', function() {
     context.renderedPerson.label
@@ -220,7 +220,7 @@ describe('Saturday', function() {
     date: '2013-09-14', segment: 'evening',
     name: 'Rolf',       availability: 'free'
   })
-  beforeEach(context.run)
+  beforeEach(context.runOverview)
 
   it('displays correct person label', function() {
     context.renderedPerson.label
@@ -234,7 +234,7 @@ describe('Friend availability', function() {
     segment: 'evening', name: 'John',   
     friendName: 'Samantha', availability: 'free'
   })
-  beforeEach(context.run)
+  beforeEach(context.runOverview)
 
   it('should have both the virtual element and the friend', function() {
     context.yield.days[0].segments.evening.persons.length
@@ -260,6 +260,24 @@ describe('Friend availability', function() {
     context.yield.days[0].segments.evening.persons[1].label
       .should.include('Samantha')
   })
+})
+
+describe('Pressing own avatar', function() {
+   var context = noReportsContext({
+    name: 'Maja', date: '2012-01-01'
+  })
+  beforeEach(context.runPress('person', context.config.userAndFriends.id))
+
+  it('writes the report to the database (id)', function() {
+    context.reportsInDatabase[0].user_id
+      .should.equal(context.config.userAndFriends.id)
+  })
+
+  it('writes the report to the database (availability)')
+
+  it('pressing other segment')
+  it('pressing other day')
+
 })
 
 function noReportsContext(opts) {
@@ -353,26 +371,31 @@ function overviewContextBase() {
 
   me.afterRun = function() {}
 
-  me.run = function(next) {
+  me.runOverview = function(next) {
+    me.run('overview', undefined, next)
+  }
+  me.runPress = function(topic, target) {
+    return function(next) {
+      me.run('press', [topic, target], next)
+    }
+  }
+  me.run = function(fnName, args, next) {
 
     if (!next)  throw new Error('callback was not defined')
     if (!me.config.reports)         throw new Error('reports missing')
     if (!me.config.userAndFriends)  throw new Error('userAndFriends missing')
     if (!me.config.timeOverride)    throw new Error('timeOverride missing')
       
-    var connected = connect(mongo, "mongodb://localhost:27017")
+    var connP = connect(mongo, "mongodb://localhost:27017")
+    var collP = connP.then(collectionGetter('reports'))
 
-    var cleaned = connected
-      .then(collectionGetter('reports'))
-      .then(wipeCollection)
-      .thenResolve(connected)
-
-    var populated = cleaned
-        .then(collectionGetter('reports'))
+    var populatedCollectionP = collP
+        .then(wipeCollection)
+        .thenResolve(collP)
         .then(collectionInserter(me.config.reports))
-        .thenResolve(connected)
+        .thenResolve(connP)
 
-    populated.then(function(connection) {
+    populatedCollectionP.then(function(connection) {
 
       var time = newTime()
       time.override(me.config.timeOverride)
@@ -393,14 +416,18 @@ function overviewContextBase() {
         }
       }
           
-      return Q.ninvoke(newApp(connection, time, facebook, session), 'overview')
-
-      connection.close()
+      return Q.npost(newApp(connection, time, facebook, session), fnName, args)
     })
     .then(function(overviewData) {
       me.yield = overviewData
+    })
+    .thenResolve(collP)
+    .then(collectionFinder({}))
+    .then(function(reports) {
+      me.reportsInDatabase = reports
+    })
+    .then(function() {
       me.afterRun()
-      //setTimeout(next, 100)
       next()
     })
     .fail(next)
@@ -424,6 +451,13 @@ var collectionGetter = function(name) {
   }
 }
 
+var collectionFinder = function(selector) {
+  return function(coll) { 
+    var cursor = coll.find(selector)
+    return Q.ninvoke(cursor, 'toArray') 
+  }
+}
+
 var collectionInserter = function(documents) {
   return function(coll) {
     Q.ninvoke(coll, 'insert', documents, { safe:true })
@@ -434,6 +468,6 @@ var wipeCollection = function(coll) {
   // Using remove here because drop 
   // were causing "ns not found" and various
   // other funky things.
-  return Q.ninvoke(coll, 'remove')  
+  return Q.ninvoke(coll, 'remove').then(coll)
 }
 

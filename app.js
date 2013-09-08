@@ -45,6 +45,20 @@ function newApp(mongo, time, facebook, session) {
 
   var api = {
 
+    press: function(topic, target, next) {
+      facebook.getUserAndFriends(session.get('facebook_token'), function(err, userAndFriends) {
+        mongo.createCollection('reports', function(err, collection) {
+          if (err) return next(err)
+          collection
+            .insert({ 
+              user_id: userAndFriends.id,
+              availability: 'free'
+            }, { safe: true }, next)
+        })
+      })
+
+    },
+
     overview: function(next) {
       var days = []
       
