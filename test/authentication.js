@@ -105,6 +105,16 @@ describe('Sunday', function() {
       .should.equal('free')
   })
 
+  it('displays other segments as unknown', function() {
+    context.yield.days[0].segments.evening.persons[0].appearance
+      .should.equal('unknown')
+  })
+
+  it('displays other days as unknown', function() {
+    context.yield.days[1].segments.evening.persons[0].appearance
+      .should.equal('unknown')
+  })
+
 })
 
 describe('Monday', function() {
@@ -292,6 +302,7 @@ function overviewContextBase() {
     .then(function(overviewData) {
       me.yield = overviewData
       me.afterRun()
+      //setTimeout(next, 100)
       next()
     })
     .fail(next)
@@ -322,8 +333,9 @@ var collectionInserter = function(documents) {
 }
 
 var wipeCollection = function(coll) {
-  // Using remove here because drop were causing "ns not found"
-  // errors.
-  return Q.ninvoke(coll, 'drop')  
+  // Using remove here because drop 
+  // were causing "ns not found" and various
+  // other funky things.
+  return Q.ninvoke(coll, 'remove')  
 }
 
