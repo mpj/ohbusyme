@@ -49,6 +49,38 @@ describe('Lists day spans', function() {
 
 })
 
+describe('Logged displayed on all days as unknown ', function() {
+  
+  var context = noReportsContext({
+    name: 'Maja', date: '2012-01-01'
+  })
+  beforeEach(context.run)
+
+  it('should yield 21 days even though empty', function() {
+    context.yield.days.length.should.equal(21)
+  })
+
+  it('yields 2012-01-01 as first day', function() {
+    context.yield.days[0].heading.should.equal('SUN 01')
+  })
+
+  it('yields 2013-1-21 as 21st day', function() {
+    context.yield.days[20].heading.should.equal('SAT 21')
+  })
+
+  it('yields the user a listed person on first day', function() {
+    context.yield.days[0].segments.daytime.persons[0].label
+      .should.include('Maja')
+  })
+
+  it('person has the right appearance', function() {
+    context.yield.days[0].segments.daytime.persons[0].appearance
+      .should.equal('unknown')
+  })
+      
+
+})
+
 
 describe('Sunday', function() {
   
@@ -68,19 +100,28 @@ describe('Sunday', function() {
       .should.equal('*Hank* is **free** during *daytime* this *Sunday*') 
   })
 
-})
+  it('displays user availability as appearance', function() {
+    context.renderedPerson.appearance
+      .should.equal('free')
+  })
 
+})
 
 describe('Monday', function() {
   var context = singleReportContext({
     date: '2013-09-09',   segment: 'daytime',
-    name: 'Wayne',         availability: 'free'
+    name: 'Wayne',         availability: 'unknown'
   })
   beforeEach(context.run)
 
   it('displays correct person label', function() {
     context.renderedPerson.label
-      .should.equal('*Wayne* is **free** during *daytime* this *Monday*') 
+      .should.equal('*Wayne* is **unknown** during *daytime* this *Monday*') 
+  })
+
+  it('displays user availability as appearance', function() {
+    context.renderedPerson.appearance
+      .should.equal('unknown')
   })
 })
 
@@ -109,7 +150,6 @@ describe('Wednesday', function() {
       .should.equal('*Martha* is **free** during *evening* this *Wednesday*') 
   })
 })
-
 
 describe('Thursday', function() {
   var context = singleReportContext({
@@ -150,10 +190,23 @@ describe('Saturday', function() {
   })
 })
 
+function noReportsContext(opts) {
+  if (!opts.name) throw new Error('opts.name not found')  
+  if (!opts.date) throw new Error('opts.date not found')
+  var me = facebookUserContext(opts)
+  me.config.timeOverride = new Date(Date.parse(opts.date))
+  me.config.reports = []
+  return me
+}
+
 
 function singleReportContext(opts) {
+  if (!opts.name) throw new Error('opts.name not found')  
+  if (!opts.date) throw new Error('opts.date not found')
+  if (!opts.segment) throw new Error('opts.segment not found')
+  if (!opts.availability) throw new Error('opts.availability not found')
 
-  var me = facebookTokenContext()
+  var me = facebookUserContext(opts)
   me.config.timeOverride = new Date(Date.parse(opts.date))
   me.config.reports = [{
     user_id: '63278723892032198',
@@ -161,25 +214,24 @@ function singleReportContext(opts) {
     date: opts.date,
     segment: opts.segment
   }]
-  me.config.userAndFriends = {
-    id: '63278723892032198',
-    first_name: opts.name,
-    picture: 'http://facebook.com/lesser_people/rolf.jpg'
-  }
   me.afterRun = function() {
-    
     me.renderedPerson = 
       me.yield.days[0].segments[opts.segment].persons[0];
   }
   return me
 }
 
-function facebookTokenContext() {
+function facebookUserContext(opts) {
+  if (!opts.name) throw new Error('opts.name not found')
   var me = overviewContextBase()
   me.config.sessionData = {
     facebook_token: '' + Math.floor(Math.random()*1000000)
   }
-
+  me.config.userAndFriends = {
+    id: '63278723892032198',
+    first_name: opts.name,
+    picture: 'http://facebook.com/lesser_people/rolf.jpg'
+  }
   return me
 }
 
@@ -234,6 +286,8 @@ function overviewContextBase() {
       }
           
       return Q.ninvoke(newApp(connection, time, facebook, session), 'overview')
+
+      connection.close()
     })
     .then(function(overviewData) {
       me.yield = overviewData
@@ -268,6 +322,8 @@ var collectionInserter = function(documents) {
 }
 
 var wipeCollection = function(coll) {
+  // Using remove here because drop were causing "ns not found"
+  // errors.
   return Q.ninvoke(coll, 'drop')  
 }
 

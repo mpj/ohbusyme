@@ -54,54 +54,68 @@ function newApp(mongo, time, facebook, session) {
           first_name: userAndFriends.first_name,
           picture:    userAndFriends.picture
         }
-         
-        mongo.collection('reports')
-        .find({ user_id: { $in: Object.keys(userMap)} })
-        .toArray(function(err, reports) {
+        var currentUser = userAndFriends
+        
+        mongo.createCollection('reports', function(err, collection) {
+          collection
+          .find({ user_id: { $in: Object.keys(userMap)} })
+          .toArray(function(err, reports) {
 
-          // Days with headings
-          var timeCursor = time.get()
-          for(var i = 0; i < displayDays; i++) {
-            var day = {
-              heading: weekDayText(timeCursor) + ' ' + dateText(timeCursor),
-            }
-
-            function newSegmentViewModelData(segmentName) { 
-              return {
-                heading: segmentName === 'evening' ? 'Evening' : 'Daytime',
-                persons: 
-                  reports
-                    .filter(function(report) { 
-                      return report.date     === storeDate(timeCursor) && 
-                             report.segment  === segmentName 
-                    })
-                    .map(function(report) {
-                      return {
-                        imageSrc: userMap[report.user_id].picture,
-                        label: '*' + userMap[report.user_id].first_name + 
-                               '* is **' + report.availability + '** ' + 
-                               'during *' + segmentName + '* this *' + 
-                               weekDayLongText(timeCursor) + '*'
-                      }
-                    })
+            // Days with headings
+            var timeCursor = time.get()
+            for(var i = 0; i < displayDays; i++) {
+              var day = {
+                heading: weekDayText(timeCursor) + ' ' + dateText(timeCursor),
               }
-             
+
+              function newSegmentViewModelData(segmentName) { 
+                var svmd = {}
+                svmd.heading = segmentName === 'evening' ? 'Evening' : 'Daytime'
+
+                var currentUserHasReported = false
+                svmd.persons = reports
+                  .filter(function(report) { 
+                    return report.date     === storeDate(timeCursor) && 
+                           report.segment  === segmentName 
+                  })
+                  .map(function(report) {
+                    if (report.user_id === currentUser.id)
+                      currentUserHasReported = true
+                    return {
+                      imageSrc: userMap[report.user_id].picture,
+                      label: '*' + userMap[report.user_id].first_name + 
+                             '* is **' + report.availability + '** ' + 
+                             'during *' + segmentName + '* this *' + 
+                             weekDayLongText(timeCursor) + '*',
+                      appearance: report.availability
+                    }
+                  })
+
+                if(!currentUserHasReported)
+                  svmd.persons.push({
+                    label: currentUser.first_name,
+                    appearance: 'unknown'
+                  })
+
+                return svmd
+               
+              }
+
+              day.segments = {
+                daytime: newSegmentViewModelData('daytime'),
+                evening: newSegmentViewModelData('evening'),
+              }
+
+              days.push(day) 
+
+              timeCursor.setDate(timeCursor.getDate() + 1)
+              
             }
 
-            day.segments = {
-              daytime: newSegmentViewModelData('daytime'),
-              evening: newSegmentViewModelData('evening'),
-            }
 
-            days.push(day) 
-
-            timeCursor.setDate(timeCursor.getDate() + 1)
-            
-          }
-
-
-          next(null, {
-            days: days
+            next(null, {
+              days: days
+            })
           })
         })
       })
