@@ -1,7 +1,7 @@
 var Q = require('q')
 var QStore = require('./q-store-mongo')
 
-function newApp(storeConnection, time, facebook, session) {
+function newApp(storeConnection, time, QUser, session) {
 
   var displayDays = 21
 
@@ -49,7 +49,6 @@ function newApp(storeConnection, time, facebook, session) {
   var api = {
 
     press: function(topic, target, date, segment, next) {
-      var QUser = facebook; // intermedieate hack
       var userP = QUser.get(session.get('facebook_token'))
       var collP = QStore.collection('reports')(storeConnection)
       Q.spread([ userP, collP ], function(user, coll) {
@@ -65,24 +64,32 @@ function newApp(storeConnection, time, facebook, session) {
 
     overview: function(next) {
       var days = []
-      
-      facebook.getUserAndFriends(session.get('facebook_token'), function(err, userAndFriends) {
+
+      var userP = QUser.get(session.get('facebook_token'))
+      var collP = QStore.collection('reports')(storeConnection)
+      var userMapP = userP.then(function(user) {
         var userMap = {}
-        userMap[userAndFriends.id] = {
-          first_name: userAndFriends.first_name,
-          picture:    userAndFriends.picture
+        userMap[user.id] = {
+          first_name: user.first_name,
+          picture:    user.picture
         }
-        var currentUserId = userAndFriends.id
-        if(userAndFriends.friends)
-          userAndFriends.friends.forEach(function(f) {
+        if(user.friends)
+          user.friends.forEach(function(f) {
             userMap[f.id] = {
               first_name: f.first_name,
               picture: f.picture
             }
           })
+        return Q.fcall(function() { return userMap })
+      })
+      var currentUserIdP = userP.then(function(user) {
+        return Q.fcall(function() {
+          return user.id
+        })
+      })
+      Q.spread([userP, userMapP], function(user, userMap) {
         
-        storeConnection.createCollection('reports', function(err, collection) {
-          if (err) return next(err)
+        collP.then(function(collection) {
           collection
           .find({ user_id: { $in: Object.keys(userMap)} })
           .toArray(function(err, reports) {
@@ -105,7 +112,7 @@ function newApp(storeConnection, time, facebook, session) {
                            report.segment  === segmentName 
                   })
                   .map(function(report) {
-                    if (report.user_id === currentUserId)
+                    if (report.user_id === user.id)
                       currentUserHasReported = true
                     return {
                       imageSrc: userMap[report.user_id].picture,
@@ -119,7 +126,7 @@ function newApp(storeConnection, time, facebook, session) {
 
                 if(!currentUserHasReported)
                   svmd.persons.unshift({
-                    label: userMap[userAndFriends.id].first_name,
+                    label: userMap[user.id].first_name,
                     appearance: 'unknown'
                   })
 
@@ -137,7 +144,6 @@ function newApp(storeConnection, time, facebook, session) {
               timeCursor.setDate(timeCursor.getDate() + 1)
               
             }
-
 
             next(null, {
               days: days
