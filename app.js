@@ -49,18 +49,18 @@ function newApp(storeConnection, time, facebook, session) {
   var api = {
 
     press: function(topic, target, date, segment, next) {
-      facebook.getUserAndFriends(session.get('facebook_token'), function(err, userAndFriends) {
-        
-        QStore.collection('reports')(storeConnection)
-        .then(QStore.insert({ 
-          user_id: userAndFriends.id,
+      var QUser = facebook; // intermedieate hack
+      var userP = QUser.get(session.get('facebook_token'))
+      var collP = QStore.collection('reports')(storeConnection)
+      Q.spread([ userP, collP ], function(user, coll) {
+        QStore.insert({ 
+          user_id: user.id,
           availability: 'free',
           date: date,
           segment: segment
-        }))
-        .then(function() { next() })
-        .fail(next).done()
+        })(coll)
       })
+      .nodeify(next)
     },
 
     overview: function(next) {

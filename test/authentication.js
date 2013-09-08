@@ -415,13 +415,22 @@ function overviewContextBase() {
       var time = newTime()
       time.override(me.config.timeOverride)
 
-      var facebook = {
+      var QUser = {
         getUserAndFriends: function fakeGetUser(token, next) {
           if (token != me.config.sessionData['facebook_token']) 
             throw new Error('token was incorrect')
           next(null, me.config.userAndFriends)
+        },
+        get: function(token) {
+          if (token != me.config.sessionData['facebook_token']) 
+            throw new Error('token was incorrect')
+          return Q.fcall(function() {
+            return me.config.userAndFriends
+          })
         }
       }
+
+      
       
       var session = {
         get: function fakeSessionGet(key) {
@@ -431,7 +440,7 @@ function overviewContextBase() {
         }
       }
           
-      return Q.npost(newApp(connection, time, facebook, session), fnName, args)
+      return Q.npost(newApp(connection, time, QUser, session), fnName, args)
     })
     .then(function(overviewData) {
       me.yield = overviewData
@@ -440,13 +449,9 @@ function overviewContextBase() {
     .then(QStore.find({}))
     .then(function(reports) {
       me.reportsInDatabase = reports
-    })
-    .then(function() {
       me.afterRun()
-      next()
     })
-    .fail(next)
-    .done() 
+    .nodeify(next)
 
     return me
   }
