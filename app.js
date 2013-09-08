@@ -57,6 +57,7 @@ function newApp(mongo, time, facebook, session) {
         var currentUser = userAndFriends
         
         mongo.createCollection('reports', function(err, collection) {
+          if (err) return next(err)
           collection
           .find({ user_id: { $in: Object.keys(userMap)} })
           .toArray(function(err, reports) {
