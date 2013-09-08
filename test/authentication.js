@@ -266,17 +266,34 @@ describe('Pressing own avatar', function() {
    var context = noReportsContext({
     name: 'Maja', date: '2012-01-01'
   })
-  beforeEach(context.runPress('person', context.config.userAndFriends.id))
+  beforeEach(context.runPress('person', 
+    context.config.userAndFriends.id, '2012-01-01', 'evening'))
 
   it('writes the report to the database (id)', function() {
     context.reportsInDatabase[0].user_id
       .should.equal(context.config.userAndFriends.id)
   })
 
-  it('writes the report to the database (availability)')
+  it('writes the report to the database (availability)', function() {
+    context.reportsInDatabase[0].availability
+      .should.equal('free')
+  })
+
+  it('writes the report to the database (date)', function() {
+    context.reportsInDatabase[0].date
+      .should.equal('2012-01-01')
+  })
+
+  it('writes the report to the database (segment)', function() {
+    context.reportsInDatabase[0].segment
+      .should.equal('evening')
+  })
+
 
   it('pressing other segment')
   it('pressing other day')
+  it('pressing free avatar')
+  it('prevents haxor')
 
 })
 
@@ -374,9 +391,10 @@ function overviewContextBase() {
   me.runOverview = function(next) {
     me.run('overview', undefined, next)
   }
-  me.runPress = function(topic, target) {
+  me.runPress = function() {
+    var args = Array.prototype.slice.call(arguments)
     return function(next) {
-      me.run('press', [topic, target], next)
+      me.run('press', args, next)
     }
   }
   me.run = function(fnName, args, next) {
@@ -439,7 +457,7 @@ function overviewContextBase() {
   return me
 }
 
-
+// Promise-Facade for mongo
 
 var connect = function(client, uri) {
   return Q.ninvoke(client, 'connect', uri)
