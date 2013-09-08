@@ -1,11 +1,10 @@
 var chai = require('chai')
 chai.should()
-var mongodb = require('mongodb')
 var newApp = require('../app.js')
 var newTime = require('../time.js')
 var _ = require('underscore')
 var Q = require('q')
-
+var QStore = require('../q-store-mongo')
 
 describe('Lists day spans', function() {
   
@@ -381,8 +380,6 @@ function facebookSessionContext() {
 function overviewContextBase() {
   var me = {}
 
-  var mongo = require('mongodb').MongoClient
-
   me.config = {}
   me.yield = null
 
@@ -404,13 +401,13 @@ function overviewContextBase() {
     if (!me.config.userAndFriends)  throw new Error('userAndFriends missing')
     if (!me.config.timeOverride)    throw new Error('timeOverride missing')
       
-    var connP = connect(mongo, "mongodb://localhost:27017")
-    var collP = connP.then(collectionGetter('reports'))
+    var connP = QStore.connect("mongodb://localhost:27017")
+    var collP = connP.then(QStore.collection('reports'))
 
     var populatedCollectionP = collP
-        .then(wipeCollection)
+        .then(QStore.clear)
         .thenResolve(collP)
-        .then(collectionInserter(me.config.reports))
+        .then(QStore.insert(me.config.reports))
         .thenResolve(connP)
 
     populatedCollectionP.then(function(connection) {
@@ -440,7 +437,7 @@ function overviewContextBase() {
       me.yield = overviewData
     })
     .thenResolve(collP)
-    .then(collectionFinder({}))
+    .then(QStore.find({}))
     .then(function(reports) {
       me.reportsInDatabase = reports
     })
@@ -457,35 +454,6 @@ function overviewContextBase() {
   return me
 }
 
-// Promise-Facade for mongo
 
-var connect = function(client, uri) {
-  return Q.ninvoke(client, 'connect', uri)
-}
 
-var collectionGetter = function(name) {
-  return function(conn) {
-    return conn.collection(name)
-  }
-}
-
-var collectionFinder = function(selector) {
-  return function(coll) { 
-    var cursor = coll.find(selector)
-    return Q.ninvoke(cursor, 'toArray') 
-  }
-}
-
-var collectionInserter = function(documents) {
-  return function(coll) {
-    Q.ninvoke(coll, 'insert', documents, { safe:true })
-  }
-}
-
-var wipeCollection = function(coll) {
-  // Using remove here because drop 
-  // were causing "ns not found" and various
-  // other funky things.
-  return Q.ninvoke(coll, 'remove').then(coll)
-}
 
