@@ -9,7 +9,9 @@ var QStoreMongo = {
     return Q.ninvoke(mongodb.MongoClient, 'connect', uri)
   }, 
   collection: function(name) {
-    return function(connection) { return connection.collection(name) }
+    return function(connection) { 
+      return Q.fcall(function() { return connection.collection(name) }) 
+    }
   },
   find: function(selector) {
     return function(collection) { 
@@ -18,8 +20,15 @@ var QStoreMongo = {
     }
   },
   insert: function(documents) {
+
+    // TODO: make this check a bit sleeker
+    if(documents.length === 0) return function() {
+      Q.fcall(function() {
+        return true
+      })
+    }
     return function(coll) {
-      Q.ninvoke(coll, 'insert', documents, { safe:true })
+      return Q.ninvoke(coll, 'insert', documents, { safe:true })
     }
   },
   clear: function(collection) {

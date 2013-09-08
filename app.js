@@ -1,4 +1,7 @@
-function newApp(mongo, time, facebook, session) {
+var Q = require('q')
+var QStore = require('./q-store-mongo')
+
+function newApp(storeConnection, time, facebook, session) {
 
   var displayDays = 21
 
@@ -47,16 +50,16 @@ function newApp(mongo, time, facebook, session) {
 
     press: function(topic, target, date, segment, next) {
       facebook.getUserAndFriends(session.get('facebook_token'), function(err, userAndFriends) {
-        mongo.createCollection('reports', function(err, collection) {
-          if (err) return next(err)
-          collection
-            .insert({ 
-              user_id: userAndFriends.id,
-              availability: 'free',
-              date: date,
-              segment: segment
-            }, { safe: true }, next)
-        })
+        
+        QStore.collection('reports')(storeConnection)
+        .then(QStore.insert({ 
+          user_id: userAndFriends.id,
+          availability: 'free',
+          date: date,
+          segment: segment
+        }))
+        .then(function() { next() })
+        .fail(next).done()
       })
     },
 
@@ -78,7 +81,7 @@ function newApp(mongo, time, facebook, session) {
             }
           })
         
-        mongo.createCollection('reports', function(err, collection) {
+        storeConnection.createCollection('reports', function(err, collection) {
           if (err) return next(err)
           collection
           .find({ user_id: { $in: Object.keys(userMap)} })
