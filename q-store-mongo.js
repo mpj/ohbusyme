@@ -10,7 +10,7 @@ var QStoreMongo = {
   }, 
   collection: function(name) {
     return function(connection) { 
-      return Q.fcall(function() { return connection.collection(name) }) 
+      return Q(connection.collection(name)) 
     }
   },
   find: function(selector) {
@@ -20,15 +20,14 @@ var QStoreMongo = {
     }
   },
   insert: function(documents) {
-
-    // TODO: make this check a bit sleeker
-    if(documents.length === 0) return function() {
-      Q.fcall(function() {
-        return true
-      })
-    }
     return function(coll) {
+      if(documents.length === 0) return Q([])
       return Q.ninvoke(coll, 'insert', documents, { safe:true })
+    }
+  },
+  update: function(selector, update) {
+    return function(coll) {
+      return Q.ninvoke(coll, 'update', selector, update, { safe:true })
     }
   },
   clear: function(collection) {

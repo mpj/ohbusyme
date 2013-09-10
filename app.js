@@ -1,5 +1,6 @@
 var Q = require('q')
 var QStore = require('./q-store-mongo')
+var ObjectId = require('mongodb').ObjectID;
 
 function newApp(storeConnection, time, QUser, session) {
 
@@ -51,13 +52,32 @@ function newApp(storeConnection, time, QUser, session) {
     press: function(topic, target, date, segment, next) {
       var userP = QUser.get(session.get('facebook_token'))
       var collP = QStore.collection('reports')(storeConnection)
-      Q.spread([ userP, collP ], function(user, coll) {
-        QStore.insert({ 
+      Q.spread([ userP, collP ], function(user, reportsCollection) {
+        return QStore.find({ 
           user_id: user.id,
-          availability: 'free',
           date: date,
           segment: segment
-        })(coll)
+        })(reportsCollection).then(function(results) {
+          if(results.length === 0) {
+            return QStore.insert({ 
+              user_id: user.id,
+              availability: 'free',
+              date: date,
+              segment: segment
+            })(reportsCollection)  
+          } else {
+            return QStore.update(
+              { _id: results[0]._id },
+              { 
+                '$set': {
+                  'availability': 'unknown'
+                }
+              })(reportsCollection).then(function() {
+                return null
+              })
+          }
+          
+        })
       })
       .nodeify(next)
     },
@@ -80,77 +100,72 @@ function newApp(storeConnection, time, QUser, session) {
               picture: f.picture
             }
           })
-        return Q.fcall(function() { return userMap })
+        return Q(userMap)
       })
-      var currentUserIdP = userP.then(function(user) {
-        return Q.fcall(function() {
-          return user.id
-        })
-      })
-      Q.spread([userP, userMapP], function(user, userMap) {
+
+      Q.spread([collP, userP, userMapP], function(collection, user, userMap) {
         
-        collP.then(function(collection) {
-          collection
-          .find({ user_id: { $in: Object.keys(userMap)} })
-          .toArray(function(err, reports) {
+        QStore
+        .find({ user_id: { $in: Object.keys(userMap)} })(collection)
+        .then(function(reports) {
 
-            // Days with headings
-            var timeCursor = time.get()
-            for(var i = 0; i < displayDays; i++) {
-              var day = {
-                heading: weekDayText(timeCursor) + ' ' + dateText(timeCursor),
-              }
-
-              function newSegmentViewModelData(segmentName) { 
-                var svmd = {}
-                svmd.heading = segmentName === 'evening' ? 'Evening' : 'Daytime'
-
-                var currentUserHasReported = false
-                svmd.persons = reports
-                  .filter(function(report) { 
-                    return report.date     === storeDate(timeCursor) && 
-                           report.segment  === segmentName 
-                  })
-                  .map(function(report) {
-                    if (report.user_id === user.id)
-                      currentUserHasReported = true
-                    return {
-                      imageSrc: userMap[report.user_id].picture,
-                      label: '*' + userMap[report.user_id].first_name + 
-                             '* is **' + report.availability + '** ' + 
-                             'during *' + segmentName + '* this *' + 
-                             weekDayLongText(timeCursor) + '*',
-                      appearance: report.availability
-                    }
-                  })
-
-                if(!currentUserHasReported)
-                  svmd.persons.unshift({
-                    label: userMap[user.id].first_name,
-                    appearance: 'unknown'
-                  })
-
-                return svmd
-               
-              }
-
-              day.segments = {
-                daytime: newSegmentViewModelData('daytime'),
-                evening: newSegmentViewModelData('evening'),
-              }
-
-              days.push(day) 
-
-              timeCursor.setDate(timeCursor.getDate() + 1)
-              
+          // Days with headings
+          var timeCursor = time.get()
+          for(var i = 0; i < displayDays; i++) {
+            var day = {
+              heading: weekDayText(timeCursor) + ' ' + dateText(timeCursor),
             }
 
-            next(null, {
-              days: days
-            })
+            day.segments = {
+              daytime: newSegmentViewModelData('daytime', timeCursor, reports, userMap, user.id),
+              evening: newSegmentViewModelData('evening', timeCursor, reports, userMap, user.id),
+            }
+
+            days.push(day) 
+
+            timeCursor.setDate(timeCursor.getDate() + 1)
+            
+          }
+
+          next(null, {
+            days: days
           })
         })
       })
+
+      function newSegmentViewModelData(segmentName, timeCursor, reports, userMap, currentUserId) { 
+        var svmd = {}
+        svmd.heading = segmentName === 'evening' ? 'Evening' : 'Daytime'
+
+        var currentUserHasReported = false
+        svmd.persons = reports
+          .filter(function(report) { 
+            return report.date     === storeDate(timeCursor) && 
+                   report.segment  === segmentName 
+          })
+          .map(function(report) {
+
+            if (report.user_id === currentUserId)
+              currentUserHasReported = true
+            return {
+              imageSrc: userMap[report.user_id].picture,
+              label: '*' + userMap[report.user_id].first_name + 
+                     '* is **' + report.availability + '** ' + 
+                     'during *' + segmentName + '* this *' + 
+                     weekDayLongText(timeCursor) + '*',
+              appearance: report.availability
+            }
+          })
+
+
+        if(!currentUserHasReported)
+          svmd.persons.unshift({
+            label: userMap[currentUserId].first_name,
+            appearance: 'unknown'
+          })
+        
+        return svmd
+      }
     }
   }
   return api;

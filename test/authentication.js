@@ -261,7 +261,7 @@ describe('Friend availability', function() {
   })
 })
 
-describe('Pressing own avatar', function() {
+describe('Pressing own avatar (evening)', function() {
    var context = noReportsContext({
     name: 'Maja', date: '2012-01-01'
   })
@@ -288,13 +288,55 @@ describe('Pressing own avatar', function() {
       .should.equal('evening')
   })
 
-
-  it('pressing other segment')
-  it('pressing other day')
-  it('pressing free avatar')
   it('prevents haxor')
+  it('contextBeforeEach')
 
 })
+
+describe('Pressing on unknown avatar (daytime)', function() {
+  var context = noReportsContext({
+    name: 'Våfflan', date: '2014-04-04'
+  })
+  beforeEach(context.runPress('person', 
+    context.config.userAndFriends.id, '2014-04-04', 'daytime'))
+
+  it('writes the report to the database (date)', function() {
+    context.reportsInDatabase[0].date
+      .should.equal('2014-04-04')
+  })
+})
+
+describe('Pressing on unknown avatar (other day)', function() {
+  var context = noReportsContext({
+    name: 'Våfflan', date: '2013-01-01'
+  })
+  beforeEach(context.runPress('person', 
+    context.config.userAndFriends.id, '2012-01-01', 'daytime'))
+
+  it('writes the report to the database (segment)', function() {
+    context.reportsInDatabase[0].segment
+      .should.equal('daytime')
+  })
+})
+
+describe('Pressing on unknown avatar (other day)', function() {
+  var context = singleReportContext({
+    date: '2013-09-03',   segment: 'daytime',
+    name: 'Irrelevant',   availability: 'free'
+  })
+  beforeEach(context.runPress('person', 
+    context.config.userAndFriends.id, '2013-09-03', 'daytime'))
+
+  it('writes the report to the database (availability)', function() {
+    context.reportsInDatabase[0].availability
+      .should.equal('unknown')
+  })
+})
+
+
+  
+
+
 
 function noReportsContext(opts) {
   if (!opts.name) throw new Error('opts.name not found')  
@@ -321,8 +363,10 @@ function singleReportContext(opts) {
     segment: opts.segment
   }]
   me.afterRun = function() {
-    me.renderedPerson = 
-      me.yield.days[0].segments[opts.segment].persons[0];
+    if(!!me.yield) {
+      me.renderedPerson = 
+        me.yield.days[0].segments[opts.segment].persons[0];
+    }
   }
   return me
 }
