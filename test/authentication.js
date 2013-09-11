@@ -288,9 +288,6 @@ describe('Pressing own avatar (evening)', function() {
       .should.equal('evening')
   })
 
-  it('prevents haxor')
-  it('contextBeforeEach')
-
 })
 
 describe('Pressing on unknown avatar (daytime)', function() {
@@ -331,6 +328,31 @@ describe('Pressing on unknown avatar (other day)', function() {
     context.reportsInDatabase[0].availability
       .should.equal('unknown')
   })
+})
+
+describe('Clicking friend', function() {
+  var context = friendReportContext({
+    date: '2013-12-05', 
+    segment: 'evening', name: 'John',   
+    friendName: 'Samantha', availability: 'free'
+  })
+  beforeEach(context.runPress('person', 
+    context.config.userAndFriends.friends[0].id, '2013-09-03', 'daytime'))
+
+  it('should not have changed availability', function() {
+    var friendReport = context.reportsInDatabase[0]
+    var friendId = context.config.userAndFriends.friends[0].id
+    friendReport.availability.should.equal('free')
+    friendReport.user_id.should.equal(friendId)
+  })
+
+  it('should not have changed availability', function() {
+    var myReport = context.reportsInDatabase[1]
+    var myId = context.config.userAndFriends.id
+    myReport.availability.should.equal('free')
+    myReport.user_id.should.equal(myId)
+  })
+
 })
 
 
@@ -400,6 +422,10 @@ function friendReportContext(opts) {
   return me
 }
 
+// TODO: Better public interface for contexts? 
+// 
+// Hasfriend?
+// has basic verbose ones, encapsulating contexts inherit them
 
 
 function facebookUserContext(opts) {
@@ -494,6 +520,9 @@ function overviewContextBase() {
     .then(function(reports) {
       me.reportsInDatabase = reports
       me.afterRun()
+    })
+    .thenResolve(connP).then(function(connection) {
+      connection.close()
     })
     .nodeify(next)
 
