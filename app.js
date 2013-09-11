@@ -1,6 +1,7 @@
 var Q = require('q')
 var QStore = require('./q-store-mongo')
 var ObjectId = require('mongodb').ObjectID;
+var moment  = require('moment')
 
 function newApp(storeConnection, time, QUser, session) {
 
@@ -49,7 +50,14 @@ function newApp(storeConnection, time, QUser, session) {
 
   var api = {
 
-    press: function(topic, target, date, segment, next) {
+    press: function(segment, date, next) {
+      
+      if (segment !== 'daytime' && segment !== 'evening') 
+        throw new Error('Invalid segment: ' + segment)
+
+      if (!moment(date).isValid())
+        throw new Error('Invalid date: ' + date)
+
       var userP = QUser.get(session.get('facebook_token'))
       var collP = QStore.collection('reports')(storeConnection)
       Q.spread([ userP, collP ], function(user, reportsCollection) {

@@ -265,8 +265,7 @@ describe('Pressing own avatar (evening)', function() {
    var context = noReportsContext({
     name: 'Maja', date: '2012-01-01'
   })
-  beforeEach(context.runPress('person', 
-    context.config.userAndFriends.id, '2012-01-01', 'evening'))
+  beforeEach(context.runPress('evening', '2012-01-01'))
 
   it('writes the report to the database (id)', function() {
     context.reportsInDatabase[0].user_id
@@ -294,8 +293,7 @@ describe('Pressing on unknown avatar (daytime)', function() {
   var context = noReportsContext({
     name: 'Våfflan', date: '2014-04-04'
   })
-  beforeEach(context.runPress('person', 
-    context.config.userAndFriends.id, '2014-04-04', 'daytime'))
+  beforeEach(context.runPress('daytime', '2014-04-04'))
 
   it('writes the report to the database (date)', function() {
     context.reportsInDatabase[0].date
@@ -307,8 +305,7 @@ describe('Pressing on unknown avatar (other day)', function() {
   var context = noReportsContext({
     name: 'Våfflan', date: '2013-01-01'
   })
-  beforeEach(context.runPress('person', 
-    context.config.userAndFriends.id, '2012-01-01', 'daytime'))
+  beforeEach(context.runPress('daytime', '2012-01-01'))
 
   it('writes the report to the database (segment)', function() {
     context.reportsInDatabase[0].segment
@@ -321,8 +318,7 @@ describe('Pressing on unknown avatar (other day)', function() {
     date: '2013-09-03',   segment: 'daytime',
     name: 'Irrelevant',   availability: 'free'
   })
-  beforeEach(context.runPress('person', 
-    context.config.userAndFriends.id, '2013-09-03', 'daytime'))
+  beforeEach(context.runPress('daytime', '2013-09-03'))
 
   it('writes the report to the database (availability)', function() {
     context.reportsInDatabase[0].availability
@@ -330,14 +326,15 @@ describe('Pressing on unknown avatar (other day)', function() {
   })
 })
 
+
+
 describe('Clicking friend', function() {
   var context = friendReportContext({
     date: '2013-12-05', 
     segment: 'evening', name: 'John',   
     friendName: 'Samantha', availability: 'free'
   })
-  beforeEach(context.runPress('person', 
-    context.config.userAndFriends.friends[0].id, '2013-09-03', 'daytime'))
+  beforeEach(context.runPress('daytime', '2013-09-03'))
 
   it('should not have changed availability', function() {
     var friendReport = context.reportsInDatabase[0]
@@ -352,12 +349,56 @@ describe('Clicking friend', function() {
     myReport.availability.should.equal('free')
     myReport.user_id.should.equal(myId)
   })
+})
+
+describe('Passing invalid segment name', function() {
+   var context = noReportsContext({
+    name: 'Maja', date: '2012-01-01'
+  })
+
+  it('throws error', function(done) {
+    context.runPress('morning', '2012-01-01')(function(error, result) {
+      error.message.should.equal('Invalid segment: morning')
+      done()
+    }) 
+  })
+
+  it('does not insert anything', function(done) {
+    context.runPress('morning', '2012-01-01')(function() {
+      context.reportsInDatabase.length.should.equal(0)
+      done()
+    })
+  })
 
 })
 
+describe('Validates date input', function() {
+   var context = noReportsContext({
+    name: 'Maja', date: '2012-01-01'
+  })
 
+  it('throws error on invalid dates', function(done) {
+    context.runPress('daytime', '2013-02-29')(function(error, result) {
+      error.message.should.equal('Invalid date: 2013-02-29')
+      done()
+    }) 
+  })
+
+  it('does not insert anything if invalid', function(done) {
+    context.runPress('daytime', '2013-02-29')(function() {
+      context.reportsInDatabase.length.should.equal(0)
+      done()
+    })
+  })
+
+  it('does NOT error on valid ones', function(done) {
+    context.runPress('daytime', '2012-02-29')(function(error, result) {
+      context.reportsInDatabase.length.should.equal(1)
+      done()
+    }) 
+  })
   
-
+})
 
 
 function noReportsContext(opts) {
@@ -470,6 +511,8 @@ function overviewContextBase() {
     if (!me.config.reports)         throw new Error('reports missing')
     if (!me.config.userAndFriends)  throw new Error('userAndFriends missing')
     if (!me.config.timeOverride)    throw new Error('timeOverride missing')
+
+    me.reportsInDatabase = []
       
     var connP = QStore.connect("mongodb://localhost:27017")
     var collP = connP.then(QStore.collection('reports'))
