@@ -287,6 +287,12 @@ describe('Pressing own avatar (evening)', function() {
       .should.equal('evening')
   })
 
+  it('publishes on user channel', function() {
+    var message =
+      context.publishedMessages[context.logged_in_user.id][0]
+    message.event.should.equal('changed')
+  })
+
 })
 
 describe('Pressing on unknown avatar (daytime)', function() {
@@ -298,6 +304,12 @@ describe('Pressing on unknown avatar (daytime)', function() {
   it('writes the report to the database (date)', function() {
     context.reportsInDatabase[0].date
       .should.equal('2014-04-04')
+  })
+
+  it('publishes on user channel', function() {
+    var message =
+      context.publishedMessages[context.logged_in_user.id][0]
+    message.event.should.equal('changed')
   })
 })
 
@@ -328,7 +340,7 @@ describe('Pressing on unknown avatar (other day)', function() {
 
 
 
-describe('Clicking friend', function() {
+describe('Clicking same segment as friend', function() {
   var context = friendReportContext({
     date: '2013-12-05', 
     segment: 'evening', name: 'John',   
@@ -348,6 +360,18 @@ describe('Clicking friend', function() {
     var myId = context.config.userAndFriends.id
     myReport.availability.should.equal('free')
     myReport.user_id.should.equal(myId)
+  })
+
+  it('publishes on user channel', function() {
+    var message =
+      context.publishedMessages[context.logged_in_user.id][0]
+    message.event.should.equal('changed')
+  })
+
+  it('publishes on friend channel', function() {
+    var message =
+      context.publishedMessages[context.logged_in_user.friends[0].id][0]
+    message.event.should.equal('changed')
   })
 })
 
@@ -445,15 +469,19 @@ function friendReportContext(opts) {
   
   me.config.timeOverride = new Date(Date.parse(opts.date))
 
-  me.config.userAndFriends = {
+  me.config.userAndFriends = 
+  me.logged_in_user = {
     id: '333333333333',
     first_name: opts.name,
     picture: 'http://irrelevant.com/john.jpg',
-    friends: [{
-      id: '6666666666',
-      first_name: opts.friendName
-    }]
   }
+
+  me.logged_in_user.friends = [{
+    id: '6666666666',
+    first_name: opts.friendName
+  }]
+
+  
   me.config.reports = [{
     user_id: '6666666666',
     availability: opts.availability,
@@ -472,11 +500,14 @@ function friendReportContext(opts) {
 function facebookUserContext(opts) {
   if (!opts.name) throw new Error('opts.name not found')
   var me = facebookSessionContext()
-  me.config.userAndFriends = {
+  
+  me.config.userAndFriends = 
+  me.logged_in_user = {
     id: '63278723892032198',
     first_name: opts.name,
     picture: 'http://facebook.com/lesser_people/rolf.jpg'
   }
+
   return me
 }
 
@@ -543,7 +574,16 @@ function overviewContextBase() {
         }
       }
 
-      
+      me.publishedMessages = {}
+      var publish = {
+        trigger: function(channel, event, message) {
+          me.publishedMessages[channel] = me.publishedMessages[channel] || []
+          me.publishedMessages[channel].push({
+            event: event,
+            message: message
+          })
+        }
+      }
       
       var session = {
         get: function fakeSessionGet(key) {
@@ -553,7 +593,7 @@ function overviewContextBase() {
         }
       }
           
-      return Q.npost(newApp(connection, time, QUser, session), fnName, args)
+      return Q.npost(newApp(connection, time, QUser, session, publish), fnName, args)
     })
     .then(function(overviewData) {
       me.yield = overviewData

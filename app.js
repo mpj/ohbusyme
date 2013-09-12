@@ -3,7 +3,7 @@ var QStore = require('./q-store-mongo')
 var ObjectId = require('mongodb').ObjectID;
 var moment  = require('moment')
 
-function newApp(storeConnection, time, QUser, session) {
+function newApp(storeConnection, time, QUser, session, publish) {
 
   var displayDays = 21
 
@@ -85,6 +85,12 @@ function newApp(storeConnection, time, QUser, session) {
               })
           }
           
+        }).then(function() {
+          publish.trigger(user.id, 'changed')
+          if(user.friends)
+            user.friends.forEach(function(f) {
+              publish.trigger(f.id, 'changed')
+            })
         })
       })
       .nodeify(next)
