@@ -6,6 +6,8 @@ var _ = require('underscore')
 var Q = require('q')
 var QStore = require('../q-store-mongo')
 
+Q.longStackSupport = true;
+
 describe('Lists day spans', function() {
   
   var context = singleReportContext({
