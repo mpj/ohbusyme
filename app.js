@@ -142,6 +142,7 @@ function newApp(storeConnection, time, QUser, session, publish) {
           }
 
           next(null, {
+            change_channel: user.id,
             days: days
           })
         })

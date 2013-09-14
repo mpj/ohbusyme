@@ -475,6 +475,19 @@ describe('Validates date input', function() {
   
 })
 
+describe('Pressing own avatar (evening)', function() {
+  var context = noReportsContext({
+    name: 'Maja', date: '2012-01-01', facebook_user_id: '1234560'
+  })
+  beforeEach(context.runOverview)
+
+  it('shows user id as change_channel', function() {
+    context.yield.change_channel.should.equal('1234560')
+  })
+
+
+})
+
 
 function noReportsContext(opts) {
   if (!opts.name) throw new Error('opts.name not found')  
@@ -554,7 +567,7 @@ function facebookUserContext(opts) {
   
   me.config.userAndFriends = 
   me.logged_in_user = {
-    id: '63278723892032198',
+    id: opts.facebook_user_id || '63278723892032198',
     first_name: opts.name,
     picture: opts.picture || 'http://facebook.com/lesser_people/rolf.jpg'
   }
