@@ -25,6 +25,7 @@ define([], function() {
         overviewStateHandler(data);
       })
       .fail(function(jqXHR, textStatus, errorThrown) { 
+        if(jqXHR.status === 403) return window.location='/facebook-auth';
         if(jqXHR.status === 404) return console.warn('/overview.json not found.');
         if(jqXHR.statusText === 'timeout') return console.warn('/overview.json timed out.');
         console.warn( "Could not fetch /overview.json:", textStatus, errorThrown, jqXHR); 
@@ -38,13 +39,10 @@ define([], function() {
       var uri = 'press/' + path
       $.ajax({
         url: uri,
-        dataType: 'json',
         timeout: 2500 
       })
-      .done(function(data) { 
-        console.log("Press event successfully sent to server:" + uri)
-      })
       .fail(function(jqXHR, textStatus, errorThrown) { 
+        if(jqXHR.status === 403) return window.location='/facebook-auth';
         if(jqXHR.status === 404) return console.warn(uri +' not found.');
         if(jqXHR.statusText === 'timeout') return console.warn(uri + ' timed out.');
         console.warn( "Could not fetch " + uri + ":", textStatus, errorThrown, jqXHR); 

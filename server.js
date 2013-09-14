@@ -178,8 +178,16 @@ var server = connect()
         })
         return deferred.promise
       }).then(function(result) {
-        res.writeHead(200, { 'Content-Type': 'text/json' });
-        res.end('{ status: "OK" }'); 
+        res.writeHead(200);
+        res.end(); 
+      }).fail(function(error) {
+        var isTokenInvalid = error.code === 2500
+        if(isTokenInvalid) {
+          res.writeHead(403);
+          res.end(); 
+        } else {
+          throw error
+        }
       }).done()
     })
 
@@ -205,6 +213,14 @@ var server = connect()
         var json = JSON.stringify(result);
         res.writeHead(200, { 'Content-Type': 'text/json' });
         res.end(json); 
+      }).fail(function(error) {
+        var isTokenInvalid = error.code === 2500
+        if(isTokenInvalid) {
+          res.writeHead(403);
+          res.end(); 
+        } else {
+          throw error
+        }
       }).done()
 
     })
