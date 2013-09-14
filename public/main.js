@@ -75,5 +75,8 @@ require([
           ko.applyBindings(appViewModel);
         }
       })
+
+
+      eventBus.subscribe('click', facade.press)
     })
 });
