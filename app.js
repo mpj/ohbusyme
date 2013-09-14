@@ -127,7 +127,7 @@ function newApp(storeConnection, time, QUser, session, publish) {
           var timeCursor = time.get()
           for(var i = 0; i < displayDays; i++) {
             var day = {
-              heading: weekDayText(timeCursor) + ' ' + dateText(timeCursor),
+              label: weekDayText(timeCursor) + ' ' + dateText(timeCursor),
             }
 
             day.segments = {
@@ -148,13 +148,15 @@ function newApp(storeConnection, time, QUser, session, publish) {
       })
 
       function newSegmentViewModelData(segmentName, timeCursor, reports, userMap, currentUserId) { 
-        var svmd = {}
-        svmd.heading = segmentName === 'evening' ? 'Evening' : 'Daytime'
+        var storeDateStr = storeDate(timeCursor)
 
+        var svmd = {}
+        svmd.label = segmentName === 'evening' ? 'Evening' : 'Daytime'
+        svmd.on_click = 'segment/' + storeDateStr + '/' + segmentName
         var currentUserHasReported = false
         svmd.persons = reports
           .filter(function(report) { 
-            return report.date     === storeDate(timeCursor) && 
+            return report.date     === storeDateStr && 
                    report.segment  === segmentName 
           })
           .map(function(report) {

@@ -50,9 +50,9 @@ require([
       var newEventBus = function() {
         var subscribers = {}
         return {
-          dispatch: function(type, id) {
+          dispatch: function(type, path) {
             if (!subscribers[type]) return
-            subscribers[type].forEach(function(fn) { fn(id) })
+            subscribers[type].forEach(function(fn) { fn(path) })
           },
 
           subscribe: function(type, handler) {

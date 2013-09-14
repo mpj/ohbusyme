@@ -13,8 +13,8 @@ describe('Parsing entire OverviewModel', function() {
   })
 
   var fakeEventBus = {
-    dispatch: function(type, id) {
-      events.push({ type: type, id: id})
+    dispatch: function(type, path) {
+      events.push({ type: type, path: path})
     } 
   }
 
@@ -68,12 +68,12 @@ describe('Parsing entire OverviewModel', function() {
           segments: {
             daytime: {
               label: 'Daytime',
-              id: '20130101-daytime',
+              on_click: 'segment/2013-01-01/daytime',
               persons: []
             },
             evening: {
               label: 'Evening',
-              id: '20130101-evening',
+              on_click: 'segment/2013-01-01/evening',
               persons: [{
                 imageSrc: 'image.png',
                 look: 'free',
@@ -148,14 +148,14 @@ describe('Parsing entire OverviewModel', function() {
 
     describe('segment parsing', function() {
 
-      describe('lacks id', function() {
+      describe('lacks on_click', function() {
         beforeEach(function() {
-          delete options.days[0].segments.evening.id
+          delete options.days[0].segments.evening.on_click
         })
 
         parseError(function() {
           it('should complain', function() {
-            error.message.should.equal('Property id was not provided.')
+            error.message.should.equal('Property on_click was not provided.')
           })
         })
       })
@@ -199,11 +199,11 @@ describe('Parsing entire OverviewModel', function() {
           })
 
           it('dispatched event with proper type', function() {
-            events[0].type.should.equal('segment_clicked')
+            events[0].type.should.equal('click')
           })
 
-          it('dispatched event with proper id', function() {
-            events[0].id.should.equal('20130101-evening')
+          it('dispatched event with proper path', function() {
+            events[0].path.should.equal('segment/2013-01-01/evening')
           })
           
         }) 

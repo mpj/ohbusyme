@@ -19,34 +19,35 @@ describe('Lists day spans', function() {
   })
 
   it('yields 2013-09-03 as first day', function() {
-    context.yield.days[0].heading.should.equal('TUE 03')
+    context.yield.days[0].label.should.equal('TUE 03')
   })
 
   it('yields 2013-09-04 as second day', function() {
-    context.yield.days[1].heading.should.equal('WED 04')
+    context.yield.days[1].label.should.equal('WED 04')
   })
 
   it('yields 2013-09-05 as third day', function() {
-    context.yield.days[2].heading.should.equal('THU 05')
+    context.yield.days[2].label.should.equal('THU 05')
   })
 
   it('yields 2013-09-06 as fourth day', function() {
-    context.yield.days[3].heading.should.equal('FRI 06')
+    context.yield.days[3].label.should.equal('FRI 06')
   })
 
   it('yields 2013-09-07 as fifth day', function() {
-    context.yield.days[4].heading.should.equal('SAT 07')
+    context.yield.days[4].label.should.equal('SAT 07')
   })
 
   it('yields 2013-09-08 as sixth day', function() {
-    context.yield.days[5].heading.should.equal('SUN 08')
+    context.yield.days[5].label.should.equal('SUN 08')
   })
 
   it('yields 2013-09-23 as 21st day', function() {
-    context.yield.days[20].heading.should.equal('MON 23')
+    context.yield.days[20].label.should.equal('MON 23')
   })
 
 })
+
 
 describe('Virtual segments (no reports) ', function() {
   
@@ -59,12 +60,23 @@ describe('Virtual segments (no reports) ', function() {
     context.yield.days.length.should.equal(21)
   })
 
+
   it('yields 2012-01-01 as first day', function() {
-    context.yield.days[0].heading.should.equal('SUN 01')
+    context.yield.days[0].label.should.equal('SUN 01')
   })
 
   it('yields 2013-1-21 as 21st day', function() {
-    context.yield.days[20].heading.should.equal('SAT 21')
+    context.yield.days[20].label.should.equal('SAT 21')
+  })
+
+  it('has proper label on daytime segment', function() {
+    context.yield.days[20].segments.daytime.label
+      .should.equal('Daytime')
+  })
+
+  it('has proper label on evening segment', function() {
+    context.yield.days[20].segments.evening.label
+      .should.equal('Evening')
   })
 
   it('yields the user a listed person on first day', function() {
@@ -79,7 +91,6 @@ describe('Virtual segments (no reports) ', function() {
       .should.equal('unknown')
   })
       
-
 })
 
 describe('Virtual segments (single report)', function() {
@@ -107,6 +118,27 @@ describe('Virtual segments (single report)', function() {
   })
 
 })
+
+describe('Click tagging', function() {
+  
+  var context = singleReportContext({
+    date: '2013-09-08',   segment: 'daytime',
+    name: 'Hank',         availability: 'free'
+  })
+  beforeEach(context.runOverview)
+
+  it('daytime (non-virtual)', function() {
+    context.yield.days[0].segments.daytime.on_click.should.equal(
+      'segment/2013-09-08/daytime')
+  })
+
+  it('daytime (non-virtual)', function() {
+    context.yield.days[1].segments.evening.on_click.should.equal(
+      'segment/2013-09-09/evening')
+  })
+
+})
+
 
 
 describe('Sunday', function() {
