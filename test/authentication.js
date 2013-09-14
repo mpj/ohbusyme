@@ -86,8 +86,8 @@ describe('Virtual segments (no reports) ', function() {
 
   it('yields full label')
 
-  it('person has the right appearance', function() {
-    context.yield.days[0].segments.daytime.persons[0].appearance
+  it('person has the right look', function() {
+    context.yield.days[0].segments.daytime.persons[0].look
       .should.equal('unknown')
   })
       
@@ -108,12 +108,12 @@ describe('Virtual segments (single report)', function() {
   })
 
   it('displays other segments as unknown', function() {
-    context.yield.days[0].segments.evening.persons[0].appearance
+    context.yield.days[0].segments.evening.persons[0].look
       .should.equal('unknown')
   })
 
   it('displays other days as unknown', function() {
-    context.yield.days[1].segments.evening.persons[0].appearance
+    context.yield.days[1].segments.evening.persons[0].look
       .should.equal('unknown')
   })
 
@@ -159,18 +159,18 @@ describe('Sunday', function() {
       .should.equal('*Hank* is **free** during *daytime* this *Sunday*') 
   })
 
-  it('displays user availabilxity as appearance', function() {
-    context.renderedPerson.appearance
+  it('displays user availabilxity as look', function() {
+    context.renderedPerson.look
       .should.equal('free')
   })
 
   it('displays other segments as unknown', function() {
-    context.yield.days[0].segments.evening.persons[0].appearance
+    context.yield.days[0].segments.evening.persons[0].look
       .should.equal('unknown')
   })
 
   it('displays other days as unknown', function() {
-    context.yield.days[1].segments.evening.persons[0].appearance
+    context.yield.days[1].segments.evening.persons[0].look
       .should.equal('unknown')
   })
 
@@ -188,8 +188,8 @@ describe('Monday', function() {
       .should.equal('*Wayne* is **unknown** during *daytime* this *Monday*') 
   })
 
-  it('displays user availability as appearance', function() {
-    context.renderedPerson.appearance
+  it('displays user availability as look', function() {
+    context.renderedPerson.look
       .should.equal('unknown')
   })
 })
@@ -273,7 +273,7 @@ describe('Friend availability', function() {
   })
 
   it('shows current user first, as unknown', function() {
-    context.yield.days[0].segments.evening.persons[0].appearance
+    context.yield.days[0].segments.evening.persons[0].look
       .should.equal('unknown')
   })
 
@@ -283,7 +283,7 @@ describe('Friend availability', function() {
   })
 
   it('shows friends next, as free', function() {
-    context.yield.days[0].segments.evening.persons[1].appearance
+    context.yield.days[0].segments.evening.persons[1].look
       .should.equal('free')
   })
 

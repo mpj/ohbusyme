@@ -169,7 +169,7 @@ function newApp(storeConnection, time, QUser, session, publish) {
                      '* is **' + report.availability + '** ' + 
                      'during *' + segmentName + '* this *' + 
                      weekDayLongText(timeCursor) + '*',
-              appearance: report.availability
+              look: report.availability
             }
           })
 
@@ -177,7 +177,7 @@ function newApp(storeConnection, time, QUser, session, publish) {
         if(!currentUserHasReported)
           svmd.persons.unshift({
             label: userMap[currentUserId].first_name,
-            appearance: 'unknown'
+            look: 'unknown'
           })
         
         return svmd
