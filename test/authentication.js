@@ -52,7 +52,8 @@ describe('Lists day spans', function() {
 describe('Virtual segments (no reports) ', function() {
   
   var context = noReportsContext({
-    name: 'Maja', date: '2012-01-01'
+    name: 'Maja', date: '2012-01-01', 
+    picture: 'http://facebook.com/maja.jpg'
   })
   beforeEach(context.runOverview)
 
@@ -89,6 +90,11 @@ describe('Virtual segments (no reports) ', function() {
   it('person has the right look', function() {
     context.yield.days[0].segments.daytime.persons[0].look
       .should.equal('unknown')
+  })
+
+  it('person has the right imageSrc', function() {
+    context.yield.days[0].segments.daytime.persons[0].imageSrc
+      .should.equal('http://facebook.com/maja.jpg')
   })
       
 })
@@ -537,7 +543,7 @@ function facebookUserContext(opts) {
   me.logged_in_user = {
     id: '63278723892032198',
     first_name: opts.name,
-    picture: 'http://facebook.com/lesser_people/rolf.jpg'
+    picture: opts.picture || 'http://facebook.com/lesser_people/rolf.jpg'
   }
 
   return me

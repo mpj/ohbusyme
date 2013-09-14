@@ -176,6 +176,7 @@ function newApp(storeConnection, time, QUser, session, publish) {
 
         if(!currentUserHasReported)
           svmd.persons.unshift({
+            imageSrc: userMap[currentUserId].picture,
             label: userMap[currentUserId].first_name,
             look: 'unknown'
           })
