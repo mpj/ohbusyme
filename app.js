@@ -3,6 +3,8 @@ var QStore = require('./q-store-mongo')
 var ObjectId = require('mongodb').ObjectID;
 var moment  = require('moment')
 
+Q.longStackSupport = true;
+
 function newApp(storeConnection, time, QUser, session, publish) {
 
   var displayDays = 21
@@ -118,8 +120,7 @@ function newApp(storeConnection, time, QUser, session, publish) {
       })
 
       Q.spread([collP, userP, userMapP], function(collection, user, userMap) {
-        
-        QStore
+        return QStore
         .find({ user_id: { $in: Object.keys(userMap)} })(collection)
         .then(function(reports) {
 
@@ -141,12 +142,13 @@ function newApp(storeConnection, time, QUser, session, publish) {
             
           }
 
-          next(null, {
+          return Q({
             change_channel: user.id,
             days: days
           })
         })
-      })
+      }).nodeify(next)
+
 
       function newSegmentViewModelData(segmentName, timeCursor, reports, userMap, currentUserId) { 
         var storeDateStr = storeDate(timeCursor)
