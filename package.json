@@ -28,7 +28,8 @@
     "q": "0.9.7",
     "fbgraph": "0.2.7",
     "faye": "0.8.9",
-    "raven": "0.5.2"
+    "raven": "0.5.2",
+    "keen.io": "0.0.3"
   },
   "analyze": false,
   "devDependencies": {

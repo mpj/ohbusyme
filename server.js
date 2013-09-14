@@ -7,7 +7,14 @@ var connect = require('connect')
   , graph = require('fbgraph')
   , Q = require('q')
   , faye = require('faye')
-  , raven =  require('raven')
+  , raven =  require('raven'),
+  keen = require("keen.io")
+
+
+var keen = keen.configure({
+    projectId: "523230f000111c0a2f000006",
+    writeKey: "5c6d4d0d55c95180809887854ea17d667b07192aba6245d2b6a6eb14362e42c21e1b8728452e09f6bb6732ed9b74186f96df7a1a6112be4144c60f0e2290806385ce5258cab00eb6af6acd434fe914d6f3eb5878e220d1a2da557687c77f47cdda1e45d0090f987084536c29ed22cc11"
+});
 
 
 Q.longStackSupport = true;
@@ -146,6 +153,7 @@ var server = connect()
   .use(urlrouter(function(r) {
     
     r.get('/', function(req, res, next) {
+      keen.addEvent("navigation", {"target": "landing"})
       res.writeHead(200, { 'Content-Type': 'text/html' });
       res.end(fs.readFileSync('landing.html'));    
     }) 
@@ -158,12 +166,16 @@ var server = connect()
           // https://github.com/ciaranj/connect-auth/issues/65s
           var sess = newSessionService(req)
           sess.set('facebook_token', req.session.access_token)
+          keen.addEvent("navigation", {"target": "login-successful"})
           res.redirect("/app");
         }
       });
     })
 
     r.get(/\/press\/segment\/.*/, function(req, res, next) {
+
+      keen.addEvent("navigation", {"target": "segment-press"})
+
       var parts = req.url.split('/')
       var dateStr = parts[3]
       var segmentName = parts[4]
