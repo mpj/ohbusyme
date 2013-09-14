@@ -5,7 +5,7 @@ define([], function() {
 
     var api = {}
 
-    var faye = new Faye.Client('http://localhost:3000/faye');
+    var faye = new Faye.Client('/faye');
     
     var overviewSubscription;
     var refreshState = function() {
