@@ -24,7 +24,7 @@ var urlrouter = require('urlrouter');
 var newApp = require('./app')
 
 var QStore = require('./q-store-mongo')
-var mongoConnectionP = QStore.connect("mongodb://localhost:27017")
+var mongoConnectionP = QStore.connect(process.env.MONGOHQ_URL || "mongodb://localhost:27017")
 
 var timeService = {
   get: function() {
@@ -132,9 +132,9 @@ var server = connect()
   .use(connect.session({ secret: 'keyboard hat' }))
   .use(auth([
       auth.Facebook({
-          appId : "147631548776900", 
-          appSecret: "bab09c8d595c7d9ab2e40622704d1130", 
-          callback: "http://localhost:3000/facebook-auth"
+          appId : process.env.FACEBOOK_APP_ID || "147631548776900", 
+          appSecret: process.env.FACEBOOK_APP_SECRET || "bab09c8d595c7d9ab2e40622704d1130", 
+          callback: process.env.FACEBOOK_CALLBACK || "http://localhost:3000/facebook-auth"
       })
   ]))
   .use(connect.compress()) // must be before static
