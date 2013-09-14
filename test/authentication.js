@@ -487,6 +487,19 @@ describe('Pressing own avatar (evening)', function() {
     context.yield.change_channel.should.equal('1234560')
   })
 
+})
+
+
+describe('Pressing own avatar (evening)', function() {
+  var context = noReportsContext({
+    name: 'Harald', date: '2012-01-01', facebook_user_id: '1234560'
+  })
+  beforeEach(context.runOverview)
+
+  it('shows user id as change_channel', function() {
+    context.yield.greeting.should.equal(
+      'Harald, you are so busy!')
+  })
 
 })
 

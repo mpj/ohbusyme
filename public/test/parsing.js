@@ -63,6 +63,7 @@ describe('Parsing entire OverviewModel', function() {
     var person;
     beforeEach(function() {
       options = {
+        greeting: 'Hello!',
         days: [{
           label: 'Tomorrow',
           segments: {
@@ -87,9 +88,29 @@ describe('Parsing entire OverviewModel', function() {
 
     describe('day parsing', function() {
 
+
+      parseResult(function() {
+        it('parses greeting', function() {
+          overview.greeting()   .should.equal("Hello!")
+        })
+      })
+
       parseResult(function() {
         it('parses label', function() {
           overview.days()[0].label()   .should.equal("Tomorrow")
+        })
+      })
+
+      describe('greeting missing', function() {
+        beforeEach(function() {
+          delete options.greeting
+        })
+
+        parseError(function() {
+          it('complains about greeting', function() {
+            error.message.should.equal(
+              'Property greeting was not provided.')
+          })  
         })
       })
 

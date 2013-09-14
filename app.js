@@ -143,6 +143,7 @@ function newApp(storeConnection, time, QUser, session, publish) {
           }
 
           return Q({
+            greeting: user.first_name + ", you are so busy!",
             change_channel: user.id,
             days: days
           })
