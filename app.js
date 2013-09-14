@@ -78,7 +78,7 @@ function newApp(storeConnection, time, QUser, session, publish) {
               { _id: results[0]._id },
               { 
                 '$set': {
-                  'availability': 'unknown'
+                  'availability': results[0].availability === 'free' ? 'unknown' : 'free'
                 }
               })(reportsCollection).then(function() {
                 return null

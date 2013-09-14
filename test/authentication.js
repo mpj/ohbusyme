@@ -333,7 +333,7 @@ describe('Pressing own avatar (evening)', function() {
 
 })
 
-describe('Pressing on unknown avatar (daytime)', function() {
+describe('Pressing on virtual avatar (daytime)', function() {
   var context = noReportsContext({
     name: 'Våfflan', date: '2014-04-04'
   })
@@ -351,7 +351,7 @@ describe('Pressing on unknown avatar (daytime)', function() {
   })
 })
 
-describe('Pressing on unknown avatar (other day)', function() {
+describe('Pressing on virtual avatar (other day)', function() {
   var context = noReportsContext({
     name: 'Våfflan', date: '2013-01-01'
   })
@@ -363,7 +363,7 @@ describe('Pressing on unknown avatar (other day)', function() {
   })
 })
 
-describe('Pressing on unknown avatar (other day)', function() {
+describe('Pressing on own free avatar', function() {
   var context = singleReportContext({
     date: '2013-09-03',   segment: 'daytime',
     name: 'Irrelevant',   availability: 'free'
@@ -373,6 +373,19 @@ describe('Pressing on unknown avatar (other day)', function() {
   it('writes the report to the database (availability)', function() {
     context.reportsInDatabase[0].availability
       .should.equal('unknown')
+  })
+})
+
+describe('Pressing on own unknown (but non-virtual) avatar', function() {
+  var context = singleReportContext({
+    date: '2013-09-03',   segment: 'daytime',
+    name: 'Irrelevant',   availability: 'unknown'
+  })
+  beforeEach(context.runPress('daytime', '2013-09-03'))
+
+  it('writes the report to the database (availability)', function() {
+    context.reportsInDatabase[0].availability
+      .should.equal('free')
   })
 })
 
