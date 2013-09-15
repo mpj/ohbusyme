@@ -58,11 +58,14 @@ var userService = {
     
     // convert fb user to OBM user.
     function toSimpleUser(fbUser) {
-      return {
+      var su = {
         id:         fbUser.id,
         first_name: fbUser.first_name,
         picture:    fbUser.picture.data.url
       }
+      su.num_mutual_friends = fbUser.mutualfriends ? 
+        fbUser.mutualfriends.data.length : 0
+      return su
     }
 
     // recursive get of friends
@@ -85,12 +88,17 @@ var userService = {
       }
     }
 
-    var uri = 'me?fields=id,first_name,picture,friends.fields(id,first_name,picture)';
+    var uri = 'me?fields=id,first_name,picture,friends.fields(id,first_name,picture,mutualfriends)';
     graph.setAccessToken(token);
     return Q.ninvoke(graph, 'get', uri).then(function(user) {
       return getAllFriends(user.friends, []).then(function(allFriends) {
         var currentUser = toSimpleUser(user)
         currentUser.friends = allFriends
+        currentUser.friends.sort(function(a,b) {
+          if(a.num_mutual_friends <   b.num_mutual_friends)   return -1
+          if(a.num_mutual_friends === b.num_mutual_friends)   return 0
+          if(a.num_mutual_friends >   b.num_mutual_friends)   return 1
+        })
         userServiceCache(token, currentUser)
         return Q(currentUser)
       })
