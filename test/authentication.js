@@ -500,7 +500,30 @@ describe('Pressing own avatar (evening)', function() {
     context.yield.greeting.should.equal(
       'Harald, you are so busy!')
   })
+})
 
+describe('sort order', function() {
+  var context = dualFriendReportsContext({
+    yourName: 'Roffe', friend1Name: 'Nilso', friend2Name: 'Hank',
+    friend1Mutuals: 2, friend2Mutuals: 1,
+    segment: 'evening'
+  })
+  beforeEach(context.runOverview)
+
+  it('always puts me first', function() {
+    context.yield.days[0].segments.evening
+      .persons[0].label.should.contain('Roffe')
+  })
+
+  xit('puts most mutuals at the top', function() {
+    context.yield.days[0].segments.evening
+      .persons[1].label.should.contain('Nilso')
+  })
+
+  xit('puts lest mutuals at the bottom', function() {
+    context.yield.days[0].segments.evening
+      .persons[1].label.should.contain('Hank')
+  })
 })
 
 
@@ -534,6 +557,59 @@ function singleReportContext(opts) {
         me.yield.days[0].segments[opts.segment].persons[0];
     }
   }
+  return me
+}
+
+// You and two friends have one report each on a segment.
+function dualFriendReportsContext(opts) {
+  if (!opts.yourName)       throw new Error('opts.yourName not found')  
+  if (!opts.friend1Name)       throw new Error('opts.friend1Name not found') 
+  if (!opts.friend1Mutuals)       throw new Error('opts.friend1Mutuals not found') 
+  if (!opts.friend2Name)       throw new Error('opts.friend2Name not found')  
+  if (!opts.friend2Mutuals)       throw new Error('opts.friend2Mutuals not found') 
+  if (!opts.segment)    throw new Error('opts.segment not found')
+
+  var me = facebookSessionContext(opts)
+  
+  me.config.timeOverride = new Date(Date.parse('2013-01-01'))
+
+  me.config.userAndFriends = 
+  me.logged_in_user = {
+    id: '333333333333',
+    first_name: opts.yourName,
+    picture: 'http://irrelevant.com/john.jpg',
+  }
+
+  me.logged_in_user.friends = [
+    {
+      id: '6666666666',
+      first_name: opts.friend1Name,
+      num_mutual_friends: opts.friend1Mutuals
+    },
+    {
+      id: '8888888888',
+      first_name: opts.friend2Name,
+      num_mutual_friends: opts.friend2Mutuals
+    }
+  ]
+
+  me.config.reports = [{
+    user_id: '6666666666',
+    availability: 'free',
+    date: '2013-01-01',
+    segment: opts.segment
+  },
+  {
+    user_id: '8888888888',
+    availability: 'free',
+    date: '2013-01-01',
+    segment: opts.segment
+  },{
+    user_id: '333333333333',
+    availability: 'free',
+    date: '2013-01-01',
+    segment: opts.segment
+  }]
   return me
 }
 

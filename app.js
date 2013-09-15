@@ -113,7 +113,8 @@ function newApp(storeConnection, time, QUser, session, publish) {
           user.friends.forEach(function(f) {
             userMap[f.id] = {
               first_name: f.first_name,
-              picture: f.picture
+              picture: f.picture,
+              num_mutual_friends: f.num_mutual_friends
             }
           })
         return Q(userMap)
@@ -159,6 +160,16 @@ function newApp(storeConnection, time, QUser, session, publish) {
         svmd.on_click = 'segment/' + storeDateStr + '/' + segmentName
         var currentUserHasReported = false
         svmd.persons = reports
+          .sort(function(a, b) {
+            var am = userMap[a.user_id].num_mutual_friends
+            var bm = userMap[b.user_id].num_mutual_friends
+            if (typeof(am) === 'undefined') am = 5000
+            if (typeof(bm) === 'undefined') bm = 5000
+            if (am <   bm) return -1
+            if (am === bm) return 0
+            if (am >   bm) return 1
+          })
+          .reverse()
           .filter(function(report) { 
             return report.date     === storeDateStr && 
                    report.segment  === segmentName 
@@ -176,7 +187,6 @@ function newApp(storeConnection, time, QUser, session, publish) {
               look: report.availability
             }
           })
-
 
         if(!currentUserHasReported)
           svmd.persons.unshift({
