@@ -12,7 +12,7 @@ define([], function() {
       $.ajax({
         url: '/overview.json',
         dataType: 'json',
-        timeout: 2500 
+        timeout: 5000 
       })
       .done(function(data) { 
         if(!data.change_channel)
@@ -39,7 +39,7 @@ define([], function() {
       var uri = 'press/' + path
       $.ajax({
         url: uri,
-        timeout: 2500 
+        timeout: 5000 
       })
       .fail(function(jqXHR, textStatus, errorThrown) { 
         if(jqXHR.status === 403) return window.location='/facebook-auth';
