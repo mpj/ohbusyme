@@ -172,7 +172,9 @@ function newApp(storeConnection, time, QUser, session, publish) {
           .reverse()
           .filter(function(report) { 
             return report.date     === storeDateStr && 
-                   report.segment  === segmentName 
+                   report.segment  === segmentName  &&
+                   // filter out friends that have reported unknown
+                   (report.user_id === currentUserId || report.availability === 'free')
           })
           .map(function(report) {
 
