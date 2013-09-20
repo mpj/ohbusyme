@@ -189,12 +189,17 @@ function newApp(storeConnection, time, QUser, session, publish) {
             }
           })
 
-        if(!currentUserHasReported)
-          svmd.persons.push({
+        if(!currentUserHasReported) {
+          var currentUser = userMap[currentUserId]
+          var currentUserVMD = {
             imageSrc: userMap[currentUserId].picture,
-            label: userMap[currentUserId].first_name,
-            look: 'unknown'
-          })
+            look: 'unknown',
+            label: currentUser.first_name  + ', are you free ' +
+            'during ' + segmentName + ' this ' +  weekDayLongText(timeCursor) + '? ' +
+            'Press your picture!'
+          }
+          svmd.persons.push(currentUserVMD)
+        }
         
         return svmd
       }

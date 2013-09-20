@@ -82,12 +82,10 @@ describe('Virtual segments (no reports) ', function() {
       .should.equal('Evening')
   })
 
-  it('yields the user a listed person on first day', function() {
+  it('yields full label', function() {
     context.yield.days[0].segments.daytime.persons[0].label
-      .should.include('Maja')
+      .should.equal('Maja, are you free during daytime this Sunday? Press your picture!')
   })
-
-  it('yields full label')
 
   it('person has the right look', function() {
     context.yield.days[0].segments.daytime.persons[0].look
