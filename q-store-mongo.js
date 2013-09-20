@@ -30,6 +30,11 @@ var QStoreMongo = {
       return Q.ninvoke(coll, 'update', selector, update, { safe:true })
     }
   },
+  remove: function(selector) {
+    return function(coll) {
+      return Q.ninvoke(coll, 'remove', selector, { safe:true })  
+    }
+  },
   clear: function(collection) {
     // Using remove here because drop 
     // were causing "ns not found" and various

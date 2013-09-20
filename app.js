@@ -73,16 +73,12 @@ function newApp(storeConnection, time, QUser, session, publish) {
               user_id: user.id,
               availability: 'free',
               date: date,
-              segment: segment
+              segment: segment,
+              created: Number(time.get()),
             })(reportsCollection)  
           } else {
-            return QStore.update(
-              { _id: results[0]._id },
-              { 
-                '$set': {
-                  'availability': results[0].availability === 'free' ? 'unknown' : 'free'
-                }
-              })(reportsCollection).then(function() {
+            return QStore.remove(
+              { _id: results[0]._id })(reportsCollection).then(function() {
                 return null
               })
           }
@@ -161,15 +157,18 @@ function newApp(storeConnection, time, QUser, session, publish) {
         var currentUserHasReported = false
         svmd.persons = reports
           .sort(function(a, b) {
-            var am = userMap[a.user_id].num_mutual_friends
-            var bm = userMap[b.user_id].num_mutual_friends
-            if (typeof(am) === 'undefined') am = 5000
-            if (typeof(bm) === 'undefined') bm = 5000
-            if (am <   bm) return -1
-            if (am === bm) return 0
-            if (am >   bm) return 1
+            
+            // FIXME: Legacy reports, remove me after oct 4 2013
+            if (!a.created || !b.created) {
+              if (a._id < b._id) return -1
+              if (a._id > b._id) return 1
+              return 0  
+            }
+
+            if (a.created <   b.created) return -1
+            if (a.created === b.created) return 0
+            return 1
           })
-          .reverse()
           .filter(function(report) { 
             return report.date     === storeDateStr && 
                    report.segment  === segmentName  &&
@@ -191,7 +190,7 @@ function newApp(storeConnection, time, QUser, session, publish) {
           })
 
         if(!currentUserHasReported)
-          svmd.persons.unshift({
+          svmd.persons.push({
             imageSrc: userMap[currentUserId].picture,
             label: userMap[currentUserId].first_name,
             look: 'unknown'

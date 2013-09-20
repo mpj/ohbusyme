@@ -280,23 +280,23 @@ describe('Friend availability', function() {
       .should.equal(2)
   })
 
-  it('shows current user first, as unknown', function() {
-    context.yield.days[0].segments.evening.persons[0].look
+  it('shows virtual report last, as unknown', function() {
+    context.yield.days[0].segments.evening.persons[1].look
       .should.equal('unknown')
   })
 
-  it('shows current user first, with label', function() {
-    context.yield.days[0].segments.evening.persons[0].label
+  it('shows virtual report last, with label', function() {
+    context.yield.days[0].segments.evening.persons[1].label
       .should.include('John')
   })
 
-  it('shows friends next, as free', function() {
-    context.yield.days[0].segments.evening.persons[1].look
+  it('shows friends first, as free', function() {
+    context.yield.days[0].segments.evening.persons[0].look
       .should.equal('free')
   })
 
-  it('shows friends next, with label', function() {
-    context.yield.days[0].segments.evening.persons[1].label
+  it('shows friends first, with label', function() {
+    context.yield.days[0].segments.evening.persons[0].label
       .should.include('Samantha')
   })
 })
@@ -385,6 +385,11 @@ describe('Pressing on virtual avatar (other day)', function() {
     context.reportsInDatabase[0].segment
       .should.equal('daytime')
   })
+
+  it('dates the report', function() {
+    context.reportsInDatabase[0].created
+      .should.equal(Number(Date.parse('2012-01-01')))
+  })
 })
 
 describe('Pressing on own free avatar', function() {
@@ -394,24 +399,14 @@ describe('Pressing on own free avatar', function() {
   })
   beforeEach(context.runPress('daytime', '2013-09-03'))
 
-  it('writes the report to the database (availability)', function() {
-    context.reportsInDatabase[0].availability
-      .should.equal('unknown')
+  it('deleted the report from the database (availability)', function() {
+    context.reportsInDatabase
+      .length.should.equal(0)
+
   })
+
 })
 
-describe('Pressing on own unknown (but non-virtual) avatar', function() {
-  var context = singleReportContext({
-    date: '2013-09-03',   segment: 'daytime',
-    name: 'Irrelevant',   availability: 'unknown'
-  })
-  beforeEach(context.runPress('daytime', '2013-09-03'))
-
-  it('writes the report to the database (availability)', function() {
-    context.reportsInDatabase[0].availability
-      .should.equal('free')
-  })
-})
 
 
 
@@ -525,26 +520,42 @@ describe('Pressing own avatar (evening)', function() {
 })
 
 describe('sort order', function() {
-  var context = dualFriendReportsContext({
-    yourName: 'Roffe', friend1Name: 'Nilso', friend2Name: 'Hank',
-    friend1Mutuals: 2, friend2Mutuals: 1,
-    segment: 'evening'
-  })
+  var context = tripleReport1()
   beforeEach(context.runOverview)
 
-  it('always puts me first', function() {
-    context.yield.days[0].segments.evening
-      .persons[0].label.should.contain('Roffe')
+  it('lists all reports', function() {
+    context.yield.days[0].segments.evening.persons
+      .length.should.equal(3)
   })
 
-  xit('puts most mutuals at the top', function() {
+  it('puts first report first', function() {
     context.yield.days[0].segments.evening
-      .persons[1].label.should.contain('Nilso')
+      .persons[0].label.should.contain('Hasse')
   })
 
-  xit('puts lest mutuals at the bottom', function() {
+  it('puts last report last', function() {
     context.yield.days[0].segments.evening
-      .persons[1].label.should.contain('Hank')
+      .persons[2].label.should.contain('Pelle')
+  })
+})
+
+describe('sort order (inversed)', function() {
+  var context = tripleReport2()
+  beforeEach(context.runOverview)
+
+  it('lists all reports', function() {
+    context.yield.days[0].segments.evening.persons
+      .length.should.equal(3)
+  })
+
+  it('puts first report first', function() {
+    context.yield.days[0].segments.evening
+      .persons[0].label.should.contain('Pelle')
+  })
+
+  it('puts last report last', function() {
+    context.yield.days[0].segments.evening
+      .persons[2].label.should.contain('Hasse')
   })
 })
 
@@ -571,7 +582,8 @@ function singleReportContext(opts) {
     user_id: '63278723892032198',
     availability: opts.availability,
     date: opts.date,
-    segment: opts.segment
+    segment: opts.segment,
+    created: Number(me.config.timeOverride)-3600*1000
   }]
   me.afterRun = function() {
     if(!!me.yield) {
@@ -580,6 +592,111 @@ function singleReportContext(opts) {
     }
   }
   return me
+}
+
+// Simple report where user Hasse and his two friends have reported
+// after eachother.
+function tripleReport1(opts) {
+
+  var me = facebookSessionContext(opts)
+
+  me.config.timeOverride = new Date(Date.parse('2013-01-01'))
+
+  me.config.userAndFriends = {
+    id: '333333333333',
+    first_name: 'Hasse',
+    picture: 'http://irrelevant.com/john.jpg',
+    friends: [
+      {
+        id: '6666666666',
+        first_name: 'Nisse',
+      },
+      {
+        id: '8888888888',
+        first_name: 'Pelle',
+      }
+    ]
+  }
+
+  me.config.reports = [
+    {
+      user_id: '333333333333',
+      availability: 'free',
+      date: '2013-01-01',
+      segment: 'evening',
+      created: 1356991199 // first, 2012-12-31 23:59:59
+    },
+    {
+      user_id: '8888888888',
+      availability: 'free',
+      date: '2013-01-01',
+      segment: 'evening',
+      created: 1356998399 // third, 2012-12-31 23:59:59
+    },
+    {
+      user_id: '6666666666',
+      availability: 'free',
+      date: '2013-01-01',
+      segment: 'evening',
+      created: 1356994799 // second, 2012-12-31 22:59:59
+    },
+  ]
+
+  return me
+ 
+}
+
+// Simple report where user Hasse and his two friends have reported
+// after eachother, but inverse to tripleReport1
+function tripleReport2(opts) {
+
+  var me = facebookSessionContext(opts)
+
+  me.config.timeOverride = new Date(Date.parse('2013-01-01'))
+
+  me.config.userAndFriends = {
+    id: '333333333333',
+    first_name: 'Hasse',
+    picture: 'http://irrelevant.com/john.jpg',
+    friends: [
+      {
+        id: '6666666666',
+        first_name: 'Nisse',
+      },
+      {
+        id: '8888888888',
+        first_name: 'Pelle',
+      }
+    ]
+  }
+
+  me.config.reports = [
+    {
+      user_id: '8888888888',
+      availability: 'free',
+      date: '2013-01-01',
+      segment: 'evening',
+      created: 1356991199 // 2012-12-31 23:59:59
+    },
+    {
+      user_id: '6666666666',
+      availability: 'free',
+      date: '2013-01-01',
+      segment: 'evening',
+      created: 1356994799 // 2012-12-31 22:59:59
+    },
+    {
+      user_id: '333333333333',
+      availability: 'free',
+      date: '2013-01-01',
+      segment: 'evening',
+      created: 1356998399 // 2012-12-31 23:59:59
+    },
+
+  ]
+
+  return me
+ 
 }
 
 // You and two friends have one report each on a segment.
