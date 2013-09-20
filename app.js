@@ -190,11 +190,19 @@ function newApp(storeConnection, time, QUser, session, publish) {
             imageSrc: userMap[currentUserId].picture,
             look: 'unknown',
           }
-          var lastReport = reportsGroomed[reportsGroomed.length-1]
-          if (lastReport) {
+         
+          if (reportsGroomed.length > 0) {
+            var names = '';
+            reportsGroomed.forEach(function(r, index) {
+              var name = userMap[r.user_id].first_name
+              if (names !== '') 
+                if (index === reportsGroomed.length-1) names += ' and '
+                else names += ', '
+              names += '**' + name + '**'
+            })
             currentUserVMD.label = 
-              '**' + userMap[lastReport.user_id].first_name + '** would like to know if you are free during *' +
-              segmentName + '* on *' + weekDayLongText(timeCursor) + '*. ' +
+              names + ' would like to know if you are free during *' +
+              segmentName + '* on this *' + weekDayLongText(timeCursor) + '*. ' +
               'If you are, press your picture!'
           } else {
             currentUserVMD.label = 

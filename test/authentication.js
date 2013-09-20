@@ -285,7 +285,7 @@ describe('Friend availability', function() {
 
   it('shows virtual report last, with label, using friend name', function() {
     context.yield.days[0].segments.evening.persons[1].label
-      .should.equal('**Samantha** would like to know if you are free during *evening* on *Wednesday*. If you are, press your picture!')
+      .should.equal('**Samantha** would like to know if you are free during *evening* on this *Wednesday*. If you are, press your picture!')
   })
 
   it('shows friends first, as free', function() {
@@ -297,6 +297,37 @@ describe('Friend availability', function() {
     context.yield.days[0].segments.evening.persons[0].label
       .should.include('Samantha')
   })
+})
+
+describe('Virtual report label (two friends)', function() {
+  var context = multiFriendReportsContext({
+    friend1Name: 'Shablat',
+    friend2Name: 'Johan',
+    segment: 'evening'
+  })
+  beforeEach(context.runOverview)
+
+  it('shows virtual report last, with label, using friends names', function() {
+    context.yield.days[0].segments.evening.persons[2].label
+      .should.equal('**Shablat** and **Johan** would like to know if you are free during *evening* on this *Tuesday*. If you are, press your picture!')
+  })
+
+})
+
+describe('Virtual report label (three friends)', function() {
+  var context = multiFriendReportsContext({
+    friend1Name: 'Shablat',
+    friend2Name: 'Johan',
+    friend3Name: 'Sauron',
+    segment: 'evening'
+  })
+  beforeEach(context.runOverview)
+
+  it('shows virtual report last, with label, using friends names', function() {
+    context.yield.days[0].segments.evening.persons[3].label
+      .should.equal('**Shablat**, **Johan** and **Sauron** would like to know if you are free during *evening* on this *Tuesday*. If you are, press your picture!')
+  })
+
 })
 
 
@@ -676,9 +707,8 @@ function tripleReport2(opts) {
  
 }
 
-// You and two friends have one report each on a segment.
-function dualFriendReportsContext(opts) {
-  if (!opts.yourName)       throw new Error('opts.yourName not found')  
+// Several friends have reports, you don't
+function multiFriendReportsContext(opts) {
   if (!opts.friend1Name)       throw new Error('opts.friend1Name not found') 
   if (!opts.friend2Name)       throw new Error('opts.friend2Name not found')  
   if (!opts.segment)    throw new Error('opts.segment not found')
@@ -690,7 +720,7 @@ function dualFriendReportsContext(opts) {
   me.config.userAndFriends = 
   me.logged_in_user = {
     id: '333333333333',
-    first_name: opts.yourName,
+    first_name: 'Defaultsson',
     picture: 'http://irrelevant.com/john.jpg',
   }
 
@@ -709,18 +739,29 @@ function dualFriendReportsContext(opts) {
     user_id: '6666666666',
     availability: 'free',
     date: '2013-01-01',
-    segment: opts.segment
+    segment: opts.segment,
+    created: 1
   },{
     user_id: '8888888888',
     availability: 'free',
     date: '2013-01-01',
-    segment: opts.segment
-  },{
-    user_id: '333333333333',
-    availability: 'free',
-    date: '2013-01-01',
-    segment: opts.segment
+    segment: opts.segment,
+    created: 2
   }]
+
+  if(opts.friend3Name) {
+    me.logged_in_user.friends.push({
+      id: '77777777777',
+      first_name: opts.friend3Name,
+    })
+    me.config.reports.push({
+      user_id: '77777777777',
+      availability: 'free',
+      date: '2013-01-01',
+      segment: opts.segment,
+      created: 3
+    })
+  }
   return me
 }
 
