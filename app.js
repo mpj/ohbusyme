@@ -154,46 +154,54 @@ function newApp(storeConnection, time, QUser, session, publish) {
         svmd.label = segmentName === 'evening' ? 'Evening' : 'Daytime'
         svmd.on_click = 'segment/' + storeDateStr + '/' + segmentName
         var currentUserHasReported = false
-        svmd.persons = reports
-          .sort(function(a, b) {
-            
-            // FIXME: Legacy reports, remove me after oct 4 2013
-            if (!a.created || !b.created) {
-              if (a._id < b._id) return -1
-              if (a._id > b._id) return 1
-              return 0  
-            }
+        var reportsGroomed = reports.sort(function(a, b) {
+          
+          // FIXME: Legacy reports, remove me after oct 4 2013
+          if (!a.created || !b.created) {
+            if (a._id < b._id) return -1
+            if (a._id > b._id) return 1
+            return 0  
+          }
 
-            if (a.created <   b.created) return -1
-            if (a.created === b.created) return 0
-            return 1
-          })
-          .filter(function(report) { 
-            return report.date     === storeDateStr && 
-                   report.segment  === segmentName
-          })
-          .map(function(report) {
-
-            if (report.user_id === currentUserId)
-              currentUserHasReported = true
-            return {
-              imageSrc: userMap[report.user_id].picture,
-              label: '*' + userMap[report.user_id].first_name + 
-                     '* is **' + report.availability + '** ' + 
-                     'during *' + segmentName + '* this *' + 
-                     weekDayLongText(timeCursor) + '*',
-              look: report.availability
-            }
-          })
+          if (a.created <   b.created) return -1
+          if (a.created === b.created) return 0
+          return 1
+        })
+        .filter(function(report) { 
+          return report.date     === storeDateStr && 
+                 report.segment  === segmentName
+        })
+        svmd.persons = reportsGroomed.map(function(report) {
+          if (report.user_id === currentUserId)
+            currentUserHasReported = true
+          return {
+            imageSrc: userMap[report.user_id].picture,
+            label: '*' + userMap[report.user_id].first_name + 
+                   '* is **' + report.availability + '** ' + 
+                   'during *' + segmentName + '* this *' + 
+                   weekDayLongText(timeCursor) + '*',
+            look: report.availability
+          }
+        })
 
         if(!currentUserHasReported) {
           var currentUser = userMap[currentUserId]
           var currentUserVMD = {
             imageSrc: userMap[currentUserId].picture,
             look: 'unknown',
-            label: currentUser.first_name  + ', are you free ' +
-            'during ' + segmentName + ' this ' +  weekDayLongText(timeCursor) + '? ' +
-            'Press your picture!'
+          }
+          var lastReport = reportsGroomed[reportsGroomed.length-1]
+          if (lastReport) {
+            currentUserVMD.label = 
+              userMap[lastReport.user_id].first_name + ' is free during ' +
+              segmentName + ' on ' + weekDayLongText(timeCursor) + '. ' +
+              'Are you? If so, press your picture!'
+          } else {
+            currentUserVMD.label = 
+              currentUser.first_name  + ', are you free ' +
+              'during ' + segmentName + ' this ' +  
+              weekDayLongText(timeCursor) + '? ' +
+              'Press your picture!'
           }
           svmd.persons.push(currentUserVMD)
         }
