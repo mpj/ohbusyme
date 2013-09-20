@@ -273,6 +273,23 @@ describe('Parsing entire OverviewModel', function() {
         })
       })
 
+      describe('is highlighted', function() {
+        beforeEach(function() {
+          person.highlight = true
+        })
+
+        parseResult(function() {
+          var p; // PersonViewModel instance
+          beforeEach(function() {
+            p = overview.days()[0].segments.evening.persons()[0];
+          })
+
+          it('should have tooltip visible from the start', function() {
+            p.tooltip.isVisible().should.equal(true)
+          })
+        })
+      })
+
       parseResult(function() {
         var p; // PersonViewModel instance
         beforeEach(function() {

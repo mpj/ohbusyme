@@ -22,23 +22,29 @@ require([
 
           ko.computed({
             read: function() {
-              $(element).tooltip({
-                html: true, 
-                title: viewModel.body(), 
-                placement: allBindings.tooltipPlacement || 'top',
-                trigger: "manual",
-                container: '#' + element.id
-              })
+              
+                $(element).tooltip({
+                  html: true, 
+                  title: viewModel.body(), 
+                  placement: allBindings.tooltipPlacement || 'top',
+                  trigger: "manual",
+                  container: '#' + element.id
+                })
+              
             },
             disposeWhenNodeIsRemoved: element
           })
 
           ko.computed({
+            
             read: function() {
-              viewModel.isVisible() ? 
-                $(element).tooltip('show') : 
-                $(element).tooltip('hide')
+                if (viewModel.isVisible())
+                  setTimeout(function() { $(element).tooltip('show') }, 0)
+                else
+                  setTimeout(function() { $(element).tooltip('hide') }, 0)
+              
             },
+            
             disposeWhenNodeIsRemoved: element
           })
           

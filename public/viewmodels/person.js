@@ -20,8 +20,11 @@ define([
 
         api.tooltip = newTooltip(marked(opts.label));
 
-        api.mouseover = function() { api.tooltip.isVisible(true) }
+        api.mouseover = function() { console.log("hoover"); api.tooltip.isVisible(true) }
         api.mouseout  = function() { api.tooltip.isVisible(false) }
+
+        if (opts.highlight)
+            api.tooltip.isVisible(true)
 
         return api;
     };

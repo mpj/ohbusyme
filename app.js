@@ -138,6 +138,17 @@ function newApp(storeConnection, time, QUser, session, publish) {
             
           }
 
+          var firstUnknown;
+          days.forEach(function(day) {
+            [day.segments.daytime, day.segments.evening].forEach(function(segment) {
+              segment.persons.forEach(function(person) {
+                if (person.look === 'unknown' && !firstUnknown) 
+                  firstUnknown = person
+              })
+            })
+          })
+          firstUnknown.highlight = true
+
           return Q({
             greeting: user.first_name + ", you are so busy!",
             change_channel: user.id,

@@ -1,5 +1,6 @@
 var chai = require('chai')
 chai.should()
+var expect = chai.expect
 var newApp = require('../app.js')
 var newTime = require('../time.js')
 var _ = require('underscore')
@@ -95,6 +96,24 @@ describe('Virtual segments (no reports) ', function() {
   it('person has the right imageSrc', function() {
     context.yield.days[0].segments.daytime.persons[0].imageSrc
       .should.equal('http://facebook.com/maja.jpg')
+  })
+
+  it('highlights first virtual report', function() {
+    context.yield.days[0].segments.daytime.persons[0].highlight
+      .should.equal(true)
+  })
+
+  it('DOESNT highlight second virtual report', function() {
+    expect(
+      context.yield.days[0].segments.evening.persons[0].highlight
+    ).to.be.undefined
+   
+  })
+
+  it('DOESNT highlight third virtual report', function() {
+    expect(
+      context.yield.days[1].segments.daytime.persons[0].highlight
+    ).to.be.undefined
   })
       
 })
