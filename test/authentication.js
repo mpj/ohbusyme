@@ -377,7 +377,7 @@ describe('Pressing on virtual avatar (daytime)', function() {
 
 describe('Pressing on virtual avatar (other day)', function() {
   var context = noReportsContext({
-    name: 'Våfflan', date: '2013-01-01'
+    name: 'Våfflan', date: '2012-01-01'
   })
   beforeEach(context.runPress('daytime', '2012-01-01'))
 
