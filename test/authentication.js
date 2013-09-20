@@ -680,9 +680,7 @@ function tripleReport2(opts) {
 function dualFriendReportsContext(opts) {
   if (!opts.yourName)       throw new Error('opts.yourName not found')  
   if (!opts.friend1Name)       throw new Error('opts.friend1Name not found') 
-  if (!opts.friend1Mutuals)       throw new Error('opts.friend1Mutuals not found') 
   if (!opts.friend2Name)       throw new Error('opts.friend2Name not found')  
-  if (!opts.friend2Mutuals)       throw new Error('opts.friend2Mutuals not found') 
   if (!opts.segment)    throw new Error('opts.segment not found')
 
   var me = facebookSessionContext(opts)
@@ -700,12 +698,10 @@ function dualFriendReportsContext(opts) {
     {
       id: '6666666666',
       first_name: opts.friend1Name,
-      num_mutual_friends: opts.friend1Mutuals
     },
     {
       id: '8888888888',
       first_name: opts.friend2Name,
-      num_mutual_friends: opts.friend2Mutuals
     }
   ]
 
