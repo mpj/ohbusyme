@@ -28,7 +28,7 @@ require([
                   title: viewModel.body(), 
                   placement: allBindings.tooltipPlacement || 'top',
                   trigger: "manual",
-                  container: '#' + element.id
+                  container: 'body'
                 })
               
             },
