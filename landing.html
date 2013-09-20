@@ -36,6 +36,31 @@
 
 </head>
 <body>
+  <div id="fb-root"></div>
+  <script>
+    window.fbAsyncInit = function() {
+      FB.init({
+        appId      : '603714249673851',                        
+        channelUrl : '//app.ohbusy.me/channel.html', 
+        status     : true,                                 
+        xfbml      : false                                  
+      });
+
+      FB.getLoginStatus(function(response) {
+        if (response.status === 'connected') window.location='/facebook-auth'
+      })
+    };
+
+    // Load the SDK asynchronously
+    (function(d, s, id){
+       var js, fjs = d.getElementsByTagName(s)[0];
+       if (d.getElementById(id)) {return;}
+       js = d.createElement(s); js.id = id;
+       js.src = "//connect.facebook.net/en_US/all.js";
+       fjs.parentNode.insertBefore(js, fjs);
+     }(document, 'script', 'facebook-jssdk'));
+  </script>
+
   <img src="/images/bokeh1.jpg" style="position: absolute; width: 100%; height:100%" />
 
   <div class="container">
@@ -57,6 +82,7 @@
 
   <script src="/vendor/jquery-1.10.2.js"></script>
   <script src="/vendor/bootstrap-3.0.0/dist/js/bootstrap.min.js"></script>
+
 
   
 </body>
