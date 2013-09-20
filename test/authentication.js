@@ -620,8 +620,7 @@ function dualFriendReportsContext(opts) {
     availability: 'free',
     date: '2013-01-01',
     segment: opts.segment
-  },
-  {
+  },{
     user_id: '8888888888',
     availability: 'free',
     date: '2013-01-01',
