@@ -112,7 +112,7 @@
         <div class="avatars daytime row col-lg-9 col-md-9 col-sm-8 col-xs-7"
              data-bind="foreach: segments.daytime.persons">
           <div data-bind="click: $parent.segments.daytime.clicked, 
-               attr: { class: 'avatar ' + look() }">
+               attr: { class: 'avatar ' + look() }, tooltip: tooltip, event: { mouseover: mouseover, mouseout: mouseout } ">
             <img data-bind="attr: { src: imageSrc }" />
           </div>
         </div>
@@ -120,7 +120,7 @@
              data-bind="foreach: segments.evening.persons">
           <div class="avatar" 
                data-bind="click: $parent.segments.evening.clicked,
-               attr: { class: 'avatar ' + look() }">
+               attr: { class: 'avatar ' + look() }, tooltip: tooltip, tooltipPlacement: 'bottom', event: { mouseover: mouseover, mouseout: mouseout }">
             <img data-bind="attr: { src: imageSrc }" />
           </div>
         </div>
