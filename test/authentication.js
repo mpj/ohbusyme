@@ -285,7 +285,7 @@ describe('Friend availability', function() {
 
   it('shows virtual report last, with label, using friend name', function() {
     context.yield.days[0].segments.evening.persons[1].label
-      .should.equal('Samantha is free during evening on Wednesday. Are you? If so, press your picture!')
+      .should.equal('**Samantha** would like to know if you are free during *evening* on *Wednesday*. If you are, press your picture!')
   })
 
   it('shows friends first, as free', function() {

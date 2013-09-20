@@ -193,9 +193,9 @@ function newApp(storeConnection, time, QUser, session, publish) {
           var lastReport = reportsGroomed[reportsGroomed.length-1]
           if (lastReport) {
             currentUserVMD.label = 
-              userMap[lastReport.user_id].first_name + ' is free during ' +
-              segmentName + ' on ' + weekDayLongText(timeCursor) + '. ' +
-              'Are you? If so, press your picture!'
+              '**' + userMap[lastReport.user_id].first_name + '** would like to know if you are free during *' +
+              segmentName + '* on *' + weekDayLongText(timeCursor) + '*. ' +
+              'If you are, press your picture!'
           } else {
             currentUserVMD.label = 
               currentUser.first_name  + ', are you free ' +
