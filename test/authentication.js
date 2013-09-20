@@ -299,27 +299,6 @@ describe('Friend availability', function() {
   })
 })
 
-describe('Filters unknown friends', function() {
-  var context = friendReportContext({
-    date: '2012-02-29', 
-    segment: 'evening', name: 'John',   
-    friendName: 'Samantha', availability: 'unknown'
-  })
-  beforeEach(context.runOverview)
-
-  it('shows current user first, as unknown', function() {
-    context.yield.days[0].segments.evening.persons[0].look
-      .should.equal('unknown')
-  })
-
-  it('... and only that', function() {
-    context.yield.days[0].segments.evening.persons.length
-      .should.equal(1)
-  })
-
- 
-})
-
 
 describe('Pressing own avatar (evening)', function() {
    var context = noReportsContext({

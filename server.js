@@ -63,8 +63,6 @@ var userService = {
         first_name: fbUser.first_name,
         picture:    fbUser.picture.data.url
       }
-      su.num_mutual_friends = fbUser.mutualfriends ? 
-        fbUser.mutualfriends.data.length : 0
       return su
     }
 
@@ -88,7 +86,7 @@ var userService = {
       }
     }
 
-    var uri = 'me?fields=id,first_name,picture,friends.fields(id,first_name,picture,mutualfriends)';
+    var uri = 'me?fields=id,first_name,picture,friends.fields(id,first_name,picture)';
     graph.setAccessToken(token);
     return Q.ninvoke(graph, 'get', uri).then(function(user) {
       return getAllFriends(user.friends, []).then(function(allFriends) {

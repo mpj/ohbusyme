@@ -109,8 +109,7 @@ function newApp(storeConnection, time, QUser, session, publish) {
           user.friends.forEach(function(f) {
             userMap[f.id] = {
               first_name: f.first_name,
-              picture: f.picture,
-              num_mutual_friends: f.num_mutual_friends
+              picture: f.picture
             }
           })
         return Q(userMap)
@@ -171,9 +170,7 @@ function newApp(storeConnection, time, QUser, session, publish) {
           })
           .filter(function(report) { 
             return report.date     === storeDateStr && 
-                   report.segment  === segmentName  &&
-                   // filter out friends that have reported unknown
-                   (report.user_id === currentUserId || report.availability === 'free')
+                   report.segment  === segmentName
           })
           .map(function(report) {
 
