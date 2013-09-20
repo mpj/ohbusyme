@@ -240,7 +240,7 @@ var server = connect()
     })
 
   }))
-  .use(raven.middleware.connect('https://a934a2e7a84c47b09bc9a5ddfe374310:6b31161855de4b7ba8d2f9c98c6a0ecd@app.getsentry.com/13060')) 
+  .use(raven.middleware.connect(process.env.SENTRY_DSN)) 
 
 
 
