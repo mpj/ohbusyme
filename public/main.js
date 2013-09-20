@@ -1,7 +1,8 @@
     require.config({
     paths: {
         'moment': '/moment/moment',
-    }
+    },
+    waitSeconds: 12
 });
 
 require([
