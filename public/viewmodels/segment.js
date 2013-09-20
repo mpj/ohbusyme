@@ -24,14 +24,6 @@ define([
  
         api.label = ko.observable(opts.label)
 
-        ko.computed(function() {
-            if (api.type() === 'evening') {
-                api.persons().forEach(function(p) {
-                    p.tooltip.placement('bottom');
-                })  
-            }
-        })
-
         api.clicked =  eventBus.dispatch.bind(null, 'click', opts.on_click)
 
         return api;

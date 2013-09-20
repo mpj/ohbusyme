@@ -12,9 +12,10 @@ require([
     domReady(function() {
 
       ko.bindingHandlers.tooltip = {
-        init: function(element, valueAccessor) {  
+        init: function(element, valueAccessor, allBindingsAccessor) {  
           
           var viewModel = ko.unwrap(valueAccessor());
+          var allBindings = allBindingsAccessor();
           
           if (!element.id)
             element.id = "" + Math.floor(Math.random()*10000000)
@@ -24,7 +25,7 @@ require([
               $(element).tooltip({
                 html: true, 
                 title: viewModel.body(), 
-                placement: viewModel.placement(),
+                placement: allBindings.tooltipPlacement || 'top',
                 trigger: "manual",
                 container: '#' + element.id
               })
