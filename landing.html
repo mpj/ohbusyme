@@ -38,6 +38,7 @@
 <body>
   <div id="fb-root"></div>
   <script>
+  
     window.fbAsyncInit = function() {
       FB.init({
         appId      : '603714249673851',                        
@@ -47,7 +48,10 @@
       });
 
       FB.getLoginStatus(function(response) {
-        if (response.status === 'connected') window.location='/app'
+        if (response.status === 'connected') {
+          document.getElementById('login-button').innerHTML = 'Welcome back! Please wait ...'
+          window.location.href='/app'
+        }
       })
     };
 
@@ -68,7 +72,7 @@
       <h1>OH! &nbsp;BUSY ME!</h1>
       <h2>When are my friends and me free at the same time?</h2>
       
-      <button type="button" class="btn btn-lg btn-primary" onclick="window.location='/facebook-auth'">Log in with Facebook</button>
+      <button id="login-button" type="button" class="btn btn-lg btn-primary" onclick="window.location='/facebook-auth'">Log in with Facebook</button>
       <p class="spam">We will <em>never</em> post anything without your permission.</p>
 
       <div>
@@ -79,10 +83,6 @@
       
     </div>
   </div>
-
-  <script src="/vendor/jquery-1.10.2.js"></script>
-  <script src="/vendor/bootstrap-3.0.0/dist/js/bootstrap.min.js"></script>
-
 
   
 </body>
