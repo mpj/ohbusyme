@@ -1,36 +1,86 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Oh, busy me! When are my friends and me free at the same time?</title>
+  <title>Oh, busy me! When are me and my friends free at the same time?</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <link href='http://fonts.googleapis.com/css?family=Lato:300|Oswald:700|PT+Sans+Caption:400,700' 
+  rel='stylesheet' type='text/css'>
 
-  <link href="/vendor/bootstrap-3.0.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="/vendor/bootstrap-3.0.0/css/bootstrap.min.css" rel="stylesheet" />
 
   <style>
-    
-    html, body, div, h1, h2, h3, h4, h5, h6, span, strong, em, p {
-      font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+
+    .main-row { 
+      margin-top: 125px; 
+      padding-left: 5%;
+      padding-right: 5%
     }
 
-    .main-row     { text-align: left; margin-top: 150px; }
-    .main-row h1  { font-size: 100px; color: white;  text-shadow: 3px 3px 3px #000; }
+    .main-row h1 { 
+      font-family: 'Oswald', sans-serif; 
+      font-weight: 700; 
+      font-size: 100px; 
+      margin: 0; padding: 0; 
+    }
     
-    .main-row h2  { margin-bottom: 20px;  color: white;text-shadow: 2px 2px 2px #000;  }
+    .main-row h2 { 
+      font-family: 'Lato', sans-serif; 
+      font-weight: 300; 
+      font-size: 40px; 
+      margin: 0; padding: 0; 
+      line-height: 70px; 
+      margin-bottom: 20px 
+    }
     
     .main-row button {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      font-size: 20px;
+      margin-right: 15px; /* for spam promise */
       float: left;
-      margin-right: 10px;
-    }
-    .main-row .spam {
-      font-size: 16px;
-      color: white;
-      padding-top: 4px;
-      text-shadow: 2px 2px 2px #000;
-      line-height: 38px;
-
-
+      height: 55px;
+      width: 300px;
     }
 
+    .main-row .spam { 
+      font-family: 'Arial', sans-serif; 
+      font-size: 15px;
+      line-height: 55px; 
+      color: gray; 
+    }
+
+    .main-row .facebook-frame {
+      border: none;  
+      overflow: hidden; 
+      width: 300px;
+    }
+
+    /* iPhone */
+    @media (max-width: 767px) {
+      .facebook-frame {
+        width: 100%;
+      }
+      .main-row button {
+        width: 100%;
+        font-size: 18px;
+        margin-right: 0; /* spam promise doesn't float on small screens */
+      }
+      h1 { font-size: 50px }
+      h2 { font-size: 30px; line-height: 40px}
+      .spam {
+        clear: both; line-height: 30px !important;
+      }
+    }
+
+    .colorful {
+      background-color: #aeff00;
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 5%;
+    }
 
   </style>
 
@@ -65,25 +115,30 @@
      }(document, 'script', 'facebook-jssdk'));
   </script>
 
-  <img src="/images/bokeh1.jpg" style="position: absolute; width: 100%; height:100%" />
 
   <div class="container">
     <div class="row main-row col-lg-12 col-md-12 col-sm-12 col-xs-12">
       <h1>OH! &nbsp;BUSY ME!</h1>
-      <h2>When are my friends and me free at the same time?</h2>
+      <h2>When are me and my friends free at the same time?</h2>
       
-      <button id="login-button" type="button" class="btn btn-lg btn-primary" onclick="window.location='/facebook-auth'">Log in with Facebook</button>
-      <p class="spam">We will <em>never</em> post anything without your permission.</p>
+      <button 
+        id="login-button" type="button" 
+        class="btn btn-lg btn-primary" 
+        onclick="window.location='/facebook-auth'">Log in with Facebook</button>
+      <p class="spam">We promise to never spam your friends.</p>
 
       <div>
-      <iframe src="http://www.facebook.com/plugins/facepile.php? 
-      app_id=603714249673851&amp;colorscheme=dark&amp;size=large" scrolling="no" frameborder="0" style="border:none;  
-      overflow:hidden; width:600px;" allowTransparency="true"></iframe> 
+        <iframe 
+        class="facebook-frame"
+        src="http://www.facebook.com/plugins/facepile.php? 
+        app_id=603714249673851&amp;size=large" 
+        scrolling="no" frameborder="0" allowTransparency="true"></iframe> 
       </div>
       
     </div>
   </div>
 
-  
+  <div class="colorful"></div>
+
 </body>
 </html>
