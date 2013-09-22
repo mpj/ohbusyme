@@ -1,0 +1,103 @@
+html {
+  margin:  0;
+  padding: 0;
+}
+
+.row.day {
+  padding: 20px;
+
+  .header {
+
+    .weekday {
+      font-family: 'Lato';
+      font-weight: 300;
+      width:       100%;
+      font-size:   40px;
+      line-height: 40px;
+      display:     block;
+      text-align:  center;
+    }
+
+    .monthday {
+      font-family: 'Lato';
+      width:       100%;
+      font-size:   16px;
+      display:     block;
+      text-align:  center; 
+    }
+
+    .background {
+      /* Techically has no background, but we want
+        to place the border correctly aligned with 
+        the other backgrounds. */
+      border-top: 1px solid #dfdfdf;
+      position: absolute;
+      left: 1.25%;
+      top: 1.25%;
+      width: 97.5%;
+      height: 97.5%;
+      z-index: 1;
+    }
+
+    .body {
+      padding: 10px;
+    }
+
+  }
+
+  .segment {
+    position: relative;
+  }
+
+  .segment.evening .background {
+    background-color: #f5f5f5;
+    position: absolute;
+    left: 5%;
+    top: 5%;
+    width: 90%;
+    height: 90%;
+    z-index: 1;
+  }
+
+  .segment.daytime .background {
+    background-color: #f5f5f5;
+    position: absolute;
+    left: 5%;
+    top: 5%;
+    width: 90%;
+    height: 90%;
+    z-index: 1;
+  }
+  
+   .segment .icon {
+    text-align: center;
+    font-family: 'Lato';
+    font-size: 36px;
+    vertical-align:middle;
+    display: inline-block;
+    width: 100%;
+    position: relative;
+    z-index: 2;
+  }
+
+
+  .person {
+    position: relative;
+    display: inline-block;
+  }
+
+  .person img {
+    position: absolute;
+    left: 5%;
+    top: 5%;
+    width: 90%;
+    height: 90%;
+  }
+
+  .person.unknown img {
+    opacity: 0.35;
+  }
+  
+}
+
+

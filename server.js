@@ -7,8 +7,9 @@ var connect = require('connect')
   , graph = require('fbgraph')
   , Q = require('q')
   , faye = require('faye')
-  , raven =  require('raven'),
-  keen = require("keen.io")
+  , raven =  require('raven')
+  , keen = require("keen.io")
+  , less = require('connect-lesscss')
 
 
 var keen = keen.configure({
@@ -149,6 +150,10 @@ var server = connect()
   .use(connect.compress()) // must be before static
   .use(connect.static('public', { maxAge: cacheAge }))
   .use(connect.static('node_modules', { maxAge: cacheAge }))
+  .use("/app.css", less("less/app.less", {
+//    paths: ["path/to/other/less/files"]
+  }))
+
   
 
   .use(urlrouter(function(r) {

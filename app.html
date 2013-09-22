@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <link href='http://fonts.googleapis.com/css?family=Lato:300,400,700' rel='stylesheet' type='text/css'>
-
+  
   <title>Oh, busy me! When are my friends and me free at the same time?</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <link href="/vendor/bootstrap-3.0.0/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/vendor/fontello-7d22c1e5/css/fontello-embedded.css">
+  <link href='http://fonts.googleapis.com/css?family=Lato:300' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Oswald:700' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700' rel='stylesheet' type='text/css'>
+  <link href="/app.css" rel="stylesheet" />
 
   <style>
     
@@ -105,7 +109,58 @@
 </head>
 <body>
 
-  
+  <div class="container" data-bind="with: overview">
+
+    <div class="row days" data-bind="foreach: days">
+
+      <div class="row day col-xs-12 col-sm-6 col-lg-4">
+        
+        <div class="header col-lg-12 col-xs-12">
+          <div class="body">
+            <div class="weekday">UNDEFINED</div>
+            <div class="monthday" data-bind="text: label"></div>
+          </div>
+          <div class="background"></div>
+        </div>
+
+        <!--
+        <div class="notification col-lg-12 col-xs-12">
+          <div class="body">
+            <p><strong>Mattias</strong>, <strong>Louise</strong>, <strong>Kim</strong> and <strong>Anders</strong> are all free during daytime this day. Press your picture if you are, too! </p>
+          </div>
+          <div class="background"></div>
+        </div>-->
+
+        <div class="segment daytime col-lg-3 col-xs-3">
+          <span class="icon-sun icon"></span><div class="background"></div></div>
+        <!-- ko foreach: segments.daytime.persons -->
+        <div data-bind="
+               click: $parent.segments.daytime.clicked,
+               attr: { class: 'person col-lg-3 col-xs-3 ' + look() }, 
+               tooltip: tooltip, 
+               event: { mouseover: mouseover, mouseout: mouseout }">
+          <img data-bind="attr: { src: imageSrc }"></div>
+        <!-- /ko -->
+        
+        <div class="segment evening col-lg-3 col-xs-3">
+          <span class="icon-moon icon"></span><div class="background"></div></div>
+        <!-- ko foreach: segments.evening.persons -->
+        <div data-bind="
+               click: $parent.segments.evening.clicked,
+               attr: { class:  'person col-lg-3 col-xs-3 ' + look() }, 
+               tooltip: tooltip, 
+               event: { mouseover: mouseover, mouseout: mouseout }">
+          <img data-bind="attr: { src: imageSrc }"></div>
+        <!-- /ko -->
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+<!--
   <div class="container main" data-bind="with: overview">
     <h1 data-bind="text: greeting"></h1>
     <br />
@@ -141,7 +196,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </div>-->
 
   <script src="/vendor/jquery-1.10.2.js"></script>
   <script src="/vendor/bootstrap-3.0.0/js/bootstrap.min.js"></script>
@@ -149,5 +204,7 @@
   <script src="/requirejs/require.js"></script>
   <script src="/faye/browser/faye-browser.js"></script>
   <script src="main.js"></script>
+ 
+
 </body>
 </html>

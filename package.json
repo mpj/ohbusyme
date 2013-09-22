@@ -29,7 +29,8 @@
     "fbgraph": "0.2.7",
     "faye": "0.8.9",
     "raven": "0.5.2",
-    "keen.io": "0.0.3"
+    "keen.io": "0.0.3",
+    "connect-lesscss": "0.2.0"
   },
   "analyze": false,
   "devDependencies": {

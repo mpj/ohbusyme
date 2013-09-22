@@ -75,6 +75,23 @@ require([
         }
       }
 
+      function enforceBoxes() {
+        var firstColumn = $('.day .segment')[0]
+        var colWidth = $(firstColumn).width();
+        $('.segment').height(colWidth)
+        $('.person').height(colWidth)
+        $('.segment .icon').css('line-height', colWidth+'px')
+        
+        $('.notification').each(function(i,e) {
+          if (!$(e).data('originalHeight')) $(e).data('originalHeight', $(e).height())
+          var h = $(e).data('originalHeight')
+          $(e).height(colWidth * Math.ceil(h / colWidth))
+          var $body = $(e).find('.body')
+          var offset = ($(e).height() - $body.outerHeight()) / 2
+          $body.css('top', offset+'px')
+        })
+      }
+
       var appViewModel = {
         overview: ko.observable() 
       }
@@ -86,7 +103,9 @@ require([
         if (!bindingsApplied) {
           bindingsApplied = true;
           ko.applyBindings(appViewModel);
+          $(window).resize(_.debounce(enforceBoxes, 0))
         }
+        enforceBoxes();
       })
 
 
