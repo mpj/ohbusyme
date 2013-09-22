@@ -5,6 +5,8 @@ define([
 
     	if (!opts.label)
     		throw new Error('Property label was not provided.')
+        if (!opts.sublabel)
+            throw new Error('Property sublabel was not provided.')
         if (!opts.segments)
             throw new Error('Property segments was not provided.')
         if (!opts.segments.evening)
@@ -16,6 +18,7 @@ define([
     	var self = this
 
     	self.label    = ko.observable(opts.label)
+        self.sublabel = ko.observable(opts.sublabel)
 
         self.segments = {
             daytime: newSegment(opts.segments.daytime, eventBus),

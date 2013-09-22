@@ -21,32 +21,56 @@ describe('Lists day spans', function() {
     context.yield.days.length.should.equal(21)
   })
 
-  it('yields 2013-09-03 as first day', function() {
-    context.yield.days[0].label.should.equal('TUE 03')
+  it('yields 2013-09-03 as first day (label)', function() {
+    context.yield.days[0].label.should.equal('Today')
+  })
+
+  it('yields 2013-09-03 as first day (sublabel)', function() {
+    context.yield.days[0].sublabel.should.equal('3 September')
   })
 
   it('yields 2013-09-04 as second day', function() {
-    context.yield.days[1].label.should.equal('WED 04')
+    context.yield.days[1].label.should.equal('Tomorrow')
+  })
+
+  it('yields 2013-09-04 as second day (sublabel)', function() {
+    context.yield.days[1].sublabel.should.equal('4 September')
   })
 
   it('yields 2013-09-05 as third day', function() {
-    context.yield.days[2].label.should.equal('THU 05')
+    context.yield.days[2].label.should.equal('Thursday')
+  })
+
+  it('yields 2013-09-05 as third day (sublabel)', function() {
+    context.yield.days[2].sublabel.should.equal('5 September')
   })
 
   it('yields 2013-09-06 as fourth day', function() {
-    context.yield.days[3].label.should.equal('FRI 06')
+    context.yield.days[3].label.should.equal('Friday')
+  })
+
+  it('yields 2013-09-06 as fourth day (sublabel)', function() {
+    context.yield.days[3].sublabel.should.equal('6 September')
   })
 
   it('yields 2013-09-07 as fifth day', function() {
-    context.yield.days[4].label.should.equal('SAT 07')
+    context.yield.days[4].label.should.equal('Saturday')
+  })
+
+  it('yields 2013-09-07 as fifth day (sublabel)', function() {
+    context.yield.days[4].sublabel.should.equal('7 September')
   })
 
   it('yields 2013-09-08 as sixth day', function() {
-    context.yield.days[5].label.should.equal('SUN 08')
+    context.yield.days[5].label.should.equal('Sunday')
+  })
+
+  it('yields 2013-09-09 as sixth day (sublabel)', function() {
+    context.yield.days[5].sublabel.should.equal('8 September')
   })
 
   it('yields 2013-09-23 as 21st day', function() {
-    context.yield.days[20].label.should.equal('MON 23')
+    context.yield.days[20].label.should.equal('Monday')
   })
 
 })
@@ -66,11 +90,11 @@ describe('Virtual segments (no reports) ', function() {
 
 
   it('yields 2012-01-01 as first day', function() {
-    context.yield.days[0].label.should.equal('SUN 01')
+    context.yield.days[0].sublabel.should.equal('1 January')
   })
 
   it('yields 2013-1-21 as 21st day', function() {
-    context.yield.days[20].label.should.equal('SAT 21')
+    context.yield.days[20].sublabel.should.equal('21 January')
   })
 
   it('has proper label on daytime segment', function() {

@@ -117,23 +117,16 @@
         
         <div class="header col-lg-12 col-xs-12">
           <div class="body">
-            <div class="weekday">UNDEFINED</div>
-            <div class="monthday" data-bind="text: label"></div>
+            <div class="weekday" data-bind="text: label"></div>
+            <div class="monthday" data-bind="text: sublabel"></div>
           </div>
           <div class="background"></div>
         </div>
 
-        <!--
-        <div class="notification col-lg-12 col-xs-12">
-          <div class="body">
-            <p><strong>Mattias</strong>, <strong>Louise</strong>, <strong>Kim</strong> and <strong>Anders</strong> are all free during daytime this day. Press your picture if you are, too! </p>
-          </div>
-          <div class="background"></div>
-        </div>-->
-
         <div class="segment daytime col-lg-3 col-xs-3">
           <span class="icon-sun icon"></span><div class="background"></div></div>
         <!-- ko foreach: segments.daytime.persons -->
+        <!-- FIXME remove duplication -->
         <div data-bind="
                click: $parent.segments.daytime.clicked,
                attr: { class: 'person col-lg-3 col-xs-3 ' + look() }, 
@@ -145,6 +138,7 @@
         <div class="segment evening col-lg-3 col-xs-3">
           <span class="icon-moon icon"></span><div class="background"></div></div>
         <!-- ko foreach: segments.evening.persons -->
+        <!-- FIXME remove duplication -->
         <div data-bind="
                click: $parent.segments.evening.clicked,
                attr: { class:  'person col-lg-3 col-xs-3 ' + look() }, 
@@ -159,44 +153,6 @@
 
   </div>
 
-
-<!--
-  <div class="container main" data-bind="with: overview">
-    <h1 data-bind="text: greeting"></h1>
-    <br />
-    <div class="days" data-bind="foreach: days">
-      <div class="row day">
-        <div class="labels row col-lg-3 col-md-3 col-sm-4 col-xs-6">
-          <div class="col-lg-12 col-md-12 col-sm-12 daytime"
-               data-bind="text: segments.daytime.label"></div>
-          <div class="col-lg-12 col-md-12 col-sm-12 date" data-bind="text: label"></div>
-          <div class="col-lg-12 col-md-12 col-sm-12 evening"
-               data-bind="text: segments.evening.label"></div>
-        </div>
-        <div class="avatars daytime row col-lg-9 col-md-9 col-sm-8 col-xs-7"
-             data-bind="foreach: segments.daytime.persons">
-          <div data-bind="click: $parent.segments.daytime.clicked, 
-               attr: { class: 'avatar ' + look() }, tooltip: tooltip, 
-               tooltipPlacement: 
-                 ($index() === ($parent.segments.daytime.persons().length - 1)) ? 'right' : 'top', 
-               event: { mouseover: mouseover, mouseout: mouseout } ">
-            <img data-bind="attr: { src: imageSrc }" />
-          </div>
-        </div>
-        <div class="avatars evening row col-lg-9 col-md-9 col-sm-8 col-xs-7"
-             data-bind="foreach: segments.evening.persons">
-          <div class="avatar" 
-               data-bind="click: $parent.segments.evening.clicked,
-               attr: { class: 'avatar ' + look() }, tooltip: tooltip, 
-               tooltipPlacement: 
-                ($index() === ($parent.segments.evening.persons().length - 1)) ? 'right' : 'bottom', 
-               event: { mouseover: mouseover, mouseout: mouseout }">
-            <img data-bind="attr: { src: imageSrc }" />
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>-->
 
   <script src="/vendor/jquery-1.10.2.js"></script>
   <script src="/vendor/bootstrap-3.0.0/js/bootstrap.min.js"></script>

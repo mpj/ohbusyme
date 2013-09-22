@@ -66,6 +66,7 @@ describe('Parsing entire OverviewModel', function() {
         greeting: 'Hello!',
         days: [{
           label: 'Tomorrow',
+          sublabel: '1 January',
           segments: {
             daytime: {
               label: 'Daytime',
@@ -101,6 +102,12 @@ describe('Parsing entire OverviewModel', function() {
         })
       })
 
+       parseResult(function() {
+        it('parses sublabel', function() {
+          overview.days()[0].sublabel()   .should.equal("1 January")
+        })
+      })
+
       describe('greeting missing', function() {
         beforeEach(function() {
           delete options.greeting
@@ -123,6 +130,19 @@ describe('Parsing entire OverviewModel', function() {
           it('complains about label', function() {
             error.message.should.equal(
               'Property label was not provided.')
+          })  
+        })
+      })
+
+      describe('sublabel missing', function() {
+        beforeEach(function() {
+          delete options.days[0].sublabel
+        })
+
+        parseError(function() {
+          it('complains about sublabel', function() {
+            error.message.should.equal(
+              'Property sublabel was not provided.')
           })  
         })
       })

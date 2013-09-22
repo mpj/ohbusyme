@@ -9,29 +9,16 @@ function newApp(storeConnection, time, QUser, session, publish) {
 
   var displayDays = 21
 
-  function weekDayText(date) { 
-    switch(date.getDay()) {
-      case 0: return 'SUN'
-      case 1: return 'MON'
-      case 2: return 'TUE'
-      case 3: return 'WED'
-      case 4: return 'THU'
-      case 5: return 'FRI'
-      case 6: return 'SAT'
+  function weekDayLongText(date, today) {
+    
+    if (today) {
+      if (moment(date).isSame(today, 'day')) return 'Today'
+      var tomorrow = moment(today).add('days', 1);
+      if (moment(date).isSame(tomorrow, 'day')) return 'Tomorrow'
     }
+    return moment(date).format('dddd')
   }
 
-  function weekDayLongText(date) {
-    switch(date.getDay()) {
-      case 0: return 'Sunday'
-      case 1: return 'Monday'
-      case 2: return 'Tuesday'
-      case 3: return 'Wednesday'
-      case 4: return 'Thursday'
-      case 5: return 'Friday'
-      case 6: return 'Saturday'
-    }
-  }
 
   function dateText(date) {
     var str = '' + date.getDate()
@@ -124,7 +111,8 @@ function newApp(storeConnection, time, QUser, session, publish) {
           var timeCursor = time.get()
           for(var i = 0; i < displayDays; i++) {
             var day = {
-              label: weekDayText(timeCursor) + ' ' + dateText(timeCursor),
+              label: weekDayLongText(timeCursor, time.get()),
+              sublabel: timeCursor.getDate() + ' ' + moment(timeCursor).format('MMMM')
             }
 
             day.segments = {
