@@ -62,7 +62,8 @@ var userService = {
       var su = {
         id:         fbUser.id,
         first_name: fbUser.first_name,
-        picture:    fbUser.picture.data.url
+        // TODO: Deliver pictures with varying sizes
+        picture:    'http://graph.facebook.com/' + fbUser.id + '/picture?width=300&amp;height=300'
       }
       return su
     }
@@ -87,7 +88,7 @@ var userService = {
       }
     }
 
-    var uri = 'me?fields=id,first_name,picture,friends.fields(id,first_name,picture)';
+    var uri = 'me?fields=id,first_name,friends.fields(id,first_name)';
     graph.setAccessToken(token);
     return Q.ninvoke(graph, 'get', uri).then(function(user) {
       return getAllFriends(user.friends, []).then(function(allFriends) {
