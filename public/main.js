@@ -27,7 +27,7 @@ require([
                 $(element).tooltip({
                   html: true, 
                   title: viewModel.body(), 
-                  placement: allBindings.tooltipPlacement || 'top',
+                  placement: allBindings.tooltipPlacement || 'bottom',
                   trigger: "manual",
                   container: 'body'
                 })
