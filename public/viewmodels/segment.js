@@ -18,7 +18,7 @@ define([
         api.persons = ko.computed(function() {
             if (!opts.persons) return [];
             return opts.persons.map(function(p) {
-                return newPerson(p, eventBus)
+                return newPerson(p, api, eventBus)
             });
         })
  

@@ -3,7 +3,7 @@ define([
     '/marked/lib/marked.js',
 	'/viewmodels/tooltip.js'
 ], function(ko, marked, newTooltip) {
-    return function newPerson(opts, eventBus) {
+    return function newPerson(opts, segment, eventBus) {
 
         if (!opts.look)
             throw new Error('Property look was not provided.')
@@ -22,6 +22,12 @@ define([
 
         api.mouseover = function() { api.tooltip.isVisible(true) }
         api.mouseout  = function() { api.tooltip.isVisible(false) }
+
+        api.clicked = function() {
+            // Latency compensate by switching state
+            api.look(api.look() === 'unknown' ? 'free' : 'unknown') 
+            segment.clicked()
+        }
 
         if (opts.highlight)
             api.tooltip.isVisible(true)

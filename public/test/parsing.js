@@ -225,6 +225,27 @@ describe('Parsing entire OverviewModel', function() {
         })
       })
 
+      describe('state is unknown', function() {
+        beforeEach(function() {
+          options.days[0].segments.evening.persons[0].look = 'unknown'
+        })
+
+        parseResult(function() {
+          describe('clicked', function() {
+            beforeEach(function() {
+              overview.days()[0].segments.evening.persons()[0].clicked();
+            })
+
+            it('changes state immideately', function() {
+              overview.days()[0].segments.evening.persons()[0].look()
+                .should.equal('free')
+            })
+          })
+        })
+      })
+
+
+
       parseResult(function() {
         it('parsing label (daytime)', function() {
           overview.days()[0].segments.daytime.label().should.equal('Daytime');
@@ -236,7 +257,12 @@ describe('Parsing entire OverviewModel', function() {
 
         describe('clicked', function() {
           beforeEach(function() {
-            overview.days()[0].segments.evening.clicked();
+            overview.days()[0].segments.evening.persons()[0].clicked();
+          })
+
+          it('changes state immideately', function() {
+            overview.days()[0].segments.evening.persons()[0].look()
+              .should.equal('unknown')
           })
 
           it('dispatched event with proper type', function() {
