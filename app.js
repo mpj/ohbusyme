@@ -7,7 +7,7 @@ Q.longStackSupport = true;
 
 function newApp(storeConnection, time, QUser, session, publish) {
 
-  var displayDays = 21
+  var displayDays = 14
 
   function weekDayLongText(date, today) {
     

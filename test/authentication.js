@@ -17,8 +17,8 @@ describe('Lists day spans', function() {
   })
   beforeEach(context.runOverview)
 
-  it('should yield 21 days', function() {
-    context.yield.days.length.should.equal(21)
+  it('should yield 14 days', function() {
+    context.yield.days.length.should.equal(14)
   })
 
   it('yields 2013-09-03 as first day (label)', function() {
@@ -69,8 +69,8 @@ describe('Lists day spans', function() {
     context.yield.days[5].sublabel.should.equal('8 September')
   })
 
-  it('yields 2013-09-23 as 21st day', function() {
-    context.yield.days[20].label.should.equal('Monday')
+  it('yields 2013-09-16 as 14th day', function() {
+    context.yield.days[13].sublabel.should.equal('16 September')
   })
 
 })
@@ -84,8 +84,8 @@ describe('Virtual segments (no reports) ', function() {
   })
   beforeEach(context.runOverview)
 
-  it('should yield 21 days even though empty', function() {
-    context.yield.days.length.should.equal(21)
+  it('should yield 14 days even though empty', function() {
+    context.yield.days.length.should.equal(14)
   })
 
 
@@ -93,17 +93,17 @@ describe('Virtual segments (no reports) ', function() {
     context.yield.days[0].sublabel.should.equal('1 January')
   })
 
-  it('yields 2013-1-21 as 21st day', function() {
-    context.yield.days[20].sublabel.should.equal('21 January')
+  it('yields 2013-1-14 as 14th day', function() {
+    context.yield.days[13].sublabel.should.equal('14 January')
   })
 
   it('has proper label on daytime segment', function() {
-    context.yield.days[20].segments.daytime.label
+    context.yield.days[13].segments.daytime.label
       .should.equal('Daytime')
   })
 
   it('has proper label on evening segment', function() {
-    context.yield.days[20].segments.evening.label
+    context.yield.days[13].segments.evening.label
       .should.equal('Evening')
   })
 
