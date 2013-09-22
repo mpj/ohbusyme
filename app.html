@@ -148,6 +148,12 @@
         <!-- /ko -->
 
       </div>
+      <!-- ko if: ( $index() + 1 ) % 2 === 0 -->
+        <div class="clearfix visible-sm visible-md"></div>
+      <!-- /ko -->
+      <!-- ko if: ( $index() + 1 ) % 3 === 0-->
+        <div class="clearfix visible-lg"></div>
+      <!-- /ko -->
 
     </div>
 
