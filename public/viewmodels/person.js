@@ -31,7 +31,7 @@ define([
 
             api.look(opts.look)
             api.imageSrc(opts.imageSrc)
-            api.tooltip.body(opts.label)
+            api.tooltip.body(marked(opts.label))
             
             if (opts.highlight) api.tooltip.isVisible(true)
         }
