@@ -92,14 +92,15 @@ require([
         })
       }
 
-      var appViewModel = {
-        overview: ko.observable() 
-      }
+      
       var bindingsApplied = false;
       var eventBus = newEventBus();
+      var appViewModel = {
+        overview: new OverviewViewModel(eventBus)
+      }
       var facade = newFacade({}, eventBus);
       facade.streamOverview(function(state) {
-        appViewModel.overview(new OverviewViewModel(state, eventBus))
+        appViewModel.overview.parse(state)
         if (!bindingsApplied) {
           bindingsApplied = true;
           ko.applyBindings(appViewModel);

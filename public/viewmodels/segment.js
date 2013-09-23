@@ -1,9 +1,18 @@
 define([ 
     '/knockout/build/output/knockout-latest.debug.js',
-    '/viewmodels/person.js'
-    ], function(ko, newPerson) {
-    return function newSegment(opts, eventBus) {
+    '/viewmodels/person.js',
+    '/lazy-map.js'
+    ], function(ko, newPerson, lazyMap) {
+    return function newSegment(eventBus) {
 
+      var api = {}
+
+      api.type  = ko.observable()
+      api.label = ko.observable()
+      api.persons = ko.observableArray()
+
+      api.parse = function(opts) {
+        
         if (!opts.on_click)
             throw new Error('Property on_click was not provided.')
         if (!opts.persons)
@@ -11,21 +20,25 @@ define([
         if (!opts.label)
             throw new Error('Property label was not provided.')
 
-    	var api = {}
-
-        api.type = ko.observable(opts.type);
-
-        api.persons = ko.computed(function() {
-            if (!opts.persons) return [];
-            return opts.persons.map(function(p) {
-                return newPerson(p, api, eventBus)
-            });
-        })
- 
-        api.label = ko.observable(opts.label)
-
+        api.type(opts.type)
+        api.label(opts.label)
         api.clicked =  eventBus.dispatch.bind(null, 'click', opts.on_click)
+        var personArrMutaded = lazyMap({
+          sourceArr: opts.persons,
+          targetArr: api.persons.peek(),
+          createFunc: function(sourceData) {
+            var p = newPerson(api, eventBus)
+            p.parse(sourceData) 
+            return p
+          },
+          updateFunc: function(sourceData, targetItem) {
+            targetItem.parse(sourceData)
+          }
+        })
 
-        return api;
+        if (personArrMutaded) api.persons.valueHasMutated()
+      }
+
+      return api;
     };
 });

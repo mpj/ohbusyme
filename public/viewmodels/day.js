@@ -1,29 +1,34 @@
 define([
 	'/knockout/build/output/knockout-latest.debug.js',
     '/viewmodels/segment.js' ], function(ko, newSegment) {
-    return function DayViewModel(opts, eventBus) {
-
-    	if (!opts.label)
-    		throw new Error('Property label was not provided.')
-        if (!opts.sublabel)
-            throw new Error('Property sublabel was not provided.')
-        if (!opts.segments)
-            throw new Error('Property segments was not provided.')
-        if (!opts.segments.evening)
-            throw new Error('Property evening was not provided.')
-        if (!opts.segments.daytime)
-            throw new Error('Property daytime was not provided.')
-
+    return function DayViewModel(eventBus) {
     	
     	var self = this
 
-    	self.label    = ko.observable(opts.label)
-        self.sublabel = ko.observable(opts.sublabel)
+    	self.label    = ko.observable()
+        self.sublabel = ko.observable()
 
         self.segments = {
-            daytime: newSegment(opts.segments.daytime, eventBus),
-            evening: newSegment(opts.segments.evening, eventBus)
-            
+            daytime: newSegment(eventBus),
+            evening: newSegment(eventBus)
+        }
+
+        self.parse = function(opts) {
+            if (!opts.label)
+                throw new Error('Property label was not provided.')
+            if (!opts.sublabel)
+                throw new Error('Property sublabel was not provided.')
+            if (!opts.segments)
+                throw new Error('Property segments was not provided.')
+            if (!opts.segments.evening)
+                throw new Error('Property evening was not provided.')
+            if (!opts.segments.daytime)
+                throw new Error('Property daytime was not provided.')
+
+            self.label(opts.label)
+            self.sublabel(opts.sublabel)
+            self.segments.daytime.parse(opts.segments.daytime)
+            self.segments.evening.parse(opts.segments.evening)
         }
     };
 });
