@@ -93,6 +93,16 @@ describe('Virtual segments (no reports) ', function() {
     context.yield.days[0].sublabel.should.equal('1 January')
   })
 
+  it('has notification about being free', function() {
+    context.yield.days[0].notification
+      .should.equal('Maja, are you free sometime this Sunday? Press your picture!')
+  })
+
+  it('... but only on the first day', function() {
+    expect(context.yield.days[1].notification)
+      .to.be.undefined
+  })
+
   it('yields 2013-1-14 as 14th day', function() {
     context.yield.days[13].sublabel.should.equal('14 January')
   })
@@ -107,10 +117,7 @@ describe('Virtual segments (no reports) ', function() {
       .should.equal('Evening')
   })
 
-  it('has notification about being free', function() {
-    context.yield.days[0].notification
-      .should.equal('Maja, are you free sometime this Sunday? Press your picture!')
-  })
+
 
   it('yields full label', function() {
     context.yield.days[0].segments.daytime.persons[0].label
@@ -645,7 +652,7 @@ function singleReportContext(opts) {
   me.config.reports = [{
     user_id: '63278723892032198',
     availability: opts.availability,
-    date: opts.date,
+    date: opts.reportDate || opts.date,
     segment: opts.segment,
     created: Number(me.config.timeOverride)-3600*1000
   }]

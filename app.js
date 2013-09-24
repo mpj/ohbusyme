@@ -108,6 +108,7 @@ function newApp(storeConnection, time, QUser, session, publish) {
         .then(function(reports) {
 
           // Days with headings
+          var isNotificationRendered = false
           var timeCursor = time.get()
           for(var i = 0; i < displayDays; i++) {
             var day = {
@@ -125,10 +126,13 @@ function newApp(storeConnection, time, QUser, session, publish) {
                      report.user_id  === user.id
             }).length > 0
 
-            if (!currentUserHasReported)
+            
+            if (!isNotificationRendered && !currentUserHasReported) {
+              isNotificationRendered = true
               day.notification =  
                 user.first_name + ', are you free sometime this ' + 
                 weekDayLongText(timeCursor) + '? Press your picture!'
+            }
 
             days.push(day) 
 
