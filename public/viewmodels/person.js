@@ -15,8 +15,6 @@ define([
         api.mouseout  = function() { api.tooltip.isVisible(false) }
 
         api.clicked = function() {
-            // Latency compensate by switching state
-            api.look(api.look() === 'unknown' ? 'free' : 'unknown') 
             parent.clicked()
         }
 
