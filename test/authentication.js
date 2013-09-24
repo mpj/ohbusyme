@@ -162,6 +162,7 @@ describe('Virtual segments (single report)', function() {
   })
   beforeEach(context.runOverview)
 
+
   it('should have notification on the second day', function() {
     context.yield.days[1].notification
       .should.equal('Hank, are you free sometime this Tuesday? Press your picture!')
@@ -228,7 +229,7 @@ describe('Sunday', function() {
       .should.equal('*Hank* is **free** during *daytime* this *Sunday*') 
   })
 
-  it('displays user availabilxity as look', function() {
+  it('displays user availability as look', function() {
     context.renderedPerson.look
       .should.equal('free')
   })
@@ -359,6 +360,11 @@ describe('Friend availability', function() {
   it('shows friends first, with label', function() {
     context.yield.days[0].segments.evening.persons[0].label
       .should.include('Samantha')
+  })
+
+  it('shows friend available as notification', function() {
+    context.yield.days[0].notification
+      .should.equal('**Samantha** would like to know if you are free during *evening* on this *Wednesday*. If you are, press your picture!')
   })
 })
 
@@ -630,6 +636,16 @@ describe('sort order (inversed)', function() {
   })
 })
 
+describe('me and friend reported on the same day', function() {
+  var context = friendAndMeReportContext();
+  beforeEach(context.runOverview)
+
+  it('should not show notification on first day', function() {
+    expect(context.yield.days[0].notification)
+      .to.be.undefined
+  })
+})
+
 
 function noReportsContext(opts) {
   if (!opts.name) throw new Error('opts.name not found')  
@@ -663,6 +679,43 @@ function singleReportContext(opts) {
     }
   }
   return me
+}
+
+function friendAndMeReportContext(opts) {
+
+  var me = facebookSessionContext(opts)
+
+  me.config.timeOverride = new Date(Date.parse('2013-01-01'))
+
+  me.config.userAndFriends = {
+    id: '333333333333',
+    first_name: 'Hasse',
+    picture: 'http://irrelevant.com/john.jpg',
+    friends: [
+      {
+        id: '6666666666',
+        first_name: 'Nisse',
+      }
+    ]
+  }
+
+  me.config.reports = [
+    {
+      user_id: '333333333333',
+      availability: 'free',
+      date: '2013-01-01',
+      segment: 'evening',
+    },
+    {
+      user_id: '6666666666',
+      availability: 'free',
+      date: '2013-01-01',
+      segment: 'evening',
+    },
+  ]
+
+  return me
+ 
 }
 
 // Simple report where user Hasse and his two friends have reported

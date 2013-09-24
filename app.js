@@ -117,22 +117,70 @@ function newApp(storeConnection, time, QUser, session, publish) {
             }
 
             day.segments = {
-              daytime: newSegmentViewModelData('daytime', timeCursor, reports, userMap, user.id),
-              evening: newSegmentViewModelData('evening', timeCursor, reports, userMap, user.id),
+              daytime: newSegmentViewModelData(day, 'daytime', timeCursor, reports, userMap, user.id),
+              evening: newSegmentViewModelData(day, 'evening', timeCursor, reports, userMap, user.id),
             }
 
             var currentUserHasReported = reports.filter(function(report) { 
               return report.date     === storeDate(timeCursor) &&
                      report.user_id  === user.id
-            }).length > 0
+            }).length > 0;
 
-            
-            if (!isNotificationRendered && !currentUserHasReported) {
-              isNotificationRendered = true
-              day.notification =  
-                user.first_name + ', are you free sometime this ' + 
-                weekDayLongText(timeCursor) + '? Press your picture!'
+            if (!currentUserHasReported) {
+              
+              ['daytime', 'evening'].forEach(function(segmentName) {
+
+                if (isNotificationRendered) return;
+
+                var reportsGroomed = reports.sort(function(a, b) {
+          
+                  // FIXME: Legacy reports, remove me after oct 4 2013
+                  if (!a.created || !b.created) {
+                    if (a._id < b._id) return -1
+                    if (a._id > b._id) return 1
+                    return 0  
+                  }
+
+                  if (a.created <   b.created) return -1
+                  if (a.created === b.created) return 0
+                  return 1
+                })
+                .filter(function(report) { 
+                  return report.date     === storeDate(timeCursor) && 
+                         report.segment  === segmentName && 
+                         report.user_id  !== user.id
+                })
+                
+                if (reportsGroomed.length > 0) {
+
+                  isNotificationRendered = true
+                  var names = '';
+                  reportsGroomed.forEach(function(r, index) {
+                    var name = userMap[r.user_id].first_name
+                    if (names !== '') 
+                      if (index === reportsGroomed.length-1) names += ' and '
+                      else names += ', '
+                    names += '**' + name + '**'
+                  })
+                  day.notification = 
+                    names + ' would like to know if you are free during *' +
+                    segmentName + '* on this *' + weekDayLongText(timeCursor) + '*. ' +
+                    'If you are, press your picture!'
+                }
+
+              })
+                
+              if(!isNotificationRendered) {
+
+                isNotificationRendered = true
+                day.notification =  
+                  user.first_name + ', are you free sometime this ' + 
+                  weekDayLongText(timeCursor) + '? Press your picture!'
+              }
+              
             }
+            
+            
 
             days.push(day) 
 
@@ -160,7 +208,7 @@ function newApp(storeConnection, time, QUser, session, publish) {
       }).nodeify(next)
 
 
-      function newSegmentViewModelData(segmentName, timeCursor, reports, userMap, currentUserId) { 
+      function newSegmentViewModelData(day, segmentName, timeCursor, reports, userMap, currentUserId) { 
         var storeDateStr = storeDate(timeCursor)
 
         var svmd = {}
