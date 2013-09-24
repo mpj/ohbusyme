@@ -112,14 +112,23 @@ function newApp(storeConnection, time, QUser, session, publish) {
           for(var i = 0; i < displayDays; i++) {
             var day = {
               label: weekDayLongText(timeCursor, time.get()),
-              sublabel: timeCursor.getDate() + ' ' + moment(timeCursor).format('MMMM'),
-              notification: 'Maja, are you free sometime this Sunday? Press your picture!'
+              sublabel: timeCursor.getDate() + ' ' + moment(timeCursor).format('MMMM')
             }
 
             day.segments = {
               daytime: newSegmentViewModelData('daytime', timeCursor, reports, userMap, user.id),
               evening: newSegmentViewModelData('evening', timeCursor, reports, userMap, user.id),
             }
+
+            var currentUserHasReported = reports.filter(function(report) { 
+              return report.date     === storeDate(timeCursor) &&
+                     report.user_id  === user.id
+            }).length > 0
+
+            if (!currentUserHasReported)
+              day.notification =  
+                user.first_name + ', are you free sometime this ' + 
+                weekDayLongText(timeCursor) + '? Press your picture!'
 
             days.push(day) 
 

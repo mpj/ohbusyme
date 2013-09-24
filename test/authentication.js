@@ -150,15 +150,23 @@ describe('Virtual segments (no reports) ', function() {
 describe('Virtual segments (single report)', function() {
   
   var context = singleReportContext({
-    date: '2013-09-08',   segment: 'daytime',
+    date: '2013-09-09',   segment: 'daytime',
     name: 'Hank',         availability: 'free'
   })
   beforeEach(context.runOverview)
 
+  it('should have notification on the second day', function() {
+    context.yield.days[1].notification
+      .should.equal('Hank, are you free sometime this Tuesday? Press your picture!')
+  })
+
+  it('but not on reported (first) day', function() {
+    expect(context.yield.days[0].notification).to.be.undefined
+  })
+
   it('should not add virtual element on reported segments', function() {
     context.yield.days[0].segments.daytime.persons.length
       .should.equal(1)
-
   })
 
   it('displays other segments as unknown', function() {
