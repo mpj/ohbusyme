@@ -5,8 +5,9 @@ define([
     	
     	var self = this
 
-    	self.label    = ko.observable()
-        self.sublabel = ko.observable()
+    	self.label          = ko.observable()
+        self.sublabel       = ko.observable()
+        self.notification   = ko.observable()
 
         self.segments = {
             daytime: newSegment(eventBus),
@@ -25,6 +26,7 @@ define([
             if (!opts.segments.daytime)
                 throw new Error('Property daytime was not provided.')
 
+            self.notification(opts.notification)
             self.label(opts.label)
             self.sublabel(opts.sublabel)
             self.segments.daytime.parse(opts.segments.daytime)

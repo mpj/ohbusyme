@@ -112,7 +112,8 @@ function newApp(storeConnection, time, QUser, session, publish) {
           for(var i = 0; i < displayDays; i++) {
             var day = {
               label: weekDayLongText(timeCursor, time.get()),
-              sublabel: timeCursor.getDate() + ' ' + moment(timeCursor).format('MMMM')
+              sublabel: timeCursor.getDate() + ' ' + moment(timeCursor).format('MMMM'),
+              notification: 'Maja, are you free sometime this Sunday? Press your picture!'
             }
 
             day.segments = {

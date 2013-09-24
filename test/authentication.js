@@ -107,6 +107,11 @@ describe('Virtual segments (no reports) ', function() {
       .should.equal('Evening')
   })
 
+  it('has notification about being free', function() {
+    context.yield.days[0].notification
+      .should.equal('Maja, are you free sometime this Sunday? Press your picture!')
+  })
+
   it('yields full label', function() {
     context.yield.days[0].segments.daytime.persons[0].label
       .should.equal('Maja, are you free during daytime this Sunday? Press your picture!')
