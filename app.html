@@ -11,18 +11,6 @@
   <link href='http://fonts.googleapis.com/css?family=Oswald:700' rel='stylesheet' type='text/css'>
   <link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700' rel='stylesheet' type='text/css'>
   <link href="/app.css" rel="stylesheet" />
-
-  <style>
-    .tooltip .tooltip-inner p {
-      font-family:'Lato', sans-serif; 
-      font-size: 14px;
-    }
-    .tooltip .tooltip-inner p strong,
-    .tooltip .tooltip-inner p em {
-      font-weight: 700;
-    }
-  </style>
-
 </head>
 <body>
 
@@ -55,9 +43,7 @@
         <!-- FIXME remove duplication -->
         <div data-bind="
                click: clicked,
-               attr: { class: 'person col-lg-3 col-xs-3 ' + look() }, 
-               tooltip: tooltip, 
-               event: { mouseover: mouseover, mouseout: mouseout }">
+               attr: { class: 'person col-lg-3 col-xs-3 ' + look() }">
           <img data-bind="attr: { src: imageSrc }"></div>
         <!-- /ko -->
         
@@ -67,9 +53,7 @@
         <!-- FIXME remove duplication -->
         <div data-bind="
                click: clicked,
-               attr: { class:  'person col-lg-3 col-xs-3 ' + look() }, 
-               tooltip: tooltip, 
-               event: { mouseover: mouseover, mouseout: mouseout }">
+               attr: { class:  'person col-lg-3 col-xs-3 ' + look() }">
           <img data-bind="attr: { src: imageSrc }"></div>
         <!-- /ko -->
 

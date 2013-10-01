@@ -117,13 +117,6 @@ describe('Virtual segments (no reports) ', function() {
       .should.equal('Evening')
   })
 
-
-
-  it('yields full label', function() {
-    context.yield.days[0].segments.daytime.persons[0].label
-      .should.equal('Maja, are you free during daytime this Sunday? Press your picture!')
-  })
-
   it('person has the right look', function() {
     context.yield.days[0].segments.daytime.persons[0].look
       .should.equal('unknown')
@@ -143,7 +136,6 @@ describe('Virtual segments (no reports) ', function() {
     expect(
       context.yield.days[0].segments.evening.persons[0].highlight
     ).to.be.undefined
-   
   })
 
   it('DOESNT highlight third virtual report', function() {
@@ -224,11 +216,6 @@ describe('Sunday', function() {
       .should.equal(context.config.userAndFriends.picture)
   })
 
-  it('displays the user label', function() {
-    context.renderedPerson.label
-      .should.equal('*Hank* is **free** during *daytime* this *Sunday*') 
-  })
-
   it('displays user availability as look', function() {
     context.renderedPerson.look
       .should.equal('free')
@@ -244,89 +231,6 @@ describe('Sunday', function() {
       .should.equal('unknown')
   })
 
-})
-
-describe('Monday', function() {
-  var context = singleReportContext({
-    date: '2013-09-09',   segment: 'daytime',
-    name: 'Wayne',         availability: 'unknown'
-  })
-  beforeEach(context.runOverview)
-
-  it('displays correct person label', function() {
-    context.renderedPerson.label
-      .should.equal('*Wayne* is **unknown** during *daytime* this *Monday*') 
-  })
-
-  it('displays user availability as look', function() {
-    context.renderedPerson.look
-      .should.equal('unknown')
-  })
-})
-
-describe('Tuesday', function() {
-  var context = singleReportContext({
-    date: '2013-09-10',   segment: 'daytime',
-    name: 'Lina',         availability: 'unknown'
-  })
-  beforeEach(context.runOverview)
-
-  it('displays correct person label', function() {
-    context.renderedPerson.label
-      .should.equal('*Lina* is **unknown** during *daytime* this *Tuesday*') 
-  })
-})
-
-describe('Wednesday', function() {
-  var context = singleReportContext({
-    date: '2013-09-11',   segment: 'evening',
-    name: 'Martha',       availability: 'free'
-  })
-  beforeEach(context.runOverview)
-
-  it('displays correct person label', function() {
-    context.renderedPerson.label
-      .should.equal('*Martha* is **free** during *evening* this *Wednesday*') 
-  })
-})
-
-describe('Thursday', function() {
-  var context = singleReportContext({
-    date: '2013-09-12', segment: 'evening',
-    name: 'Johanna',       availability: 'unknown'
-  })
-  beforeEach(context.runOverview)
-
-  it('displays correct person label', function() {
-    context.renderedPerson.label
-      .should.equal('*Johanna* is **unknown** during *evening* this *Thursday*') 
-  })
-})
-
-describe('Friday', function() {
-  var context = singleReportContext({
-    date: '2013-09-13', segment: 'evening',
-    name: 'Johanna',       availability: 'unknown'
-  })
-  beforeEach(context.runOverview)
-
-  it('displays correct person label', function() {
-    context.renderedPerson.label
-      .should.equal('*Johanna* is **unknown** during *evening* this *Friday*') 
-  })
-})
-
-describe('Saturday', function() {
-  var context = singleReportContext({
-    date: '2013-09-14', segment: 'evening',
-    name: 'Rolf',       availability: 'free'
-  })
-  beforeEach(context.runOverview)
-
-  it('displays correct person label', function() {
-    context.renderedPerson.label
-      .should.equal('*Rolf* is **free** during *evening* this *Saturday*') 
-  })
 })
 
 describe('Friend availability', function() {
@@ -347,19 +251,9 @@ describe('Friend availability', function() {
       .should.equal('unknown')
   })
 
-  it('shows virtual report last, with label, using friend name', function() {
-    context.yield.days[0].segments.evening.persons[1].label
-      .should.equal('**Samantha** would like to know if you are free during *evening* on this *Wednesday*. If you are, press your picture!')
-  })
-
   it('shows friends first, as free', function() {
     context.yield.days[0].segments.evening.persons[0].look
       .should.equal('free')
-  })
-
-  it('shows friends first, with label', function() {
-    context.yield.days[0].segments.evening.persons[0].label
-      .should.include('Samantha')
   })
 
   it('shows friend available as notification', function() {
@@ -376,8 +270,8 @@ describe('Virtual report label (two friends)', function() {
   })
   beforeEach(context.runOverview)
 
-  it('shows virtual report last, with label, using friends names', function() {
-    context.yield.days[0].segments.evening.persons[2].label
+  it('shows notification using friends names', function() {
+    context.yield.days[0].notification
       .should.equal('**Shablat** and **Johan** would like to know if you are free during *evening* on this *Tuesday*. If you are, press your picture!')
   })
 
@@ -392,8 +286,8 @@ describe('Virtual report label (three friends)', function() {
   })
   beforeEach(context.runOverview)
 
-  it('shows virtual report last, with label, using friends names', function() {
-    context.yield.days[0].segments.evening.persons[3].label
+  it('shows notification using friends names', function() {
+    context.yield.days[0].notification
       .should.equal('**Shablat**, **Johan** and **Sauron** would like to know if you are free during *evening* on this *Tuesday*. If you are, press your picture!')
   })
 
@@ -607,12 +501,12 @@ describe('sort order', function() {
 
   it('puts first report first', function() {
     context.yield.days[0].segments.evening
-      .persons[0].label.should.contain('Hasse')
+      .persons[0].imageSrc.should.contain('hasse')
   })
 
   it('puts last report last', function() {
     context.yield.days[0].segments.evening
-      .persons[2].label.should.contain('Pelle')
+      .persons[2].imageSrc.should.contain('pelle')
   })
 })
 
@@ -627,12 +521,12 @@ describe('sort order (inversed)', function() {
 
   it('puts first report first', function() {
     context.yield.days[0].segments.evening
-      .persons[0].label.should.contain('Pelle')
+      .persons[0].imageSrc.should.contain('pelle')
   })
 
   it('puts last report last', function() {
     context.yield.days[0].segments.evening
-      .persons[2].label.should.contain('Hasse')
+      .persons[2].imageSrc.should.contain('hasse')
   })
 })
 
@@ -690,11 +584,12 @@ function friendAndMeReportContext(opts) {
   me.config.userAndFriends = {
     id: '333333333333',
     first_name: 'Hasse',
-    picture: 'http://irrelevant.com/john.jpg',
+    picture: 'http://cdn.com/hasse.jpg',
     friends: [
       {
         id: '6666666666',
         first_name: 'Nisse',
+        picture: 'http://cdn.com/nisse.jpg',
       }
     ]
   }
@@ -729,15 +624,17 @@ function tripleReport1(opts) {
   me.config.userAndFriends = {
     id: '333333333333',
     first_name: 'Hasse',
-    picture: 'http://irrelevant.com/john.jpg',
+    picture: 'http://cdn.com/hasse.jpg',
     friends: [
       {
         id: '6666666666',
         first_name: 'Nisse',
+        picture: 'http://cdn.com/nisse.jpg',
       },
       {
         id: '8888888888',
         first_name: 'Pelle',
+        picture: 'http://cdn.com/pelle.jpg',
       }
     ]
   }
@@ -781,15 +678,17 @@ function tripleReport2(opts) {
   me.config.userAndFriends = {
     id: '333333333333',
     first_name: 'Hasse',
-    picture: 'http://irrelevant.com/john.jpg',
+    picture: 'http://cdn.com/hasse.jpg',
     friends: [
       {
         id: '6666666666',
         first_name: 'Nisse',
+        picture: 'http://cdn.com/nisse.jpg',
       },
       {
         id: '8888888888',
         first_name: 'Pelle',
+        picture: 'http://cdn.com/pelle.jpg',
       }
     ]
   }

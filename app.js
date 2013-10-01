@@ -133,14 +133,6 @@ function newApp(storeConnection, time, QUser, session, publish) {
                 if (isNotificationRendered) return;
 
                 var reportsGroomed = reports.sort(function(a, b) {
-          
-                  // FIXME: Legacy reports, remove me after oct 4 2013
-                  if (!a.created || !b.created) {
-                    if (a._id < b._id) return -1
-                    if (a._id > b._id) return 1
-                    return 0  
-                  }
-
                   if (a.created <   b.created) return -1
                   if (a.created === b.created) return 0
                   return 1
@@ -216,14 +208,6 @@ function newApp(storeConnection, time, QUser, session, publish) {
         svmd.on_click = 'segment/' + storeDateStr + '/' + segmentName
         var currentUserHasReported = false
         var reportsGroomed = reports.sort(function(a, b) {
-          
-          // FIXME: Legacy reports, remove me after oct 4 2013
-          if (!a.created || !b.created) {
-            if (a._id < b._id) return -1
-            if (a._id > b._id) return 1
-            return 0  
-          }
-
           if (a.created <   b.created) return -1
           if (a.created === b.created) return 0
           return 1
@@ -237,10 +221,6 @@ function newApp(storeConnection, time, QUser, session, publish) {
             currentUserHasReported = true
           return {
             imageSrc: userMap[report.user_id].picture,
-            label: '*' + userMap[report.user_id].first_name + 
-                   '* is **' + report.availability + '** ' + 
-                   'during *' + segmentName + '* this *' + 
-                   weekDayLongText(timeCursor) + '*',
             look: report.availability
           }
         })
@@ -250,27 +230,6 @@ function newApp(storeConnection, time, QUser, session, publish) {
           var currentUserVMD = {
             imageSrc: userMap[currentUserId].picture,
             look: 'unknown',
-          }
-         
-          if (reportsGroomed.length > 0) {
-            var names = '';
-            reportsGroomed.forEach(function(r, index) {
-              var name = userMap[r.user_id].first_name
-              if (names !== '') 
-                if (index === reportsGroomed.length-1) names += ' and '
-                else names += ', '
-              names += '**' + name + '**'
-            })
-            currentUserVMD.label = 
-              names + ' would like to know if you are free during *' +
-              segmentName + '* on this *' + weekDayLongText(timeCursor) + '*. ' +
-              'If you are, press your picture!'
-          } else {
-            currentUserVMD.label = 
-              currentUser.first_name  + ', are you free ' +
-              'during ' + segmentName + ' this ' +  
-              weekDayLongText(timeCursor) + '? ' +
-              'Press your picture!'
           }
           svmd.persons.push(currentUserVMD)
         }
