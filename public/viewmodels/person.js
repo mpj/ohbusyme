@@ -1,7 +1,6 @@
 define([ 
-	'/knockout/build/output/knockout-latest.debug.js',
-    '/marked/lib/marked.js',
-], function(ko, marked) {
+	'/knockout/build/output/knockout-latest.debug.js'
+], function(ko) {
     return function newPerson(parent, eventBus) {
 
     	var api = {}

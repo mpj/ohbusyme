@@ -1,6 +1,7 @@
 define([
 	'/knockout/build/output/knockout-latest.debug.js',
-    '/viewmodels/segment.js' ], function(ko, newSegment) {
+    '/viewmodels/segment.js',
+    '/marked/lib/marked.js' ], function(ko, newSegment, marked) {
     return function DayViewModel(eventBus) {
     	
     	var self = this
@@ -26,7 +27,7 @@ define([
             if (!opts.segments.daytime)
                 throw new Error('Property daytime was not provided.')
 
-            self.notification(opts.notification)
+            self.notification(marked(opts.notification))
             self.label(opts.label)
             self.sublabel(opts.sublabel)
             self.segments.daytime.parse(opts.segments.daytime)
