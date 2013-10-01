@@ -28,7 +28,7 @@ define([
                 throw new Error('Property daytime was not provided.')
 
             self.notification(
-                opts.notification ? marked(opts.notification : null))
+                opts.notification ? marked(opts.notification) : null)
             self.label(opts.label)
             self.sublabel(opts.sublabel)
             self.segments.daytime.parse(opts.segments.daytime)
